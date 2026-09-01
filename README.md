@@ -1,4 +1,4 @@
-# Personal Diary App — with Deepgram Nova-3 Voice Journaling
+# Personal Diary App with Deepgram Nova-3 Voice Journaling
 
 A personal productivity app that replaced five separate apps I was juggling: a budgeting app, a mood journal, a to-do list, a wishlist tracker, and none of them talking to each other. Built through AI-assisted development ("vibe coding"), then extended with real, production voice journaling using Deepgram's Nova-3 speech-to-text API.
 
