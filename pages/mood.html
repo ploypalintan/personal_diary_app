@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mood · my diary</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .journal-wrap { position: relative; }
+    .mic-btn {
+      position: absolute; bottom: 12px; right: 12px;
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 0.5px solid var(--border); background: #fff;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 15px; transition: all 0.2s;
+    }
+    .mic-btn:hover { background: var(--almond-light); }
+    .mic-btn.recording {
+      background: var(--mauve); border-color: var(--mauve);
+      animation: micPulse 1.2s ease-in-out infinite;
+    }
+    @keyframes micPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(151,114,123,0.4); }
+      50%      { box-shadow: 0 0 0 8px rgba(151,114,123,0); }
+    }
+    .mic-status { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 6px; min-height: 14px; }
+
+    /* ── mood grid ── */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .mood-tile {
+      border: 0.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 12px 8px 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    .mood-tile:hover { transform: translateY(-2px); filter: brightness(0.97); }
+    .mood-tile.sel   { outline: 1.5px solid var(--mauve); }
+
+    .mood-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .mood-label-main {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+
+    .mood-label-sub {
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    /* ── history log ── */
+    .mood-history-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 0.5px solid var(--border-soft);
+    }
+    .mood-history-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 5px;
+      flex-shrink: 0;
+    }
+    .mood-history-label {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 14px;
+      color: var(--ink-soft);
+    }
+    .mood-history-date {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .mood-history-note {
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-top: 4px;
+      font-style: italic;
+      line-height: 1.6;
+    }
+
+    /* ── saved flash ── */
+    .saved-flash {
+      display: none;
+      text-align: center;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 13px;
+      color: var(--mauve);
+      letter-spacing: 0.06em;
+      margin-top: 10px;
+    }
+
+    .journal-box {
+      width: 100%;
+      min-height: 110px;
+      border: 0.5px solid var(--border-soft);
+      border-radius: 12px;
+      background: var(--almond-pale);
+      padding: 14px;
+      font-size: 14px;
+      color: var(--ink-soft);
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      outline: none;
+      resize: none;
+      line-height: 1.8;
+    }
+    .journal-box::placeholder { color: var(--almond); }
+  </style>
+</head>
+<body>
+<div id="mainApp" class="active fade-open">
+
+  <div class="spine"><div class="spine-text">my diary</div></div>
+
+  <nav class="bookmarks">
+    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+    <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
+    <a class="bm" data-page="wishlist.html"><span class="bm-icon">✧</span>wishlist</a>
+    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
+    <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
+    <div style="flex:1"></div>
+    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <div class="page-title">mood of the day</div>
+      <div class="page-date js-today"></div>
+    </div>
+    <div class="page-body">
+
+      <!-- mood selector renders here -->
+      <div id="moodSelectorWrap"></div>
+
+      <!-- journal -->
+      <div class="sec-label" style="margin-top:20px">dear diary…</div>
+      <div class="journal-wrap">
+      <textarea class="journal-box" id="journalBox" placeholder="write anything your heart wants to say today… or tap the mic to speak it"></textarea>
+      <button class="mic-btn" id="micBtn" onclick="toggleRecording()" title="speak your entry" type="button">🎙️</button>
+    </div>
+    <div class="mic-status" id="micStatus"></div>
+
+      <button class="btn-small" style="margin-top:12px" onclick="saveMood()">save this feeling</button>
+      <div class="saved-flash" id="savedFlash">✦ saved to your diary ✦</div>
+
+      <!-- history -->
+      <div style="margin-top:28px">
+        <div class="sec-label">recent entries</div>
+        <div id="moodHistory"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script src="../data/diaryData.js"></script>
+<script src="../components/pixelChar.js"></script>
+<script src="../components/moodSelector.js"></script>
+<script src="../components/navbar.js"></script>
+<script>
+  let state = initPage();
+  let selectedMood = null;
+
+  /* init mood selector */
+  renderMoodSelector('moodSelectorWrap', null, mood => {
+    selectedMood = mood;
+  });
+
+  /* save */
+  function saveMood() {
+    if (!selectedMood) {
+      alert('pick a mood first 🌸');
+      return;
+    }
+    const note = document.getElementById('journalBox').value.trim();
+    state.moods.unshift({
+      id:    state.nextIds.mood++,
+      date:  getTodayString(),
+      key:   selectedMood.key,
+      label: selectedMood.label,
+      sub:   selectedMood.sub,
+      note,
+    });
+    saveState(state);
+    document.getElementById('journalBox').value = '';
+    selectedMood = null;
+    renderMoodSelector('moodSelectorWrap', null, mood => { selectedMood = mood; });
+    renderHistory();
+    const flash = document.getElementById('savedFlash');
+    flash.style.display = 'block';
+    setTimeout(() => flash.style.display = 'none', 2400);
+  }
+
+  /* history */
+  const MOOD_DOT_COLORS = {
+    soft:'#AA9DA1', light:'#c8a848', alive:'#7aaa70', held:'#c080a8',
+    still:'#9a9490', heavy:'#8a7878', restless:'#c09050', blue:'#5880b8',
+    tight:'#c06060', toomuch:'#a060a0', alone:'#7070a8', itching:'#50a890', tooaware:'#8858b0',
+  };
+
+  function renderHistory() {
+    const wrap = document.getElementById('moodHistory');
+    const entries = (state.moods || []).slice(0, 10);
+    if (!entries.length) {
+      wrap.innerHTML = '<div class="empty-state" style="padding:16px 0">no entries yet — check in with yourself today.</div>';
+      return;
+    }
+    wrap.innerHTML = '';
+    entries.forEach(e => {
+      const row = document.createElement('div');
+      row.className = 'mood-history-row';
+      row.innerHTML = `
+        <div class="mood-history-dot" style="background:${MOOD_DOT_COLORS[e.key] || '#AA9DA1'}"></div>
+        <div style="flex:1">
+          <div class="mood-history-label">${e.label} <span style="font-size:11px;color:var(--text-muted);font-family:'Cormorant Garamond',serif">(${e.sub})</span></div>
+          <div class="mood-history-date">${e.date}</div>
+          ${e.note ? `<div class="mood-history-note">${e.note}</div>` : ''}
+        </div>`;
+      wrap.appendChild(row);
+    });
+  }
+
+  renderHistory();
+
+/* VOICE ENTRY (Deepgram Nova-3) */
+let mediaRecorder = null;
+let audioChunks = [];
+let isRecording = false;
+
+async function toggleRecording() {
+  if (isRecording) { mediaRecorder.stop(); return; }
+  await startRecording();
+}
+
+async function startRecording() {
+  const micBtn = document.getElementById('micBtn');
+  const status = document.getElementById('micStatus');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    audioChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      isRecording = false;
+      micBtn.classList.remove('recording');
+      status.textContent = 'transcribing…';
+      stream.getTracks().forEach((t) => t.stop());
+      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      await sendToDeepgram(audioBlob);
+    };
+    mediaRecorder.start();
+    isRecording = true;
+    micBtn.classList.add('recording');
+    status.textContent = 'listening… tap again to stop';
+  } catch (err) {
+    status.textContent = 'microphone access needed to use voice entry';
+    console.error('Mic error:', err);
+  }
+}
+
+async function sendToDeepgram(audioBlob) {
+  const status = document.getElementById('micStatus');
+  try {
+    const base64Audio = await blobToBase64(audioBlob);
+    const res = await fetch('/.netlify/functions/transcribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ audio: base64Audio }),
+    });
+    const data = await res.json();
+    if (data.error) {
+      status.textContent = 'transcription failed — try again';
+      console.error('Deepgram error:', data.error);
+      return;
+    }
+    const box = document.getElementById('journalBox');
+    box.value = box.value.trim() ? box.value.trim() + ' ' + data.transcript : data.transcript;
+    status.textContent = data.transcript ? '✦ transcribed' : "didn't catch that — try again";
+    setTimeout(() => { status.textContent = ''; }, 2000);
+  } catch (err) {
+    status.textContent = 'something went wrong — try again';
+    console.error('Send error:', err);
+  }
+}
+
+function blobToBase64(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => { resolve(reader.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+}
+</script>
+</body>
+</html>

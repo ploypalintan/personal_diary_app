@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>today · my diary</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .todo-card.done-card .tname {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+    .todo-card.done-card { opacity: 0.5; }
+  </style>
+</head>
+<body>
+<div id="mainApp" class="active fade-open">
+
+  <!-- SPINE -->
+  <div class="spine"><div class="spine-text">my diary</div></div>
+
+  <!-- BOOKMARKS -->
+  <nav class="bookmarks">
+    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+    <a class="bm" data-page="today.html">
+      <span class="bm-icon">✦</span>today
+    </a>
+    <a class="bm" data-page="wishlist.html">
+      <span class="bm-icon">✧</span>wishlist
+    </a>
+    <a class="bm" data-page="mood.html">
+      <span class="bm-icon">◌</span>mood
+    </a>
+    <a class="bm" data-page="finance.html">
+      <span class="bm-icon">◇</span>finance
+    </a>
+    <div style="flex:1"></div>
+    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+  </nav>
+
+  <!-- PAGE -->
+  <main class="page">
+    <div class="page-header">
+      <div class="page-title">today's list</div>
+      <div class="page-date js-today"></div>
+    </div>
+    <div class="page-body">
+      <div class="prog-wrap">
+        <div class="prog-fill" id="progressFill" style="width:0%"></div>
+      </div>
+
+      <!-- add row -->
+      <div class="add-row">
+        <input class="r-input" id="taskInput" placeholder="add a task to your day…" style="flex:1;min-width:100px" />
+        <select class="r-select" id="taskCat">
+          <option value="work">work</option>
+          <option value="self care">self care</option>
+          <option value="home">home</option>
+          <option value="social">social</option>
+          <option value="creative">creative</option>
+        </select>
+        <select class="r-select" id="taskPrio">
+          <option value="hi">high</option>
+          <option value="me">medium</option>
+          <option value="lo">low</option>
+        </select>
+        <button class="btn-small" onclick="addTask()">+ add</button>
+      </div>
+
+      <div id="todoList"></div>
+    </div>
+  </main>
+
+</div>
+
+<script src="../data/diaryData.js"></script>
+<script src="../components/pixelChar.js"></script>
+<script src="../components/diaryCard.js"></script>
+<script src="../components/navbar.js"></script>
+<script>
+  let state = initPage();
+
+  /* ── render ── */
+  function render() {
+    const list = document.getElementById('todoList');
+    list.innerHTML = '';
+
+    const todos = state.todos || [];
+    if (!todos.length) {
+      list.innerHTML = '<div class="empty-state">nothing yet — what\'s calling you today?</div>';
+    } else {
+      todos.forEach(item => {
+        list.appendChild(makeTodoCard(item, toggleTask, deleteTask));
+      });
+    }
+
+    const done  = todos.filter(t => t.done).length;
+    const total = todos.length;
+    document.getElementById('progressFill').style.width =
+      total ? Math.round((done / total) * 100) + '%' : '0%';
+
+    saveState(state);
+  }
+
+  /* ── add ── */
+  function addTask() {
+    const v = document.getElementById('taskInput').value.trim();
+    if (!v) return;
+    state.todos.unshift({
+      id:   state.nextIds.todo++,
+      name: v,
+      cat:  document.getElementById('taskCat').value,
+      prio: document.getElementById('taskPrio').value,
+      done: false,
+    });
+    document.getElementById('taskInput').value = '';
+    render();
+  }
+
+  document.getElementById('taskInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  /* ── toggle / delete ── */
+  function toggleTask(id) {
+    const t = state.todos.find(x => x.id === id);
+    if (t) t.done = !t.done;
+    render();
+  }
+
+  function deleteTask(id) {
+    state.todos = state.todos.filter(x => x.id !== id);
+    render();
+  }
+
+  render();
+</script>
+</body>
+</html>

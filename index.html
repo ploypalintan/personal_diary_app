@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>my diary</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── name screen ── */
+    #nameScreen{background:var(--almond-pale)}
+    .ns-input{
+      font-family:'Playfair Display',serif;font-style:italic;font-size:22px;
+      color:var(--ink);border:none;border-bottom:1.5px solid var(--almond);
+      background:transparent;text-align:center;padding:8px 16px;
+      outline:none;width:300px;
+    }
+    .ns-input::placeholder{color:var(--almond)}
+
+    /* ── splash ── */
+    #splashScreen{background:var(--almond-pale);gap:12px}
+    .splash-name-row{display:flex;align-items:center;gap:8px;justify-content:center}
+    .edit-name-btn{background:none;border:none;cursor:pointer;color:var(--lilac);font-size:11px;
+      letter-spacing:0.06em;text-decoration:underline;font-family:'Cormorant Garamond',serif;
+      padding:0;transition:color 0.2s}
+    .edit-name-btn:hover{color:var(--mauve)}
+
+    /* ── character area ── */
+    .char-area{display:flex;flex-direction:column;align-items:center;gap:6px}
+    .char-canvas-wrap{position:relative;cursor:pointer}
+    .customize-link{font-size:11px;color:var(--lilac);letter-spacing:0.06em;
+      text-decoration:underline;cursor:pointer;font-family:'Cormorant Garamond',serif;
+      font-style:italic;background:none;border:none;padding:0;transition:color 0.2s}
+    .customize-link:hover{color:var(--mauve)}
+
+    /* ── customiser modal ── */
+    .modal-overlay{
+      position:fixed;inset:0;background:rgba(46,32,34,0.35);
+      display:flex;align-items:center;justify-content:center;
+      z-index:100;padding:16px;
+    }
+    .modal-box{
+      background:var(--almond-pale);border-radius:20px;border:0.5px solid var(--border);
+      padding:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;
+    }
+    .modal-title{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;
+      color:var(--ink);margin-bottom:16px;text-align:center}
+    .modal-row{background:#fff;border:0.5px solid var(--border-soft);border-radius:12px;
+      padding:12px 14px;margin-bottom:10px}
+    .opt-lbl{font-size:9px;letter-spacing:0.12em;text-transform:uppercase;
+      color:var(--lilac);margin-bottom:8px;font-family:'Cormorant Garamond',serif}
+    .swatches{display:flex;gap:7px;flex-wrap:wrap}
+    .skin-sw{width:26px;height:26px;border-radius:50%;cursor:pointer;
+      border:2px solid transparent;transition:all 0.15s}
+    .skin-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
+    .hair-sw{width:22px;height:22px;border-radius:50%;cursor:pointer;
+      border:2px solid transparent;transition:all 0.15s}
+    .hair-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
+    .pill-o{padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);
+      background:var(--almond-pale);font-size:11px;color:var(--text-muted);cursor:pointer;
+      font-family:'Cormorant Garamond',serif;font-style:italic;transition:all 0.15s;white-space:nowrap}
+    .pill-o:hover{background:var(--almond-light)}
+    .pill-o.sel{background:var(--mauve);color:#faf5f5;border-color:var(--mauve)}
+    .modal-preview{display:flex;justify-content:center;margin-bottom:16px}
+    .modal-btns{display:flex;gap:8px}
+    .modal-btns .btn-primary{flex:1}
+    .btn-ghost2{flex:1;background:none;border:0.5px solid var(--border);border-radius:30px;
+      padding:11px;font-size:14px;cursor:pointer;font-family:'Cormorant Garamond',serif;
+      color:var(--text-mid);transition:all 0.2s}
+    .btn-ghost2:hover{background:var(--almond-light)}
+
+    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .bob{animation:bob 2.8s ease-in-out infinite}
+  </style>
+</head>
+<body>
+<div class="diary-wrap">
+
+  <!-- ══ NAME SCREEN ══ -->
+  <div id="nameScreen" class="screen active">
+    <div class="t-eyebrow">welcome to your planner</div>
+    <div class="rule"></div>
+    <div class="t-serif-lg">what shall we call you?</div>
+    <div class="t-body" style="max-width:300px;text-align:center">
+      type your name or whatever you'd like to be called —<br/>this diary belongs entirely to you.
+    </div>
+    <input class="ns-input" id="nameInput" placeholder="your name…" maxlength="32" autocomplete="off"/>
+    <button class="btn-primary" onclick="saveName()">begin my diary</button>
+  </div>
+
+  <!-- ══ SPLASH SCREEN ══ -->
+  <div id="splashScreen" class="screen">
+    <div class="t-eyebrow">my planner</div>
+    <div class="splash-name-row">
+      <div class="t-serif-lg" id="splashTitle"></div>
+      <button class="edit-name-btn" onclick="goToNameScreen()">edit</button>
+    </div>
+    <div class="rule"></div>
+
+    <!-- quote -->
+    <div class="card-white quote-card">
+      <span class="quote-badge" id="quoteBadge">quote of the day</span>
+      <div class="quote-mark">"</div>
+      <div class="quote-text" id="quoteText"></div>
+      <div class="rule" style="margin:8px auto"></div>
+      <div class="quote-author" id="quoteAuthor"></div>
+    </div>
+
+    <!-- pixel character -->
+    <div class="char-area">
+      <div class="char-canvas-wrap" onclick="openCustomiser()">
+        <canvas id="mainChar" width="96" height="144"
+          style="image-rendering:pixelated;width:96px;height:144px"
+          class="bob" title="tap to customise"></canvas>
+      </div>
+      <button class="customize-link" onclick="openCustomiser()">customise your character ✦</button>
+    </div>
+
+    <button class="btn-primary" onclick="openDiary()">open today's diary</button>
+  </div>
+
+  <!-- ══ CUSTOMISER MODAL ══ -->
+  <div class="modal-overlay" id="customModal" style="display:none" onclick="closeCustomiser(event)">
+    <div class="modal-box" onclick="event.stopPropagation()">
+      <div class="modal-title">customise your character</div>
+      <div class="modal-preview">
+        <canvas id="previewChar" width="96" height="144"
+          style="image-rendering:pixelated;width:96px;height:144px"></canvas>
+      </div>
+      <div class="modal-row">
+        <div class="opt-lbl">skin tone</div>
+        <div class="swatches" id="skinOpts"></div>
+      </div>
+      <div class="modal-row">
+        <div class="opt-lbl">hair colour</div>
+        <div class="swatches" id="hairColOpts"></div>
+      </div>
+      <div class="modal-row">
+        <div class="opt-lbl">hair style</div>
+        <div class="swatches" id="hairStyleOpts"></div>
+      </div>
+      <div class="modal-row">
+        <div class="opt-lbl">outfit</div>
+        <div class="swatches" id="outfitOpts"></div>
+      </div>
+      <div class="modal-btns" style="margin-top:16px">
+        <button class="btn-ghost2" onclick="closeCustomiser()">cancel</button>
+        <button class="btn-primary" onclick="saveCustomiser()">save character</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="data/diaryData.js"></script>
+<script src="components/pixelChar.js"></script>
+<script>
+  /* ── LOOKUP TABLES ── */
+  const SKINS = [
+    {name:'porcelain',s:'#fde8d8'},{name:'fair',s:'#f5d0b0'},
+    {name:'light tan',s:'#e8b888'},{name:'medium',s:'#c89060'},
+    {name:'tan',s:'#a87048'},{name:'deep',s:'#7a4828'},
+  ];
+  const HAIR_COLS = [
+    {name:'dark brown',c:'#3d2010'},{name:'warm brown',c:'#7a5038'},
+    {name:'auburn',c:'#8a3820'},{name:'blonde',c:'#c8a050'},
+    {name:'black',c:'#1a1010'},{name:'dusty pink',c:'#c09098'},
+  ];
+  const HAIR_STYLES = [
+    {name:'long straight',key:'longstraight'},
+    {name:'wavy long',key:'wavylong'},
+    {name:'bob',key:'bob'},
+    {name:'curly',key:'curly'},
+    {name:'short',key:'short'},
+  ];
+  const OUTFITS = [
+    {name:'pink sweater',key:'sweater'},
+    {name:'lace dress',key:'dress'},
+    {name:'cosy knit',key:'knit'},
+    {name:'checkered top',key:'check'},
+    {name:'soft hoodie',key:'hoodie'},
+  ];
+
+  /* ── STATE ── */
+  let state = loadState();
+  // default = user's chosen character: wavy long, warm brown, pink sweater, fair skin
+  if (!state.charSkin)      state.charSkin      = 1;  // fair
+  if (!state.charHairCol)   state.charHairCol   = 1;  // warm brown
+  if (!state.charHairStyle) state.charHairStyle = 1;  // wavy long (index in array)
+  if (!state.charOutfit)    state.charOutfit    = 0;  // pink sweater
+
+  let draft = {};
+
+  /* ── DRAW MAIN CHARACTER ── */
+  function drawMain() {
+    drawPixelChar(
+      document.getElementById('mainChar'),
+      state.charSkin, state.charHairCol,
+      HAIR_STYLES[state.charHairStyle].key,
+      OUTFITS[state.charOutfit].key
+    );
+  }
+  function drawPreview() {
+    drawPixelChar(
+      document.getElementById('previewChar'),
+      draft.skin, draft.hairCol,
+      HAIR_STYLES[draft.hairStyle].key,
+      OUTFITS[draft.outfit].key
+    );
+  }
+
+  /* ── QUOTE ── */
+  const q = getDailyQuote();
+  document.getElementById('quoteBadge').textContent = q.type === 'poetry' ? 'poetry of the day' : 'quote of the day';
+  document.getElementById('quoteText').textContent  = q.text;
+  document.getElementById('quoteAuthor').textContent = q.author;
+
+  /* ── NAME FLOW ── */
+  if (!state.userName) {
+    show('nameScreen');
+  } else {
+    applyName(state.userName);
+    show('splashScreen');
+    drawMain();
+  }
+
+  document.getElementById('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+
+  function saveName() {
+    const v = document.getElementById('nameInput').value.trim();
+    if (!v) return;
+    state.userName = v;
+    saveState(state);
+    applyName(v);
+    show('splashScreen');
+    drawMain();
+  }
+  function applyName(n) {
+    document.getElementById('splashTitle').textContent = n.toLowerCase() + "'s diary";
+  }
+  function goToNameScreen() {
+    document.getElementById('nameInput').value = state.userName;
+    show('nameScreen');
+  }
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+  function openDiary() {
+    saveState(state);
+    window.location.href = 'pages/today.html';
+  }
+
+  /* ── CUSTOMISER ── */
+  function openCustomiser() {
+    draft = { skin: state.charSkin, hairCol: state.charHairCol, hairStyle: state.charHairStyle, outfit: state.charOutfit };
+    buildCustomiserUI();
+    drawPreview();
+    document.getElementById('customModal').style.display = 'flex';
+  }
+  function closeCustomiser(e) {
+    if (e && e.target !== document.getElementById('customModal')) return;
+    document.getElementById('customModal').style.display = 'none';
+  }
+  function saveCustomiser() {
+    state.charSkin      = draft.skin;
+    state.charHairCol   = draft.hairCol;
+    state.charHairStyle = draft.hairStyle;
+    state.charOutfit    = draft.outfit;
+    saveState(state);
+    drawMain();
+    document.getElementById('customModal').style.display = 'none';
+  }
+
+  function buildCustomiserUI() {
+    /* skin */
+    const sk = document.getElementById('skinOpts'); sk.innerHTML = '';
+    SKINS.forEach((s,i) => {
+      const d = document.createElement('div');
+      d.className = 'skin-sw' + (i === draft.skin ? ' sel' : '');
+      d.style.background = s.s; d.title = s.name;
+      d.onclick = () => { draft.skin = i; sk.querySelectorAll('.skin-sw').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      sk.appendChild(d);
+    });
+    /* hair colour */
+    const hc = document.getElementById('hairColOpts'); hc.innerHTML = '';
+    HAIR_COLS.forEach((h,i) => {
+      const d = document.createElement('div');
+      d.className = 'hair-sw' + (i === draft.hairCol ? ' sel' : '');
+      d.style.background = h.c; d.title = h.name;
+      d.onclick = () => { draft.hairCol = i; hc.querySelectorAll('.hair-sw').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      hc.appendChild(d);
+    });
+    /* hair style */
+    const hs = document.getElementById('hairStyleOpts'); hs.innerHTML = '';
+    HAIR_STYLES.forEach((s,i) => {
+      const d = document.createElement('div');
+      d.className = 'pill-o' + (i === draft.hairStyle ? ' sel' : '');
+      d.textContent = s.name;
+      d.onclick = () => { draft.hairStyle = i; hs.querySelectorAll('.pill-o').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      hs.appendChild(d);
+    });
+    /* outfit */
+    const ot = document.getElementById('outfitOpts'); ot.innerHTML = '';
+    OUTFITS.forEach((o,i) => {
+      const d = document.createElement('div');
+      d.className = 'pill-o' + (i === draft.outfit ? ' sel' : '');
+      d.textContent = o.name;
+      d.onclick = () => { draft.outfit = i; ot.querySelectorAll('.pill-o').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      ot.appendChild(d);
+    });
+  }
+</script>
+</body>
+</html>

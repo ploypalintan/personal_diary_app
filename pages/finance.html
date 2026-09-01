@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>finance · my diary</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .currency-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--almond-pale);
+      border: 0.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 16px;
+    }
+    .currency-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      font-family: 'Cormorant Garamond', serif;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 18px;
+    }
+    .summary-stat {
+      background: var(--almond-pale);
+      border-radius: 12px;
+      padding: 12px;
+      text-align: center;
+      border: 0.5px solid var(--border-soft);
+    }
+    .summary-label {
+      font-size: 9px;
+      color: var(--lilac);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 4px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .summary-val {
+      font-size: 17px;
+      color: var(--ink);
+      font-family: 'Playfair Display', serif;
+    }
+    .summary-val.pos { color: var(--positive); }
+    .summary-val.neg { color: var(--negative); }
+    .summary-val.bal { color: var(--mauve); }
+
+    .income-box {
+      background: var(--almond-pale);
+      border: 0.5px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+    .income-box-title {
+      font-size: 10px;
+      color: var(--mauve);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      font-family: 'Cormorant Garamond', serif;
+    }
+    .income-add-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .divider { height: 0.5px; background: var(--border-soft); margin: 12px 0; }
+  </style>
+</head>
+<body>
+<div id="mainApp" class="active fade-open">
+
+  <div class="spine"><div class="spine-text">my diary</div></div>
+
+  <nav class="bookmarks">
+    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+    <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
+    <a class="bm" data-page="wishlist.html"><span class="bm-icon">✧</span>wishlist</a>
+    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
+    <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
+    <div style="flex:1"></div>
+    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <div class="page-title">finance</div>
+      <div class="page-date js-today"></div>
+    </div>
+    <div class="page-body">
+
+      <!-- CURRENCY -->
+      <div class="currency-row">
+        <span class="currency-label">currency</span>
+        <select class="r-select" id="currencySelect" onchange="onCurrencyChange()">
+          <option value="SGD">🇸🇬 SGD S$</option>
+          <option value="USD">🇺🇸 USD $</option>
+          <option value="GBP">🇬🇧 GBP £</option>
+          <option value="EUR">🇪🇺 EUR €</option>
+          <option value="JPY">🇯🇵 JPY ¥</option>
+          <option value="AUD">🇦🇺 AUD A$</option>
+          <option value="CAD">🇨🇦 CAD C$</option>
+          <option value="THB">🇹🇭 THB ฿</option>
+          <option value="MYR">🇲🇾 MYR RM</option>
+          <option value="IDR">🇮🇩 IDR Rp</option>
+          <option value="HKD">🇭🇰 HKD HK$</option>
+          <option value="KRW">🇰🇷 KRW ₩</option>
+          <option value="INR">🇮🇳 INR ₹</option>
+          <option value="CNY">🇨🇳 CNY ¥</option>
+          <option value="AED">🇦🇪 AED د.إ</option>
+        </select>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="summary-grid">
+        <div class="summary-stat">
+          <div class="summary-label">total income</div>
+          <div class="summary-val pos" id="statIncome"></div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-label">total spent</div>
+          <div class="summary-val neg" id="statSpent"></div>
+        </div>
+        <div class="summary-stat">
+          <div class="summary-label">balance</div>
+          <div class="summary-val bal" id="statBalance"></div>
+        </div>
+      </div>
+
+      <!-- INCOME BOX -->
+      <div class="income-box">
+        <div class="income-box-title">income sources</div>
+        <div id="incomeList"></div>
+        <div class="income-add-row">
+          <input class="r-input" id="incomeDesc" placeholder="income source…" style="flex:1;min-width:80px" />
+          <input type="number" class="r-number" id="incomeAmt" placeholder="amount" step="0.01" min="0" />
+          <select class="r-select" id="incomeType">
+            <option value="salary">salary</option>
+            <option value="socials">socials</option>
+            <option value="freelance">freelance</option>
+            <option value="passive">passive</option>
+            <option value="investment">investment</option>
+            <option value="gift">gift</option>
+            <option value="other">other</option>
+          </select>
+          <button class="btn-small" onclick="addIncome()">+ add</button>
+        </div>
+      </div>
+
+      <!-- EXPENSES -->
+      <div class="sec-label">expenses</div>
+      <div class="add-row">
+        <input class="r-input" id="expDesc" placeholder="what did you spend on…" style="flex:1;min-width:70px" />
+        <input type="number" class="r-number" id="expAmt" placeholder="amount" step="0.01" min="0" />
+        <select class="r-select" id="expCat">
+          <option value="food">food</option>
+          <option value="beauty">beauty</option>
+          <option value="fashion">fashion</option>
+          <option value="transport">transport</option>
+          <option value="home">home</option>
+          <option value="health">health</option>
+          <option value="fun">fun</option>
+          <option value="other">other</option>
+        </select>
+        <button class="btn-small" onclick="addExpense()">+ log</button>
+      </div>
+      <div id="expList"></div>
+
+    </div>
+  </main>
+</div>
+
+<script src="../data/diaryData.js"></script>
+<script src="../components/pixelChar.js"></script>
+<script src="../components/diaryCard.js"></script>
+<script src="../components/navbar.js"></script>
+<script>
+  let state = initPage();
+
+  /* set saved currency on select */
+  const currSel = document.getElementById('currencySelect');
+  currSel.value = state.currency || 'SGD';
+  window._currSym = CURRENCIES[currSel.value] || 'S$';
+
+  function onCurrencyChange() {
+    state.currency = currSel.value;
+    window._currSym = CURRENCIES[state.currency] || '$';
+    saveState(state);
+    render();
+  }
+
+  function fmt(v) {
+    return window._currSym + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  /* ── render ── */
+  function render() {
+    const incomes  = state.incomes  || [];
+    const expenses = state.expenses || [];
+
+    const totalInc = incomes.reduce((s, i) => s + i.amt, 0);
+    const totalExp = expenses.reduce((s, e) => s + e.amt, 0);
+    const bal      = totalInc - totalExp;
+
+    document.getElementById('statIncome').textContent  = fmt(totalInc);
+    document.getElementById('statSpent').textContent   = fmt(totalExp);
+    const balEl = document.getElementById('statBalance');
+    balEl.textContent = (bal < 0 ? '-' : '') + fmt(bal);
+    balEl.className   = 'summary-val ' + (bal >= 0 ? 'pos' : 'neg');
+
+    /* income list */
+    const il = document.getElementById('incomeList');
+    il.innerHTML = '';
+    if (!incomes.length) {
+      il.innerHTML = '<div style="font-size:12px;color:var(--almond);font-style:italic;padding:4px 0">no income added yet…</div>';
+    } else {
+      incomes.forEach(i => il.appendChild(makeFinanceRow(i, INC_COLORS, true, deleteIncome)));
+    }
+
+    /* expense list */
+    const el = document.getElementById('expList');
+    el.innerHTML = '';
+    if (!expenses.length) {
+      el.innerHTML = '<div class="empty-state">no expenses yet…</div>';
+    } else {
+      expenses.forEach(e => el.appendChild(makeFinanceRow(e, EXP_COLORS, false, deleteExpense)));
+    }
+
+    saveState(state);
+  }
+
+  /* ── add income ── */
+  function addIncome() {
+    const name = document.getElementById('incomeDesc').value.trim();
+    const amt  = parseFloat(document.getElementById('incomeAmt').value);
+    if (!name || isNaN(amt) || amt <= 0) return;
+    state.incomes.unshift({
+      id:   state.nextIds.income++,
+      name,
+      amt,
+      type: document.getElementById('incomeType').value,
+    });
+    document.getElementById('incomeDesc').value = '';
+    document.getElementById('incomeAmt').value  = '';
+    render();
+  }
+  document.getElementById('incomeDesc').addEventListener('keydown', e => { if (e.key === 'Enter') addIncome(); });
+
+  /* ── add expense ── */
+  function addExpense() {
+    const name = document.getElementById('expDesc').value.trim();
+    const amt  = parseFloat(document.getElementById('expAmt').value);
+    if (!name || isNaN(amt) || amt <= 0) return;
+    state.expenses.unshift({
+      id:   state.nextIds.expense++,
+      name,
+      amt,
+      cat:  document.getElementById('expCat').value,
+    });
+    document.getElementById('expDesc').value = '';
+    document.getElementById('expAmt').value  = '';
+    render();
+  }
+  document.getElementById('expDesc').addEventListener('keydown', e => { if (e.key === 'Enter') addExpense(); });
+
+  /* ── delete ── */
+  function deleteIncome(id)  { state.incomes  = state.incomes.filter(x => x.id !== id);  render(); }
+  function deleteExpense(id) { state.expenses = state.expenses.filter(x => x.id !== id); render(); }
+
+  render();
+</script>
+</body>
+</html>

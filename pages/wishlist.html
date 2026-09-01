@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>wishlist · my diary</title>
+  <link rel="stylesheet" href="../style.css"/>
+  <style>
+    /* ── tab strip ── */
+    .wish-tabs{display:flex;border-bottom:0.5px solid var(--border);background:#fff;flex-shrink:0}
+    .wtab{flex:1;padding:13px 6px 11px;text-align:center;cursor:pointer;font-family:'Cormorant Garamond',serif;font-size:11px;letter-spacing:0.06em;color:var(--text-muted);border-bottom:2px solid transparent;transition:all 0.2s}
+    .wtab:hover{color:var(--text-mid)}
+    .wtab.active{color:var(--mauve);border-bottom-color:var(--mauve);font-style:italic}
+
+    /* ── panels ── */
+    .wpanel{display:none;flex:1;flex-direction:column;overflow:hidden}
+    .wpanel.active{display:flex}
+
+    /* ══ BEAUTY — VANITY CASE ══ */
+    .beauty-scene{display:flex;flex-direction:column;align-items:center;padding:20px 16px 0;background:#f5f0ec;flex-shrink:0}
+    .case-wrap{cursor:pointer;transition:transform 0.18s;flex-shrink:0}
+    .case-wrap:hover{transform:translateY(-2px)}
+    .hint-text{font-family:'Playfair Display',serif;font-style:italic;font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px;letter-spacing:0.04em;transition:opacity 0.3s}
+    .hint-text.gone{opacity:0;pointer-events:none}
+
+    /* inner */
+    .beauty-inner{background:#fff8f4;border-radius:0 0 14px 14px;border:0.5px solid var(--border);border-top:none;overflow:hidden;max-height:0;transition:max-height 0.6s cubic-bezier(0.4,0,0.2,1)}
+    .beauty-inner.open{max-height:700px}
+    .ipad{padding:16px 16px 20px}
+
+    /* search */
+    .sw{display:flex;align-items:center;gap:8px;background:#fff;border:0.5px solid var(--border);border-radius:20px;padding:7px 14px;margin-bottom:12px}
+    .si{flex:1;border:none;background:transparent;outline:none;font-size:13px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-style:italic}
+    .si::placeholder{color:var(--almond)}
+
+    /* add form */
+    .af{background:var(--almond-pale);border:0.5px solid var(--border-soft);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:7px}
+    .fl{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--lilac)}
+    .fr{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+    .mi{flex:1;min-width:70px;border:none;border-bottom:0.5px solid var(--border);background:transparent;padding:5px 2px;font-size:13px;color:var(--ink);outline:none;font-family:'Cormorant Garamond',serif;font-style:italic}
+    .mi::placeholder{color:var(--almond)}
+    .ms{font-size:11px;color:var(--text-mid);border:0.5px solid var(--border);background:#fff;border-radius:20px;padding:4px 8px;outline:none;font-family:'Cormorant Garamond',serif;cursor:pointer}
+    .ab{background:var(--mauve);color:#fff8f4;border:none;border-radius:20px;padding:5px 14px;font-size:11px;cursor:pointer;font-family:'Playfair Display',serif;font-style:italic;white-space:nowrap;transition:background 0.15s}
+    .ab:hover{background:var(--mauve-dark)}
+
+    /* product rows */
+    .pl{display:flex;flex-direction:column;gap:6px}
+    .pr{background:#fff;border:0.5px solid var(--border-soft);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;transition:border-color 0.2s}
+    .pr:hover{border-color:var(--almond)}
+    .pd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .pb{flex:1;min-width:0}
+    .pn{font-size:13px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-style:italic}
+    .pbr{font-size:10px;color:var(--text-muted);margin-top:1px}
+    .pt{font-size:9px;border-radius:20px;padding:2px 7px;background:var(--almond-light);color:var(--mauve-dark);white-space:nowrap}
+    .pp{font-size:12px;color:var(--mauve);font-family:'Playfair Display',serif;white-space:nowrap}
+    .ps{background:none;border:none;cursor:pointer;font-size:13px;color:var(--almond);transition:all 0.2s;padding:0;line-height:1}
+    .ps.on{color:#c8a84b}.ps:hover{transform:scale(1.2)}
+    .pdl{background:none;border:none;color:var(--border);cursor:pointer;font-size:14px;padding:0 1px;transition:color 0.15s;line-height:1}
+    .pdl:hover{color:var(--mauve)}
+    .empty-p{text-align:center;padding:20px;color:var(--almond);font-size:13px;font-style:italic}
+
+    /* ══ WARDROBE ══ */
+    .wardrobe-header{background:#fefcf8;border-bottom:0.5px solid var(--border-soft);padding:16px 20px 12px;position:relative;flex-shrink:0}
+    .wardrobe-title{font-family:'Playfair Display',serif;font-style:italic;font-size:20px;color:var(--ink);margin-bottom:2px}
+    .wardrobe-sub{font-size:11px;color:var(--text-muted);letter-spacing:0.06em}
+    .wh-bow{position:absolute;right:18px;top:14px}
+    .rail-section{background:#fefcf8;padding:14px 16px 0;flex-shrink:0}
+    .rail-bar{height:5px;background:linear-gradient(180deg,#b89060,#a07040);border-radius:3px;margin:0 8px;box-shadow:0 2px 4px rgba(0,0,0,0.1)}
+    .hangers-row{display:flex;gap:12px;padding:0 4px 12px;overflow-x:auto;scrollbar-width:none}
+    .hangers-row::-webkit-scrollbar{display:none}
+    .hanger-item{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:80px;cursor:pointer;transition:transform 0.2s}
+    .hanger-item:hover{transform:translateY(-3px)}
+    .item-lbl{font-size:10px;color:var(--text-mid);font-family:'Cormorant Garamond',serif;font-style:italic;text-align:center;margin-top:3px;line-height:1.3}
+    .item-pr{font-size:9px;color:var(--mauve);font-family:'Playfair Display',serif;margin-top:1px}
+    .w-form{margin:12px 16px;background:var(--almond-pale);border:0.5px solid var(--border-soft);border-radius:12px;padding:12px;flex-shrink:0}
+    .wft{font-size:9px;letter-spacing:0.1em;text-transform:uppercase;color:var(--lilac);margin-bottom:8px}
+    .wr{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
+    .wi{flex:1;min-width:80px;border:none;border-bottom:0.5px solid var(--border);background:transparent;padding:5px 2px;font-size:13px;color:var(--ink);outline:none;font-family:'Cormorant Garamond',serif;font-style:italic}
+    .wi::placeholder{color:var(--almond)}
+    .ws{font-size:11px;color:var(--text-mid);border:0.5px solid var(--border);background:#fff;border-radius:20px;padding:4px 8px;outline:none;font-family:'Cormorant Garamond',serif;cursor:pointer}
+    .wb{background:var(--mauve);color:#fff8f4;border:none;border-radius:20px;padding:5px 14px;font-size:11px;cursor:pointer;font-family:'Playfair Display',serif;font-style:italic;white-space:nowrap;transition:background 0.15s}
+    .wb:hover{background:var(--mauve-dark)}
+    .wlist{padding:0 16px 16px;display:flex;flex-direction:column;gap:6px;overflow-y:auto}
+    .wi-row{background:#fff;border:0.5px solid var(--border-soft);border-radius:10px;padding:10px 12px;display:flex;align-items:center;gap:8px;transition:border-color 0.2s}
+    .wi-row:hover{border-color:var(--almond)}
+  </style>
+</head>
+<body>
+<div id="mainApp" class="active fade-open">
+
+  <div class="spine"><div class="spine-text">my diary</div></div>
+
+  <nav class="bookmarks">
+    <!-- satin bow at top of sidebar -->
+    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+
+    <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
+    <a class="bm" data-page="wishlist.html"><span class="bm-icon">✧</span>wishlist</a>
+    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
+    <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
+    <div style="flex:1"></div>
+    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+  </nav>
+
+  <main class="page">
+    <!-- TAB STRIP -->
+    <div class="wish-tabs">
+      <div class="wtab active" onclick="switchWTab('beauty')">beauty pouch</div>
+      <div class="wtab" onclick="switchWTab('wardrobe')">wardrobe</div>
+    </div>
+
+    <!-- BEAUTY PANEL -->
+    <div class="wpanel active" id="wp-beauty" style="overflow-y:auto;background:#f5f0ec">
+      <div class="beauty-scene">
+
+        <!-- VANITY CASE SVG -->
+        <div class="case-wrap" onclick="toggleCase()">
+          <svg viewBox="0 0 320 230" width="320" height="230" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="peb" x="-5%" y="-5%" width="110%" height="110%">
+                <feTurbulence type="fractalNoise" baseFrequency="0.78" numOctaves="4" seed="3" result="n"/>
+                <feDisplacementMap in="SourceGraphic" in2="n" scale="2.5" xChannelSelector="R" yChannelSelector="G"/>
+              </filter>
+              <filter id="shdw">
+                <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="rgba(90,50,20,0.22)"/>
+              </filter>
+              <linearGradient id="bgrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#b87848"/>
+                <stop offset="45%" stop-color="#9B6840"/>
+                <stop offset="100%" stop-color="#7d5230"/>
+              </linearGradient>
+              <linearGradient id="lgrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#c49060"/>
+                <stop offset="50%" stop-color="#a87448" stop-opacity="0"/>
+                <stop offset="100%" stop-color="#6b4420" stop-opacity="0.25"/>
+              </linearGradient>
+              <linearGradient id="zgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#e0e0e0"/>
+                <stop offset="40%" stop-color="#b8b8b8"/>
+                <stop offset="100%" stop-color="#d4d4d4"/>
+              </linearGradient>
+              <linearGradient id="hgrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c08858"/>
+                <stop offset="100%" stop-color="#8a5c30"/>
+              </linearGradient>
+              <!-- WHITE SILK ribbon gradients -->
+              <linearGradient id="rib1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="40%" stop-color="#f0eded"/>
+                <stop offset="100%" stop-color="#ddd8d8"/>
+              </linearGradient>
+              <linearGradient id="rib2" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f8f4f4"/>
+                <stop offset="100%" stop-color="#e8e0e0"/>
+              </linearGradient>
+              <linearGradient id="rib3" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#fff"/>
+                <stop offset="100%" stop-color="#ece8e8"/>
+              </linearGradient>
+            </defs>
+
+            <!-- ground shadow -->
+            <ellipse cx="160" cy="222" rx="100" ry="8" fill="rgba(80,40,10,0.14)"/>
+
+            <!-- BODY -->
+            <rect x="25" y="80" width="270" height="132" rx="20" fill="url(#bgrad)" filter="url(#shdw)"/>
+            <rect x="25" y="80" width="270" height="132" rx="20" fill="url(#lgrad)" filter="url(#peb)" opacity="0.55"/>
+            <!-- stitching -->
+            <rect x="37" y="92" width="246" height="108" rx="13" fill="none" stroke="rgba(255,255,255,0.17)" stroke-width="1" stroke-dasharray="5,4"/>
+            <rect x="25" y="80" width="270" height="132" rx="20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+            <!-- emboss -->
+            <text x="160" y="152" text-anchor="middle" font-family="'Playfair Display',serif" font-style="italic" font-size="16" fill="rgba(255,255,255,0.18)" letter-spacing="5">my pouch</text>
+
+            <!-- ZIPPER TRACK -->
+            <rect x="23" y="76" width="274" height="10" rx="5" fill="#9a9090"/>
+            <rect x="28" y="78" width="264" height="6" rx="3" fill="url(#zgrad)"/>
+            <!-- zipper teeth -->
+            <line x1="38"  y1="78" x2="38"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="50"  y1="78" x2="50"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="62"  y1="78" x2="62"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="74"  y1="78" x2="74"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="86"  y1="78" x2="86"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="98"  y1="78" x2="98"  y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="110" y1="78" x2="110" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="122" y1="78" x2="122" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="134" y1="78" x2="134" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="146" y1="78" x2="146" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="158" y1="78" x2="158" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="170" y1="78" x2="170" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="182" y1="78" x2="182" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="194" y1="78" x2="194" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="206" y1="78" x2="206" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="218" y1="78" x2="218" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="230" y1="78" x2="230" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="242" y1="78" x2="242" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="254" y1="78" x2="254" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="266" y1="78" x2="266" y2="84" stroke="#ccc" stroke-width="0.8"/>
+            <line x1="278" y1="78" x2="278" y2="84" stroke="#ccc" stroke-width="0.8"/>
+
+            <!-- ZIPPER PULL (animated) -->
+            <g id="zPull" style="transition:transform 0.9s cubic-bezier(0.4,0,0.2,1)">
+              <rect x="30" y="72" width="19" height="20" rx="5" fill="url(#zgrad)" stroke="#a8a8a8" stroke-width="0.5"/>
+              <path d="M36 72 Q39.5 65 43 72" fill="none" stroke="#c0c0c0" stroke-width="2" stroke-linecap="round"/>
+              <line x1="33" y1="78" x2="46" y2="78" stroke="#b8b8b8" stroke-width="0.9"/>
+              <line x1="33" y1="82" x2="46" y2="82" stroke="#b8b8b8" stroke-width="0.9"/>
+              <rect x="34" y="92" width="10" height="14" rx="2.5" fill="url(#zgrad)" stroke="#b0b0b0" stroke-width="0.5"/>
+              <circle cx="39" cy="95.5" r="1.5" fill="#a0a0a0"/>
+            </g>
+
+            <!-- HANDLE BASE -->
+            <path d="M126 78 Q126 44 160 44 Q194 44 194 78" fill="none" stroke="url(#hgrad)" stroke-width="16" stroke-linecap="round"/>
+            <path d="M130 76 Q130 50 160 50 Q190 50 190 76" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="5" stroke-linecap="round"/>
+            <path d="M128 77 Q128 47 160 47 Q192 47 192 77" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="4,3"/>
+            <!-- handle rings -->
+            <rect x="119" y="72" width="18" height="12" rx="6" fill="#b8b8b8" stroke="#a0a0a0" stroke-width="0.5"/>
+            <rect x="183" y="72" width="18" height="12" rx="6" fill="#b8b8b8" stroke="#a0a0a0" stroke-width="0.5"/>
+
+            <!-- ══ WHITE SILK RIBBON around handle ══ -->
+            <!-- ribbon wraps around handle base, knotted at top right -->
+            <!-- wrap strips going over handle -->
+            <path d="M178 74 Q182 60 190 52" fill="none" stroke="url(#rib1)" stroke-width="5" stroke-linecap="round" opacity="0.9"/>
+            <path d="M178 74 Q182 60 190 52" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+            <path d="M183 72 Q188 58 196 50" fill="none" stroke="url(#rib2)" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+            <path d="M188 70 Q194 56 200 48" fill="none" stroke="url(#rib1)" stroke-width="3.5" stroke-linecap="round" opacity="0.7"/>
+
+            <!-- BOW KNOT at top right of handle -->
+            <!-- knot center -->
+            <ellipse cx="196" cy="46" rx="5.5" ry="4" fill="#f0e8e8" stroke="#ddd0d0" stroke-width="0.5"/>
+            <ellipse cx="196" cy="45" rx="2.8" ry="1.6" fill="rgba(255,255,255,0.7)"/>
+            <!-- left loop of bow -->
+            <path d="M196 46 Q182 33 174 38 Q168 45 178 50 Q187 54 196 46Z" fill="url(#rib1)" stroke="#e0d8d8" stroke-width="0.5"/>
+            <path d="M196 46 Q184 36 177 40 Q173 45 181 48" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- right loop of bow -->
+            <path d="M196 46 Q210 33 218 38 Q224 45 214 50 Q205 54 196 46Z" fill="url(#rib2)" stroke="#d8d0d0" stroke-width="0.5"/>
+            <path d="M196 46 Q208 36 215 40 Q219 45 211 48" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.3" stroke-linecap="round"/>
+            <!-- left tail -->
+            <path d="M192 50 Q186 62 184 72" fill="none" stroke="url(#rib3)" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+            <path d="M192 50 Q186 62 184 72" fill="none" stroke="rgba(255,255,255,0.55)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- right tail (flowing down) -->
+            <path d="M200 50 Q208 64 210 78 Q212 88 206 96" fill="none" stroke="url(#rib1)" stroke-width="6" stroke-linecap="round" opacity="0.85"/>
+            <path d="M200 50 Q208 64 210 78 Q212 88 206 96" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- knot re-draw on top -->
+            <ellipse cx="196" cy="46" rx="4.5" ry="3.2" fill="#ece4e4"/>
+            <ellipse cx="196" cy="45" rx="2" ry="1.2" fill="rgba(255,255,255,0.75)"/>
+          </svg>
+        </div>
+        <div class="hint-text" id="caseHint">tap to open your beauty pouch ✦</div>
+      </div>
+
+      <!-- INNER CONTENT -->
+      <div class="beauty-inner" id="beautyInner" style="margin:0 16px 20px;border-radius:14px;border-top:0.5px solid var(--border)">
+        <div class="ipad">
+          <div class="sw" onclick="event.stopPropagation()">
+            <span style="font-size:11px;color:var(--text-muted)">✦</span>
+            <input class="si" id="bSearch" placeholder="search products…" oninput="renderBeauty()"/>
+          </div>
+          <div class="af" onclick="event.stopPropagation()">
+            <div class="fl">add to pouch</div>
+            <div class="fr">
+              <input class="mi" id="bName" placeholder="product name…" style="flex:2"/>
+              <input class="mi" id="bBrand" placeholder="brand…"/>
+            </div>
+            <div class="fr">
+              <select class="ms" id="bCat">
+                <option value="lip">lip</option><option value="eye">eye</option>
+                <option value="skin">skin</option><option value="blush">blush</option>
+                <option value="brow">brow</option><option value="set">setting</option>
+                <option value="other">other</option>
+              </select>
+              <input class="mi" id="bPrice" type="number" min="0" step="0.01" placeholder="price" style="width:64px;flex:none;font-style:normal"/>
+              <button class="ab" onclick="addBeauty()">+ add</button>
+            </div>
+          </div>
+          <div class="pl" id="bList"></div>
+        </div>
+      </div>
+    </div><!-- end beauty panel -->
+
+    <!-- WARDROBE PANEL -->
+    <div class="wpanel" id="wp-wardrobe">
+      <div class="wardrobe-header">
+        <div class="wardrobe-title">my wardrobe</div>
+        <div class="wardrobe-sub">a little wishlist for the girl with taste</div>
+        <div class="wh-bow">
+          <svg viewBox="0 0 68 48" width="68" height="48" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="wb1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#f0e0e0"/>
+                <stop offset="100%" stop-color="#ccb4b4"/>
+              </linearGradient>
+            </defs>
+            <ellipse cx="34" cy="20" rx="4" ry="3" fill="#ccb0b0"/>
+            <path d="M34 20 Q22 9 14 14 Q8 21 18 26 Q26 30 34 20Z" fill="url(#wb1)" stroke="#d0b8b8" stroke-width="0.5"/>
+            <path d="M34 20 Q46 9 54 14 Q60 21 50 26 Q42 30 34 20Z" fill="#e0cccc" stroke="#c8b0b0" stroke-width="0.5"/>
+            <ellipse cx="34" cy="20" rx="3.5" ry="2.8" fill="#c4a8a8"/>
+            <ellipse cx="34" cy="19" rx="1.8" ry="1.1" fill="rgba(255,255,255,0.42)"/>
+            <path d="M30 23 Q26 33 28 42" fill="none" stroke="#dcc8c8" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M30 23 Q26 33 28 42" fill="none" stroke="rgba(255,255,255,0.38)" stroke-width="2.2" stroke-linecap="round"/>
+            <path d="M38 23 Q42 33 40 42" fill="none" stroke="#d4c0c0" stroke-width="5.5" stroke-linecap="round"/>
+            <path d="M38 23 Q42 33 40 42" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="rail-section">
+        <div class="rail-bar"></div>
+        <div class="hangers-row" id="hangersRow"></div>
+      </div>
+
+      <div class="w-form">
+        <div class="wft">add to wardrobe</div>
+        <div class="wr">
+          <input class="wi" id="wName" placeholder="item name…"/>
+          <input class="wi" id="wBrand" placeholder="brand…"/>
+        </div>
+        <div class="wr">
+          <select class="ws" id="wCat">
+            <option value="tops">tops</option><option value="bottoms">bottoms</option>
+            <option value="dresses">dresses</option><option value="outerwear">outerwear</option>
+            <option value="shoes">shoes</option><option value="bags">bags</option>
+            <option value="accessories">accessories</option>
+          </select>
+          <input class="wi" id="wPrice" type="number" min="0" step="0.01" placeholder="price" style="font-style:normal;max-width:80px"/>
+          <button class="wb" onclick="addWardrobe()">+ add</button>
+        </div>
+      </div>
+
+      <div class="wlist" id="wList"></div>
+    </div><!-- end wardrobe panel -->
+
+  </main>
+</div>
+
+<script src="../data/diaryData.js"></script>
+<script src="../components/pixelChar.js"></script>
+<script src="../components/navbar.js"></script>
+<script>
+  let state = initPage();
+
+  /* ── tab switching ── */
+  function switchWTab(t) {
+    document.querySelectorAll('.wtab').forEach((el,i) => el.classList.toggle('active', ['beauty','wardrobe'][i] === t));
+    document.querySelectorAll('.wpanel').forEach(p => p.classList.remove('active'));
+    document.getElementById('wp-'+t).classList.add('active');
+  }
+
+  /* ══ BEAUTY POUCH ══ */
+  let pOpen = false;
+  const BDOT = {lip:'#e8b0b8',eye:'#b0b8d8',skin:'#d8c4a8',blush:'#e8c4c4',brow:'#b8a898',set:'#c4d8c0',other:'#c8bfc3'};
+  let bProds = state.wishes && state.wishes.length ? state.wishes : [
+    {id:1,name:'pillow lips',brand:'Charlotte Tilbury',cat:'lip',price:52,star:true},
+    {id:2,name:'brow wiz',brand:'Anastasia Beverly Hills',cat:'brow',price:28,star:false},
+    {id:3,name:'surreal skin foundation',brand:'Rare Beauty',cat:'skin',price:42,star:false},
+  ];
+
+  function toggleCase() {
+    pOpen = !pOpen;
+    document.getElementById('zPull').style.transform = pOpen ? 'translateX(222px)' : 'translateX(0)';
+    document.getElementById('beautyInner').classList.toggle('open', pOpen);
+    document.getElementById('caseHint').classList.toggle('gone', pOpen);
+    if (pOpen) renderBeauty();
+  }
+
+  function addBeauty() {
+    const n = document.getElementById('bName').value.trim();
+    if (!n) return;
+    const pr = document.getElementById('bPrice').value;
+    bProds.unshift({
+      id: state.nextIds.wish++,
+      name: n,
+      brand: document.getElementById('bBrand').value.trim(),
+      cat: document.getElementById('bCat').value,
+      price: pr !== '' && !isNaN(parseFloat(pr)) ? parseFloat(pr) : null,
+      star: false,
+    });
+    document.getElementById('bName').value = '';
+    document.getElementById('bBrand').value = '';
+    document.getElementById('bPrice').value = '';
+    state.wishes = bProds;
+    saveState(state);
+    renderBeauty();
+  }
+
+  ['bName','bBrand','bPrice'].forEach(id => {
+    const el = document.getElementById(id);
+    el.addEventListener('keydown', e => { if (e.key === 'Enter') addBeauty(); });
+    el.addEventListener('click', e => e.stopPropagation());
+  });
+  document.getElementById('bCat').addEventListener('click', e => e.stopPropagation());
+  document.getElementById('bSearch').addEventListener('click', e => e.stopPropagation());
+
+  function bStar(id) { const p = bProds.find(x => x.id === id); if (p) p.star = !p.star; state.wishes = bProds; saveState(state); renderBeauty(); }
+  function bDel(id)  { bProds = bProds.filter(x => x.id !== id); state.wishes = bProds; saveState(state); renderBeauty(); }
+
+  function renderBeauty() {
+    const q = document.getElementById('bSearch').value.toLowerCase();
+    let list = q ? bProds.filter(p => p.name.toLowerCase().includes(q) || (p.brand && p.brand.toLowerCase().includes(q)) || p.cat.includes(q)) : bProds;
+    const el = document.getElementById('bList'); el.innerHTML = '';
+    if (!list.length) { el.innerHTML = `<div class="empty-p">${q ? 'nothing matches…' : 'your pouch is empty — add your first wish ✦'}</div>`; return; }
+    list.forEach(p => {
+      const row = document.createElement('div'); row.className = 'pr'; row.onclick = e => e.stopPropagation();
+      const dot = document.createElement('div'); dot.className = 'pd'; dot.style.background = BDOT[p.cat] || '#c8bfc3'; row.appendChild(dot);
+      const body = document.createElement('div'); body.className = 'pb';
+      const nm = document.createElement('div'); nm.className = 'pn'; nm.textContent = p.name; body.appendChild(nm);
+      if (p.brand) { const br = document.createElement('div'); br.className = 'pbr'; br.textContent = p.brand; body.appendChild(br); }
+      row.appendChild(body);
+      const tag = document.createElement('span'); tag.className = 'pt'; tag.textContent = p.cat; row.appendChild(tag);
+      if (p.price !== null) { const pr = document.createElement('span'); pr.className = 'pp'; pr.textContent = '$' + p.price.toFixed(2); row.appendChild(pr); }
+      const st = document.createElement('button'); st.className = 'ps' + (p.star ? ' on' : ''); st.textContent = p.star ? '✦' : '✧'; st.onclick = ev => { ev.stopPropagation(); bStar(p.id); }; row.appendChild(st);
+      const dl = document.createElement('button'); dl.className = 'pdl'; dl.textContent = '×'; dl.onclick = ev => { ev.stopPropagation(); bDel(p.id); }; row.appendChild(dl);
+      el.appendChild(row);
+    });
+  }
+
+  /* ══ WARDROBE ══ */
+  const WCOL = {tops:'#e8d4d4',bottoms:'#d4dce8',dresses:'#e8d4e4',outerwear:'#d4e0d8',shoes:'#e0d4e8',bags:'#d8e0d4',accessories:'#e8d8d0'};
+  const WDOT = {tops:'#c8a8a8',bottoms:'#a8b8c8',dresses:'#c8a8c0',outerwear:'#a8c0b0',shoes:'#b8a8c8',bags:'#a8b8a8',accessories:'#c8b0a8'};
+  let wItems = [
+    {id:1,name:'white lace bralette',brand:'Brandy Melville',cat:'tops',price:28},
+    {id:2,name:'pink boxer shorts',brand:'Brandy Melville',cat:'bottoms',price:24},
+    {id:3,name:'baby tee',brand:'Brandy Melville',cat:'tops',price:18},
+  ];
+  let wId = 4;
+
+  function makeHangerSVG(item) {
+    const col = WCOL[item.cat] || '#e8d4d4';
+    const shapes = {
+      tops: `<path d="M22 40 Q22 34 30 34 Q30 28 42 26 Q42 22 42 22" fill="none" stroke="#c8a878" stroke-width="2" stroke-linecap="round"/><path d="M42 22 Q42 22 58 22 Q58 26 58 26 Q70 28 70 34 Q78 34 78 40 L70 44 Q66 36 66 36 L66 78 Q66 81 62 81 L38 81 Q34 81 34 78 L34 36 Q30 36 30 44 Z" fill="${col}" stroke="rgba(0,0,0,0.07)" stroke-width="0.5"/><path d="M42 26 Q50 30 58 26" fill="none" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>`,
+      bottoms: `<path d="M22 40 Q22 34 30 34 Q30 28 42 26 Q42 22 42 22" fill="none" stroke="#c8a878" stroke-width="2" stroke-linecap="round"/><path d="M42 22 Q58 22 58 22 Q58 26 58 26 Q70 28 70 34 Q78 34 78 40 L70 44 L66 44 L66 40 Q62 37 58 37 L58 40 Q58 52 42 52 Q42 40 42 40 Q38 37 34 40 L34 44 L30 44 L22 40Z" fill="${col}" stroke="rgba(0,0,0,0.07)" stroke-width="0.5"/><path d="M34 44 Q34 82 32 86 Q36 88 40 86 Q42 72 42 52" fill="${col}" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/><path d="M66 44 Q66 82 68 86 Q64 88 60 86 Q58 72 58 52" fill="${col}" stroke="rgba(0,0,0,0.05)" stroke-width="0.5"/>`,
+      dresses: `<path d="M22 40 Q22 34 30 34 Q30 28 42 26 Q42 22 42 22" fill="none" stroke="#c8a878" stroke-width="2" stroke-linecap="round"/><path d="M42 22 Q58 22 58 22 Q70 28 70 34 Q78 34 78 40 L70 44 L66 44 L66 40 Q62 37 58 37 L58 56 Q66 68 70 86 L30 86 Q34 68 42 56 L42 37 Q38 37 34 40 L34 44 L30 44 L22 40Z" fill="${col}" stroke="rgba(0,0,0,0.07)" stroke-width="0.5"/>`,
+    };
+    const shape = shapes[item.cat] || shapes['tops'];
+    return `<svg viewBox="0 0 100 100" width="72" height="90"><defs><linearGradient id="hg${item.id}" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#d4b880"/><stop offset="100%" stop-color="#a08040"/></linearGradient></defs><line x1="10" y1="22" x2="90" y2="22" stroke="url(#hg${item.id})" stroke-width="3" stroke-linecap="round"/><path d="M50 22 Q50 15 54 12 Q60 8 64 12 Q68 16 64 19" fill="none" stroke="url(#hg${item.id})" stroke-width="2.5" stroke-linecap="round"/>${shape}</svg>`;
+  }
+
+  function addWardrobe() {
+    const n = document.getElementById('wName').value.trim();
+    if (!n) return;
+    const pr = document.getElementById('wPrice').value;
+    wItems.unshift({ id: wId++, name: n, brand: document.getElementById('wBrand').value.trim(), cat: document.getElementById('wCat').value, price: pr !== '' && !isNaN(parseFloat(pr)) ? parseFloat(pr) : null });
+    document.getElementById('wName').value = '';
+    document.getElementById('wBrand').value = '';
+    document.getElementById('wPrice').value = '';
+    renderWardrobe();
+  }
+  document.getElementById('wName').addEventListener('keydown', e => { if (e.key === 'Enter') addWardrobe(); });
+
+  function wDel(id) { wItems = wItems.filter(x => x.id !== id); renderWardrobe(); }
+
+  function renderWardrobe() {
+    const hr = document.getElementById('hangersRow'); hr.innerHTML = '';
+    wItems.slice(0, 10).forEach(item => {
+      const wrap = document.createElement('div'); wrap.className = 'hanger-item';
+      wrap.innerHTML = `${makeHangerSVG(item)}<div class="item-lbl">${item.name}</div>${item.price !== null ? `<div class="item-pr">$${item.price.toFixed(2)}</div>` : ''}`;
+      hr.appendChild(wrap);
+    });
+    const el = document.getElementById('wList'); el.innerHTML = '';
+    if (!wItems.length) { el.innerHTML = '<div class="empty-p" style="text-align:center;padding:20px;color:var(--almond);font-size:13px;font-style:italic">your wardrobe is empty ✦</div>'; return; }
+    wItems.forEach(item => {
+      const row = document.createElement('div'); row.className = 'wi-row';
+      const dot = document.createElement('div'); dot.style.cssText = `width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${WDOT[item.cat]||'#c8b0a8'}`; row.appendChild(dot);
+      const body = document.createElement('div'); body.style.flex = '1';
+      const nm = document.createElement('div'); nm.style.cssText = "font-size:13px;color:var(--ink);font-family:'Cormorant Garamond',serif;font-style:italic"; nm.textContent = item.name; body.appendChild(nm);
+      if (item.brand) { const br = document.createElement('div'); br.style.cssText = 'font-size:10px;color:var(--text-muted);margin-top:1px'; br.textContent = item.brand; body.appendChild(br); }
+      row.appendChild(body);
+      const tag = document.createElement('span'); tag.className = 'pt'; tag.textContent = item.cat; row.appendChild(tag);
+      if (item.price !== null) { const pr = document.createElement('span'); pr.className = 'pp'; pr.textContent = '$' + item.price.toFixed(2); row.appendChild(pr); }
+      const dl = document.createElement('button'); dl.className = 'pdl'; dl.textContent = '×'; dl.onclick = () => wDel(item.id); row.appendChild(dl);
+      el.appendChild(row);
+    });
+  }
+
+  renderWardrobe();
+</script>
+</body>
+</html>
