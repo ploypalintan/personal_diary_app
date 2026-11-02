@@ -17,10 +17,10 @@
       margin-bottom: 16px;
     }
     .currency-label {
-      font-size: 11px;
+      font-size: 13px;
       color: var(--text-muted);
       letter-spacing: 0.06em;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
     }
 
     .summary-grid {
@@ -37,12 +37,12 @@
       border: 0.5px solid var(--border-soft);
     }
     .summary-label {
-      font-size: 9px;
-      color: var(--lilac);
+      font-size: 13px;
+      color:var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: 4px;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
     }
     .summary-val {
       font-size: 17px;
@@ -61,12 +61,12 @@
       margin-bottom: 16px;
     }
     .income-box-title {
-      font-size: 10px;
+      font-size: 13px;
       color: var(--mauve);
       letter-spacing: 0.1em;
       text-transform: uppercase;
       margin-bottom: 10px;
-      font-family: 'Cormorant Garamond', serif;
+      font-family: 'DM Sans', system-ui, sans-serif;
     }
     .income-add-row {
       display: flex;
@@ -224,7 +224,7 @@
     const il = document.getElementById('incomeList');
     il.innerHTML = '';
     if (!incomes.length) {
-      il.innerHTML = '<div style="font-size:12px;color:var(--almond);font-style:italic;padding:4px 0">no income added yet…</div>';
+      il.innerHTML = '<div style="font-size:14px;color:var(--text-muted);padding:4px 0">no income added yet…</div>';
     } else {
       incomes.forEach(i => il.appendChild(makeFinanceRow(i, INC_COLORS, true, deleteIncome)));
     }

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap');
 
 /* ═══════════════════════════════════════
    ROOT PALETTE — Dusty & Romantic
@@ -9,15 +9,16 @@
   --almond-pale:   #faf5f5;
   --lilac:         #AA9DA1;
   --lilac-light:   #c8bfc3;
-  --mauve:         #97727B;
-  --mauve-dark:    #7a5a62;
+  --mauve:         #7a5a62;
+  --mauve-dark:    #5e4049;
   --mauve-deep:    #5e4049;
   --ink:           #2e2022;
   --ink-soft:      #4a3438;
-  --text-mid:      #6b5358;
-  --text-muted:    #9a8588;
+  --text-mid:      #5a444a;
+  --text-muted:    #6b5358;
   --border:        #ddd0d0;
   --border-soft:   #ede5e5;
+  --border-strong: #8a7479;
   --positive:      #5a7840;
   --negative:      #8a4040;
 }
@@ -27,9 +28,11 @@
 ═══════════════════════════════════════ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { font-size: 17px; }
 html, body {
   height: 100%;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  line-height: 1.6;
+  font-family: 'DM Sans', system-ui, sans-serif;
   background: var(--almond-pale);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
@@ -62,10 +65,10 @@ html, body {
    TYPOGRAPHY UTILITIES
 ═══════════════════════════════════════ */
 .t-eyebrow {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--lilac);
+  color:var(--text-muted);
 }
 
 .t-serif-lg {
@@ -84,14 +87,14 @@ html, body {
 }
 
 .t-body {
-  font-size: 14px;
+  font-size: 16px;
   color: var(--text-mid);
   line-height: 1.7;
   font-style: italic;
 }
 
 .t-muted {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-muted);
   letter-spacing: 0.04em;
 }
@@ -115,7 +118,7 @@ html, body {
   border: none;
   border-radius: 30px;
   padding: 12px 36px;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
   font-family: 'Playfair Display', serif;
   font-style: italic;
@@ -129,10 +132,10 @@ html, body {
   border: 0.5px solid var(--border);
   border-radius: 20px;
   padding: 7px 16px;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-mid);
   cursor: pointer;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   transition: all 0.2s;
 }
 .btn-ghost:hover { background: var(--almond-light); border-color: var(--almond); }
@@ -143,7 +146,7 @@ html, body {
   border: none;
   border-radius: 20px;
   padding: 6px 16px;
-  font-size: 12px;
+  font-size: 14px;
   cursor: pointer;
   font-family: 'Playfair Display', serif;
   font-style: italic;
@@ -173,35 +176,35 @@ html, body {
   border-bottom: 0.5px solid var(--border);
   background: transparent;
   padding: 8px 2px;
-  font-size: 14px;
+  font-size: 16px;
   color: var(--ink);
   outline: none;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   font-style: italic;
 }
-.r-input::placeholder { color: var(--almond); }
+.r-input::placeholder { color: var(--text-muted); }
 
 .r-select {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-mid);
   border: 0.5px solid var(--border);
   background: #fff;
   border-radius: 20px;
   padding: 5px 10px;
   outline: none;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   cursor: pointer;
 }
 
 .r-number {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-mid);
   border: 0.5px solid var(--border);
   background: #fff;
   border-radius: 20px;
   padding: 5px 10px;
   outline: none;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   width: 80px;
 }
 
@@ -236,10 +239,10 @@ html, body {
    PILLS / TAGS
 ═══════════════════════════════════════ */
 .pill {
-  font-size: 10px;
+  font-size: 13px;
   border-radius: 20px;
   padding: 2px 9px;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   letter-spacing: 0.03em;
   display: inline-block;
 }
@@ -253,12 +256,12 @@ html, body {
    SECTION LABEL
 ═══════════════════════════════════════ */
 .sec-label {
-  font-size: 10px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--lilac);
+  color:var(--text-muted);
   margin-bottom: 10px;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 /* ═══════════════════════════════════════
@@ -311,9 +314,8 @@ html, body {
 .empty-state {
   text-align: center;
   padding: 32px 16px;
-  color: var(--almond);
-  font-size: 15px;
-  font-style: italic;
+  color: var(--text-muted);
+  font-size: 16px;
 }
 
 /* ═══════════════════════════════════════
@@ -322,7 +324,7 @@ html, body {
 .quote-card { max-width: 360px; width: 100%; }
 .quote-badge {
   display: inline-block;
-  font-size: 9px;
+  font-size: 13px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--mauve);
@@ -342,14 +344,14 @@ html, body {
 .quote-text {
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--ink-soft);
   line-height: 1.8;
   margin-bottom: 8px;
   white-space: pre-line;
 }
 .quote-author {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-muted);
   letter-spacing: 0.06em;
 }
@@ -376,11 +378,11 @@ html, body {
   transform: translateY(-3px);
 }
 .char-label {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text-mid);
   font-style: italic;
   letter-spacing: 0.04em;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
 }
 
 /* ═══════════════════════════════════════
@@ -419,7 +421,7 @@ html, body {
   transform: rotate(180deg);
   font-family: 'Playfair Display', serif;
   font-style: italic;
-  font-size: 10px;
+  font-size: 13px;
   color: var(--almond-light);
   letter-spacing: 0.14em;
 }
@@ -448,17 +450,17 @@ html, body {
   border: 0.5px solid transparent;
   border-left: none;
   transition: all 0.2s;
-  font-size: 9px;
+  font-size: 13px;
   color: var(--text-muted);
   text-align: center;
   line-height: 1.3;
-  font-family: 'Cormorant Garamond', serif;
+  font-family: 'DM Sans', system-ui, sans-serif;
   letter-spacing: 0.04em;
   text-decoration: none;
 }
 .bm:hover  { background: #fff; color: var(--text-mid); }
 .bm.active { background: #fff; border-color: var(--border); color: var(--mauve); font-style: italic; }
-.bm-icon   { font-size: 13px; line-height: 1; }
+.bm-icon   { font-size: 14px; line-height: 1; }
 
 .mini-avatar {
   width: 32px;
@@ -501,7 +503,8 @@ html, body {
   font-style: italic;
 }
 .page-date {
-  font-size: 11px;
+  font-size: 15px !important;
+  font-size: 13px;
   color: var(--text-muted);
   letter-spacing: 0.05em;
 }
@@ -510,3 +513,25 @@ html, body {
   overflow-y: auto;
   padding: 20px 22px;
 }
+
+
+/* ═══════════════════════════════════════
+   READABILITY LAYER (WCAG AA)
+   Playfair Display = headings only. DM Sans = everything else.
+═══════════════════════════════════════ */
+.t-body, .r-input, .empty-state, .mic-status, .tname, .page-date, .t-muted { font-style: normal; }
+.t-body, .r-input, .tname { font-size: 1.06rem; }
+.r-input { border-bottom: 1px solid var(--border-strong); }
+.r-select, .r-number { border: 1px solid var(--border-strong); font-size: 0.95rem; padding: 7px 12px; }
+.btn-small, .btn-ghost { font-size: 0.95rem; padding: 8px 18px; }
+.btn-small { font-style: normal; font-weight: 500; }
+.del-btn { color: var(--text-muted); font-size: 20px; padding: 6px; }
+.chk { width: 22px; height: 22px; border: 1.5px solid var(--text-muted); }
+.card { background: #fff; border: 1px solid var(--border); padding: 14px 16px; }
+.journal-box { font-family: 'DM Sans', system-ui, sans-serif; font-size: 1.06rem; line-height: 1.7; color: var(--ink); background: #fff; border: 1px solid var(--border-strong); }
+.bookmarks { width: 76px; min-width: 76px; }
+.bm { width: 70px; font-size: 13px; font-weight: 500; }
+.bm.active { font-style: normal; font-weight: 600; }
+.spine-text { font-size: 13px; }
+:focus-visible { outline: 3px solid var(--mauve-dark); outline-offset: 2px; }
+@media (max-width: 600px) { .spine { display: none; } .page-body { padding: 16px; } }

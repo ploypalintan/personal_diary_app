@@ -31,7 +31,7 @@ function makeTodoCard(item, onToggle, onDelete) {
   name.textContent = item.name;
   name.style.fontSize = '14px';
   name.style.color = 'var(--ink-soft)';
-  name.style.fontFamily = "'Cormorant Garamond', serif";
+  name.style.fontFamily = "'DM Sans', system-ui, sans-serif";
   if (item.done) {
     name.style.textDecoration = 'line-through';
     name.style.color = 'var(--text-muted)';
@@ -72,13 +72,13 @@ function makeWishCard(item, onStar, onDelete) {
   el.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px';
 
   const star = document.createElement('span');
-  star.style.cssText = 'font-size:14px;cursor:pointer;flex-shrink:0;transition:transform 0.2s';
+  star.style.cssText = 'font-size:16px;cursor:pointer;flex-shrink:0;transition:transform 0.2s';
   star.textContent = item.star ? '✦' : '✧';
   star.addEventListener('click', () => onStar(item.id));
   el.appendChild(star);
 
   const name = document.createElement('span');
-  name.style.cssText = "font-size:14px;color:var(--ink-soft);flex:1;font-family:'Cormorant Garamond',serif;font-style:italic";
+  name.style.cssText = "font-size:16px;color:var(--ink-soft);flex:1;font-family:'DM Sans', system-ui, sans-serif;font-style:italic";
   name.textContent = item.name;
   el.appendChild(name);
 
@@ -107,7 +107,7 @@ function makeFinanceRow(item, colorMap, isIncome, onDelete) {
   el.appendChild(dot);
 
   const name = document.createElement('span');
-  name.style.cssText = "font-size:13px;color:var(--ink-soft);flex:1;font-family:'Cormorant Garamond',serif;font-style:italic";
+  name.style.cssText = "font-size:14px;color:var(--ink-soft);flex:1;font-family:'DM Sans', system-ui, sans-serif;font-style:italic";
   name.textContent = item.name;
   el.appendChild(name);
 
@@ -117,7 +117,7 @@ function makeFinanceRow(item, colorMap, isIncome, onDelete) {
   el.appendChild(tag);
 
   const amt = document.createElement('span');
-  amt.style.cssText = `font-size:13px;font-family:'Playfair Display',serif;white-space:nowrap;color:${isIncome ? 'var(--positive)' : 'var(--mauve-dark)'}`;
+  amt.style.cssText = `font-size:14px;font-family:'Playfair Display',serif;white-space:nowrap;color:${isIncome ? 'var(--positive)' : 'var(--mauve-dark)'}`;
   amt.textContent = (isIncome ? '+' : '') + window._currSym + item.amt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   el.appendChild(amt);
 
