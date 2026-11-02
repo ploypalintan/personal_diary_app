@@ -105,6 +105,24 @@
     .fin-amt { font-size: 18px; font-weight: 700; white-space: nowrap; }
     .brk-row { font-size: 15px; } .brk-row span:first-child { font-weight: 600; text-transform: capitalize; } .brk-row span:last-child { font-weight: 700; }
     .pg-right .add-row { flex-wrap: wrap; } .pg-right .add-row .r-input { flex: 1 1 100% !important; } .pg-right .add-row .r-number { flex: 1 1 90px; min-width: 0; } .pg-right .add-row input[type=date] { flex: 1 1 150px; min-width: 150px; }
+
+    .month-name { font-size: 38px !important; } .month-head { flex: 0 1 260px; } .monthbar { margin: 0 !important; } .day-arrow { width: 38px; height: 38px; font-size: 1.4rem; }
+    .month-tools { margin: 2px 0 6px !important; } .month-tools .link-btn, .month-tools .r-select { min-height: 32px; padding-top: 3px; padding-bottom: 3px; } .month-sub { font-size: 12px; }
+    .fin-hero { text-align: center; background: var(--card); border: 1px solid var(--border-strong); border-radius: 16px; padding: 6px 10px 6px; margin-bottom: 6px; box-shadow: 0 2px 10px rgba(120,50,80,.08); }
+    .hero-val { font-family: var(--font); font-weight: 700; font-size: 2.1rem; line-height: 1.05; color: var(--positive); letter-spacing: -.01em; }
+    .hero-val.neg { color: #9b2c4a; }
+    .hero-sub { font-size: 12.5px; color: var(--text-muted); }
+    .fin-two { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+    .fin-tile { border-radius: 12px; padding: 6px 12px; border: 1px solid var(--border-soft); background: var(--card); border-left-width: 5px; }
+    .fin-tile.in { border-left-color: #6a9a6a; } .fin-tile.out { border-left-color: #b35878; }
+    .fin-tile .tile-val { font-weight: 700; font-size: 1.25rem; } .fin-tile.in .tile-val { color: var(--positive); } .fin-tile.out .tile-val { color: #9b2c4a; }
+    .fin-tile .summary-label, .fin-hero .summary-label { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--text-muted); }
+    .brk-row { display: grid !important; grid-template-columns: 14px 120px 1fr auto; align-items: center; gap: 8px; margin-bottom: 3px; }
+    .brk-dot { width: 10px; height: 10px; border-radius: 50%; filter: saturate(1.8) brightness(.8); }
+    .fin-insights { display: flex; gap: 8px; margin-top: 6px; flex: none; }
+    .fin-insights div { flex: 1; background: rgba(255,255,255,.55); border: 1px dashed var(--border-strong); border-radius: 12px; padding: 4px 10px; font-size: 12px; color: var(--text-muted); }
+    .fin-insights b { display: block; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--ink); margin-top: 1px; }
+    .pg-right .add-row .r-number { flex: 0 1 92px !important; } .pg-right .add-row select { flex: 0 1 112px; min-width: 0; } .pg-right .add-row input[type=date] { flex: 1 1 130px; min-width: 130px; } .pg-right .add-row .btn-small { flex: none; }
   </style>
 </head>
 <body>
@@ -145,10 +163,14 @@
             <option value="INR">🇮🇳 INR ₹</option><option value="CNY">🇨🇳 CNY ¥</option><option value="AED">🇦🇪 AED د.إ</option>
           </select>
         </div>
-        <div class="summary-grid">
-          <div class="summary-stat"><div class="summary-label" id="lblIncome">MTD income</div><div class="summary-val pos" id="statIncome"></div></div>
-          <div class="summary-stat"><div class="summary-label" id="lblSpent">MTD spend</div><div class="summary-val neg" id="statSpent"></div></div>
-          <div class="summary-stat"><div class="summary-label" id="lblBal">MTD balance</div><div class="summary-val bal" id="statBalance"></div></div>
+        <div class="fin-hero">
+          <div class="summary-label" id="lblBal">MTD balance</div>
+          <div class="hero-val" id="statBalance"></div>
+          <div class="hero-sub" id="heroSub"></div>
+        </div>
+        <div class="fin-two">
+          <div class="fin-tile in"><div class="summary-label" id="lblIncome">MTD income</div><div class="tile-val" id="statIncome"></div></div>
+          <div class="fin-tile out"><div class="summary-label" id="lblSpent">MTD spend</div><div class="tile-val" id="statSpent"></div></div>
         </div>
         <div class="sec-label" id="wentLabel">where it went</div>
         <div class="pg-grow" id="catBreakdown"></div>
@@ -258,7 +280,10 @@
     document.getElementById('statSpent').textContent   = fmt(totalExp);
     const balEl = document.getElementById('statBalance');
     balEl.textContent = (bal < 0 ? '-' : '') + fmt(bal);
-    balEl.className   = 'summary-val ' + (bal >= 0 ? 'pos' : 'neg');
+    balEl.className   = 'hero-val' + (bal >= 0 ? '' : ' neg');
+    const dayN = all ? new Set(expenses.map(e => e.date)).size : (cur ? new Date().getDate() : new Date(+viewMonth.slice(0,4), +viewMonth.slice(5), 0).getDate());
+    const avg = expenses.length ? ' · avg ' + fmt(totalExp / Math.max(1, dayN)) + '/day' : '';
+    document.getElementById('heroSub').textContent = (totalInc ? (bal >= 0 ? 'kept ' + Math.round(bal / totalInc * 100) + '% of income' : 'spending is ahead of income') : 'add income to see your balance') + avg;
 
     const emptyMsg = all ? '' : ' in ' + nm;
     /* income list */
@@ -286,10 +311,10 @@
     if (!rows.length) { const d = document.createElement('div'); d.className = 'empty-state'; d.textContent = 'log an expense and it will show up here.'; bd.appendChild(d); }
     rows.forEach(([cat, amt]) => {
       const r = document.createElement('div'); r.className = 'brk-row';
-      const n = document.createElement('span'); n.textContent = cat;
+      const dt = document.createElement('i'); dt.className = 'brk-dot'; dt.style.background = EXP_COLORS[cat] || '#c8bfc3'; const n = document.createElement('span'); n.textContent = cat;
       const bar = document.createElement('div'); bar.className = 'brk-bar'; const fill = document.createElement('i'); fill.style.width = Math.max(4, Math.round(amt / totalExp * 100)) + '%'; bar.appendChild(fill);
       const v = document.createElement('span'); v.textContent = fmt(amt);
-      r.append(n, bar, v); bd.appendChild(r);
+      r.append(dt, n, bar, v); bd.appendChild(r);
     });
     paginate(bd);
     paginate(document.getElementById('expList')); paginate(document.getElementById('incomeList'));

@@ -796,3 +796,7 @@ body::before { border: 0 !important; border-image: none !important;
 /* makeup: my shelf, a faint shelf illustration sitting between the lace bands (veiled so product names stay readable) */
 .pg-right.shelf-bg::after { content: ''; position: absolute; left: 0; right: 0; top: 84px; bottom: 66px; background: url('assets/shelf-illustration.jpg') center / cover no-repeat; opacity: .22; pointer-events: none; z-index: 0; }
 .pg-right.shelf-bg > .pg-body { position: relative; z-index: 1; }
+
+/* today: checklist page gets the same faint illustration treatment as the makeup shelf */
+.pg-right.room-bg::after { content: ''; position: absolute; left: 0; right: 0; top: 84px; bottom: 66px; background: url('assets/room-illustration.jpg') center / cover no-repeat; opacity: .22; pointer-events: none; z-index: 0; }
+.pg-right.room-bg > .pg-body { position: relative; z-index: 1; }
