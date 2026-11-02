@@ -12,18 +12,18 @@ const SOON_DAYS = 30;
 /* label + default period-after-opening (months). A rough guide only:
    the open-jar symbol on the real packaging always wins. */
 const CATEGORIES = [
-  { key: 'skincare',  label: 'skincare',        pao: 12, words: ['moisturiser','moisturizer','cleanser','serum','toner','cream','lotion','essence','mask','retinol','niacinamide','eye cream','balm cleanser','face wash'] },
-  { key: 'sunscreen', label: 'sunscreen',       pao: 12, words: ['sunscreen','sunblock','sun cream','spf'] },
-  { key: 'face',      label: 'face makeup',     pao: 12, words: ['foundation','concealer','blush','bronzer','highlighter','powder','primer','contour','tint','cushion'] },
-  { key: 'eyes',      label: 'eye makeup',      pao: 6,  words: ['mascara','eyeliner','eye liner','eyeshadow','eye shadow','lash','kohl'] },
-  { key: 'lips',      label: 'lips',            pao: 24, words: ['lipstick','lip gloss','gloss','lip liner','lip balm','lip oil','lip tint','lip mask'] },
-  { key: 'brows',     label: 'brows',           pao: 12, words: ['brow gel','brow pencil','eyebrow','brow pomade','brow powder'] },
-  { key: 'nails',     label: 'nails',           pao: 24, words: ['nail','polish','top coat','base coat'] },
-  { key: 'fragrance', label: 'fragrance',       pao: 36, words: ['perfume','fragrance','cologne','eau de'] },
-  { key: 'tools',     label: 'sponges & tools', pao: 3,  words: ['sponge','beauty blender','puff','brush','applicator','tweezers'] },
-  { key: 'body',      label: 'body & hair',     pao: 12, words: ['body lotion','body wash','shampoo','conditioner','hair mask','hair oil','deodorant','hand cream'] },
-  { key: 'other',     label: 'other',           pao: 12, words: [] },
+  { key: 'foundation', label: 'foundation',        pao: 12, words: ['foundation','concealer','cushion','bb cream','cc cream','skin tint','primer','setting powder','powder','complexion'] },
+  { key: 'blush',      label: 'blush',             pao: 18, words: ['blush','cheek tint','cheek'] },
+  { key: 'eyebrows',   label: 'eyebrows',          pao: 12, words: ['eyebrow','brow'] },
+  { key: 'contour',    label: 'contour',           pao: 18, words: ['contour','sculpt','highlighter','highlight','shaping'] },
+  { key: 'bronzer',    label: 'bronzer',           pao: 24, words: ['bronzer','bronzing','sun powder'] },
+  { key: 'eyetools',   label: 'eye tools',         pao: 6,  words: ['mascara','eyeliner','eye liner','lash','curler','tweezers','kohl','eye brush','eye glue'] },
+  { key: 'palette',    label: 'eyeshadow palettes', pao: 24, words: ['eyeshadow','eye shadow','palette','shadow','eye palette'] },
+  { key: 'lip',        label: 'lip',               pao: 24, words: ['lipstick','lip gloss','gloss','lip liner','lip balm','lip oil','lip tint','lip mask','lip stain','lip'] },
+  { key: 'other',      label: 'others',            pao: 12, words: [] },
 ];
+/* old category keys from earlier versions of the app -> the new shelf */
+const LEGACY_CATEGORIES = { face: 'foundation', eyes: 'palette', brows: 'eyebrows', lips: 'lip', skincare: 'other', sunscreen: 'other', nails: 'other', fragrance: 'other', tools: 'other', body: 'other' };
 
 /* a small starter list so "Cetaphil moisturiser" splits into brand + product */
 const KNOWN_BRANDS = ['Cetaphil','CeraVe','La Roche-Posay','Laneige','Innisfree','Sulwhasoo','Skinceuticals','The Ordinary','Neutrogena','Clinique','Estee Lauder','Shiseido','SK-II','Fenty Beauty','Rare Beauty','Maybelline','L\'Oreal','Dior','Chanel','MAC','NARS','Charlotte Tilbury','Glossier','Etude','Canmake','Heimish','Anua','Beauty of Joseon','COSRX','Some By Mi','Paula\'s Choice','Drunk Elephant','Kiehl\'s','Bioderma','Avene','Vichy','Eucerin','Hada Labo','Biore','Shu Uemura','Kose'];
@@ -185,4 +185,4 @@ function parseProductPhrase(raw, today) {
   return out;
 }
 
-if (typeof module !== 'undefined') module.exports = { addMonths, diffDays, computeExpiry, productStatus, sortProducts, describeStatus, parseProductPhrase, toISO, todayISO, categoryDefaultPao, categoryInfo, guessCategory, addDays, formatDMY, parseDMY, fromISO, CATEGORIES, PAO_OPTIONS, SOON_DAYS, KNOWN_BRANDS };
+if (typeof module !== 'undefined') module.exports = { addMonths, diffDays, computeExpiry, productStatus, sortProducts, describeStatus, parseProductPhrase, toISO, todayISO, categoryDefaultPao, categoryInfo, guessCategory, addDays, formatDMY, parseDMY, fromISO, CATEGORIES, LEGACY_CATEGORIES, PAO_OPTIONS, SOON_DAYS, KNOWN_BRANDS };

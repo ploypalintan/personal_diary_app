@@ -627,3 +627,9 @@ body { background: transparent; }
 .today-page #mainApp {
   background: linear-gradient(rgba(252,242,243,.66), rgba(252,242,243,.66)), url("assets/wings-bg.jpg") center / cover no-repeat, var(--paper);
 }
+
+
+/* makeup page: soft pink wooden shelves */
+.tracker-page #mainApp {
+  background: linear-gradient(rgba(252,240,243,.34), rgba(252,240,243,.34)), url("assets/shelf-bg.jpg") center top / 100% 100% no-repeat, var(--paper);
+}

@@ -51,7 +51,7 @@
     .isel-ico { display: inline-flex; width: 32px; height: 32px; flex: none; }
     .isel-text { flex: 1; }
     .isel-caret { color: var(--text-muted); }
-    .isel-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; list-style: none; background: var(--card); border: 1.5px solid var(--mauve); border-radius: 12px; box-shadow: 0 12px 24px rgba(120,60,80,.22); padding: 4px; }
+    .isel-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; list-style: none; background: #fff8f6; border: 1.5px solid var(--mauve); border-radius: 12px; box-shadow: 0 12px 24px rgba(120,60,80,.22); padding: 4px; }
     .isel-opt { display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
     .isel-opt.active { background: var(--almond-light); }
     .isel-opt[aria-selected="true"] { font-weight: 700; color: var(--mauve-deep); }
@@ -110,7 +110,7 @@
     @media (max-width: 600px) { .p-card { flex-direction: column; } .p-visual { width: 100%; display: flex; } }
   </style>
 </head>
-<body>
+<body class="tracker-page">
 <div id="mainApp" class="active fade-open">
 
   <div class="spine"><div class="spine-text">my diary</div></div>
@@ -151,7 +151,7 @@
 
         <div class="voice-line">
           <input class="r-input" id="phraseInput" aria-label="say or type a product to fill the form"
-                 placeholder='say or type: "add Anua toner, opened today, expires 15/03/2027"' />
+                 placeholder='say or type: "add Rare Beauty blush, opened today, expires 15/03/2027"' />
           <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a product"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
           <button class="btn-small" id="fillBtn" type="button">fill form</button>
         </div>
@@ -249,9 +249,9 @@
     return {
       id: Number(p.id) || 0,
       name: ok(p.name).slice(0, 120), brand: ok(p.brand).slice(0, 80), shade: ok(p.shade).slice(0, 80),
-      category: CATEGORIES.some(c => c.key === p.category) ? p.category : 'other',
+      category: CATEGORIES.some(c => c.key === p.category) ? p.category : (LEGACY_CATEGORIES[p.category] || 'other'),
       opened: /^\d{4}-\d{2}-\d{2}$/.test(p.opened || '') ? p.opened : '',
-      pao: PAO_OPTIONS.includes(Number(p.pao)) ? Number(p.pao) : categoryDefaultPao(p.category),
+      pao: PAO_OPTIONS.includes(Number(p.pao)) ? Number(p.pao) : categoryDefaultPao(CATEGORIES.some(c => c.key === p.category) ? p.category : (LEGACY_CATEGORIES[p.category] || 'other')),
       printedExpiry: /^\d{4}-\d{2}-\d{2}$/.test(p.printedExpiry || '') ? p.printedExpiry : '',
       photo: typeof p.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(p.photo) ? p.photo : '',
       notes: Array.isArray(p.notes) ? p.notes.filter(n => n && typeof n.text === 'string').map(n => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(n.date || '') ? n.date : todayISO(), text: n.text.slice(0, 500) })) : [],
@@ -272,12 +272,12 @@
 
   /* ── category dropdown with pictures ── */
   const catSelect = createIconSelect({
-    root: $('fCatRoot'), id: 'fCat', labelId: 'fCatLbl', value: 'skincare',
+    root: $('fCatRoot'), id: 'fCat', labelId: 'fCatLbl', value: 'foundation',
     options: CATEGORIES.map(c => ({ value: c.key, label: c.label, icon: categoryIcon(c.key) })),
     onChange: (v) => { $('fPao').value = categoryDefaultPao(v); updatePreview(); },
   });
   PAO_OPTIONS.forEach(m => $('fPao').add(new Option(`${m} months`, m)));
-  $('fPao').value = categoryDefaultPao('skincare');
+  $('fPao').value = categoryDefaultPao('foundation');
 
   function refreshBrands() {
     const set = new Map();
@@ -403,7 +403,7 @@
   /* ── add / edit ── */
   function resetForm() {
     ['fName', 'fBrand', 'fShade', 'fOpened', 'fPrinted', 'phraseInput'].forEach(id => { $(id).value = ''; });
-    catSelect.set('skincare'); $('fPao').value = categoryDefaultPao('skincare');
+    catSelect.set('foundation'); $('fPao').value = categoryDefaultPao('foundation');
     ui.photo = ''; ui.editing = null; $('fPhoto').value = ''; showPhoto();
     $('addForm').classList.remove('editing'); $('formTitle').textContent = 'add a product';
     $('saveBtn').textContent = '+ add to shelf'; $('cancelEdit').hidden = true;

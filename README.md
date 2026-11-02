@@ -12,7 +12,7 @@ I'm Type A, so I need a checklist just to feel like my day has shape. But I also
 - **Daily quote/poetry** — rotates by day
 - **Checklist** — today's tasks, by category and priority
 - **Mood journal** — a free-text diary entry, now with voice input
-- **Makeup shelf (digital journal)** — category picked from an icon dropdown, brand, shade, opened date and pack expiry date in DD/MM/YYYY; the earlier of "opened + period after opening" and the printed date is the expiry. Search before you buy (by text or voice) tells you if you already own something similar, with duplicate warnings when adding. Filters, sorting, photos, dated journal notes (typed or spoken), edit, love, mark finished, and JSON backup/import. Say a product to pre-fill the form ("add Anua toner, opened today"); you confirm before saving.
+- **Makeup shelf (digital journal)** — category (foundation, blush, eyebrows, contour, bronzer, eye tools, eyeshadow palettes, lip, others) picked from an icon dropdown, brand, shade, opened date and pack expiry date in DD/MM/YYYY; the earlier of "opened + period after opening" and the printed date is the expiry. Search before you buy (by text or voice) tells you if you already own something similar, with duplicate warnings when adding. Filters, sorting, photos, dated journal notes (typed or spoken), edit, love, mark finished, and JSON backup/import. Say a product to pre-fill the form ("add Anua toner, opened today"); you confirm before saving.
 - **Expense tracking** — multi-currency income and spending log
 
 ## The Voice Feature
