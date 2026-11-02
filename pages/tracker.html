@@ -82,6 +82,8 @@
     .p-icon svg { width: 44px; height: 44px; }
     .p-main { flex: 1; min-width: 0; }
     .p-name { font-weight: 700; font-size: 1.1rem; overflow-wrap: anywhere; }
+    .p-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .p-top .chip { margin-top: 0; flex: none; font-size: .8rem; padding: 2px 10px; }
     .p-sub  { color: var(--text-mid); overflow-wrap: anywhere; }
     .p-meta { color: var(--text-muted); font-size: .92rem; margin-top: 6px; }
     .p-dates { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 6px; font-size: .95rem; color: var(--ink-soft); }
@@ -92,20 +94,53 @@
     .chip.ok      { background: #e3efe0; color: #2f4d2a; }
     .chip.sealed  { background: var(--nude-light); color: var(--ink-soft); border: 1px solid var(--nude); }
     .chip.done    { background: #e6dcee; color: #3d2d4d; }
-    .p-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .p-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
     .link-btn { background: none; border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 12px; font: 500 .88rem var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 40px; }
     .link-btn:hover { background: var(--almond-light); }
     .link-btn[aria-pressed="true"] { background: var(--accent-pink); color: var(--mauve-deep); }
     .link-btn.danger { color: var(--negative); }
 
     .notes { margin-top: 10px; }
-    .notes summary { cursor: pointer; font-weight: 600; color: var(--mauve-dark); min-height: 36px; display: flex; align-items: center; }
+    .notes { margin-top: 2px; }
+    .notes summary { cursor: pointer; font-weight: 600; color: var(--mauve-dark); min-height: 32px; display: flex; align-items: center; }
     .note { padding: 6px 0; border-bottom: 1px dotted var(--border); overflow-wrap: anywhere; }
     .note time { font-family: var(--font-caps); letter-spacing: .08em; font-size: .85rem; color: var(--text-muted); margin-right: 8px; }
     .note-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
     .note-form .r-input { flex: 1; min-width: 160px; }
 
     .backup { margin-top: 28px; padding-top: 14px; border-top: 1px dotted var(--border-strong); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .shelf-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; flex: none; }
+    .view { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+    .view[hidden], #addForm[hidden] { display: none; }
+    #addForm { flex: 1 1 auto; min-height: 0; overflow: hidden; margin: 0; padding: 12px 14px; }
+    #addForm .field-grid { margin-top: 8px; gap: 8px 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    #addForm .field .help { min-height: 0; font-size: .8rem; }
+    #addForm .preview { margin-top: 8px; padding: 6px 12px; }
+    #addForm .form-actions { margin-top: 8px; }
+    #addForm .hint { display: none; }
+    #addForm #formTitle { display: none; }
+    #addForm .voice-line { flex-wrap: nowrap; } #addForm .voice-line .r-input { min-width: 80px; } #addForm .voice-line .btn-small { white-space: nowrap; }
+    #addForm .field label, #addForm .field .lbl { margin-bottom: 2px; font-size: .84rem; }
+    #addForm .field .r-input, #addForm .field .r-select, #addForm .isel-btn { min-height: 40px; padding-top: 4px; padding-bottom: 4px; }
+    #addForm .cal-btn { min-height: 40px; }
+    #addForm .mic-btn { min-height: 40px; padding: 0 12px; }
+    .backup-compact { flex: none; }
+    .backup-compact .backup { margin-top: 4px; padding-top: 6px; }
+    .backup-compact .hint { display: none; }
+    .alert { padding: 7px 12px; margin-bottom: 8px; font-size: .95rem; }
+    .alert .alert-sub { display: none; }
+    .stats { margin-bottom: 8px; gap: 8px; grid-template-columns: repeat(4, 1fr); }
+    .stat { padding: 6px 4px; }
+    .stat b { font-size: 1.3rem; }
+    .stat span { font-size: .72rem !important; letter-spacing: .06em; }
+    .searchbox { padding: 8px 12px; margin-bottom: 8px; }
+    .search-msg { margin-top: 4px; min-height: 0; font-size: .92rem; }
+    .search-row .r-input { padding-top: 4px; padding-bottom: 4px; }
+    .filters { margin-bottom: 6px; gap: 6px; }
+    .chip-btn { min-height: 36px; padding: 2px 12px; font-size: .88rem; }
+    .sort-row { margin: 2px 0 0; }
+    .p-card { margin-bottom: 8px; padding: 10px 12px; }
+    .p-visual { width: 70px; } .p-visual .film { width: 70px; } .p-icon { width: 52px; height: 52px; } .p-icon svg { width: 36px; height: 36px; }
     .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
     @media (max-width: 600px) { .p-card { flex-direction: column; } .p-visual { width: 100%; display: flex; } }
   </style>
@@ -124,16 +159,14 @@
   </nav>
 
   <main class="page">
-    <div class="page-header">
-      <h1 class="page-title">makeup shelf</h1>
-      <div class="page-date js-today"></div>
-    </div>
-    <div class="page-body">
-
-      <div id="alertBox" role="status" aria-live="polite"></div>
-      <div class="stats" id="stats"></div>
-
-      <!-- search: am I about to buy a duplicate? -->
+    <section class="pg pg-left" aria-label="left page">
+      <div class="page-header">
+        <h1 class="page-title">makeup shelf</h1>
+        <div class="page-date js-today"></div>
+      </div>
+      <div class="pg-body">
+        <div id="alertBox" role="status" aria-live="polite"></div>
+        <div class="stats" id="stats"></div>
       <section class="searchbox" aria-labelledby="searchLbl">
         <div class="sec-label" id="searchLbl">already own it? search before you buy</div>
         <div class="search-row">
@@ -144,14 +177,42 @@
         <div class="mic-status" id="searchMicStatus" role="status" aria-live="polite"></div>
         <div class="search-msg" id="searchMsg" role="status" aria-live="polite"></div>
       </section>
-
-      <!-- add / edit -->
-      <form class="panel" id="addForm" autocomplete="off" novalidate>
+        <div class="filters" role="group" aria-label="filter by status" id="statusFilters"></div>
+        <div class="filters" role="group" aria-label="filter by category" id="catFilters"></div>
+      <div class="sort-row">
+        <label for="sortSel">sort by</label>
+        <select class="r-select" id="sortSel">
+          <option value="expiry">soonest to expire</option>
+          <option value="recent">recently added</option>
+          <option value="brand">brand A–Z</option>
+          <option value="name">product A–Z</option>
+        </select>
+        <span class="hint" id="countLine" role="status" aria-live="polite"></span>
+      </div>
+    </section>
+    <section class="pg pg-right" aria-label="right page">
+      <div class="pg-body">
+        <div class="shelf-top">
+          <div class="sec-label" id="rightTitle">my shelf</div>
+          <button class="btn-small" id="toggleForm" type="button" aria-expanded="false" aria-controls="addForm">+ add a product</button>
+        </div>
+        <div class="view" id="listView">
+          <div class="pg-grow" id="productList"></div>
+          <div class="backup-compact">
+      <div class="backup">
+        <button class="link-btn" id="exportBtn" type="button">export backup (.json)</button>
+        <label class="link-btn" for="importFile" style="display:inline-flex;align-items:center">import backup</label>
+        <input class="sr-only" id="importFile" type="file" accept="application/json,.json" />
+        <span class="hint" id="backupMsg" role="status" aria-live="polite">everything is stored in this browser only. Export now and then so you never lose your shelf.</span>
+      </div>
+          </div>
+        </div>
+      <form class="panel" id="addForm" autocomplete="off" novalidate hidden>
         <div class="sec-label" id="formTitle">add a product</div>
 
         <div class="voice-line">
           <input class="r-input" id="phraseInput" aria-label="say or type a product to fill the form"
-                 placeholder='say or type: "add Rare Beauty blush, opened today, expires 15/03/2027"' />
+                 placeholder='say it: "add Rare Beauty blush, opened today"' />
           <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a product"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
           <button class="btn-small" id="fillBtn" type="button">fill form</button>
         </div>
@@ -163,23 +224,23 @@
           <div class="field"><label for="fShade">shade (optional)</label><input class="r-input" id="fShade" placeholder="e.g. joy" /></div>
           <div class="field"><span class="lbl" id="fCatLbl">category</span><div id="fCatRoot"></div></div>
           <div class="field">
-            <label for="fOpened">date opened (DD/MM/YYYY)</label>
+            <label for="fOpened">opened · DD/MM/YYYY</label>
             <div class="date-wrap">
               <input class="r-input" id="fOpened" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY" aria-describedby="fOpenedHelp" />
               <button class="cal-btn" type="button" data-cal="fOpened" aria-label="pick date opened from a calendar">📅</button>
               <input class="native-date" type="date" id="nOpened" tabindex="-1" aria-hidden="true" />
             </div>
-            <div class="help" id="fOpenedHelp">leave empty if still sealed</div>
+            <div class="help" id="fOpenedHelp">empty = still sealed</div>
           </div>
-          <div class="field"><label for="fPao">after opening (jar symbol)</label><select class="r-select" id="fPao"></select></div>
+          <div class="field"><label for="fPao">after opening</label><select class="r-select" id="fPao"></select></div>
           <div class="field">
-            <label for="fPrinted">pack expiry (DD/MM/YYYY)</label>
+            <label for="fPrinted">pack expiry · DD/MM/YYYY</label>
             <div class="date-wrap">
               <input class="r-input" id="fPrinted" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY" aria-describedby="fPrintedHelp" />
               <button class="cal-btn" type="button" data-cal="fPrinted" aria-label="pick expiry date from a calendar">📅</button>
               <input class="native-date" type="date" id="nPrinted" tabindex="-1" aria-hidden="true" />
             </div>
-            <div class="help" id="fPrintedHelp">optional · the earlier of this and the open-jar date is used</div>
+            <div class="help" id="fPrintedHelp">optional · earliest date wins</div>
           </div>
           <div class="field">
             <label for="fPhoto">photo (optional)</label>
@@ -201,36 +262,14 @@
           <span class="hint">the jar symbol on the pack (6M, 12M…) gives the real period; the defaults are rough guides.</span>
         </div>
       </form>
-
-      <!-- filters -->
-      <div class="filters" role="group" aria-label="filter by status" id="statusFilters"></div>
-      <div class="filters" role="group" aria-label="filter by category" id="catFilters"></div>
-      <div class="sort-row">
-        <label for="sortSel">sort by</label>
-        <select class="r-select" id="sortSel">
-          <option value="expiry">soonest to expire</option>
-          <option value="recent">recently added</option>
-          <option value="brand">brand A–Z</option>
-          <option value="name">product A–Z</option>
-        </select>
-        <span class="hint" id="countLine" role="status" aria-live="polite"></span>
       </div>
-
-      <div id="productList"></div>
-
-      <div class="backup">
-        <button class="link-btn" id="exportBtn" type="button">export backup (.json)</button>
-        <label class="link-btn" for="importFile" style="display:inline-flex;align-items:center">import backup</label>
-        <input class="sr-only" id="importFile" type="file" accept="application/json,.json" />
-        <span class="hint" id="backupMsg" role="status" aria-live="polite">everything is stored in this browser only. Export now and then so you never lose your shelf.</span>
-      </div>
-
-    </div>
+    </section>
   </main>
 </div>
 
 <script src="../data/diaryData.js"></script>
 <script src="../components/navbar.js"></script>
+<script src="../components/pager.js"></script>
 <script src="../components/expiry.js"></script>
 <script src="../components/categoryIcons.js"></script>
 <script src="../components/iconSelect.js"></script>
@@ -312,9 +351,9 @@
     $('fOpened').setAttribute('aria-invalid', 'false'); $('fPrinted').setAttribute('aria-invalid', 'false');
     if (o === null) { set('fOpenedHelp', 'not a real date. Use DD/MM/YYYY, e.g. 05/03/2026', true); $('fOpened').setAttribute('aria-invalid', 'true'); ok = false; }
     else if (o && o > todayISO()) { set('fOpenedHelp', 'opened date cannot be in the future', true); $('fOpened').setAttribute('aria-invalid', 'true'); ok = false; }
-    else set('fOpenedHelp', 'leave empty if still sealed');
+    else set('fOpenedHelp', 'empty = still sealed');
     if (pr === null) { set('fPrintedHelp', 'not a real date. Use DD/MM/YYYY', true); $('fPrinted').setAttribute('aria-invalid', 'true'); ok = false; }
-    else set('fPrintedHelp', 'optional · the earlier of this and the open-jar date is used');
+    else set('fPrintedHelp', 'optional · earliest date wins');
     return ok;
   }
   document.querySelectorAll('[data-cal]').forEach(btn => {
@@ -400,6 +439,16 @@
   });
   $('photoClear').addEventListener('click', () => { ui.photo = ''; $('fPhoto').value = ''; showPhoto(); });
 
+  /* ── right page shows either the shelf or the add/edit form ── */
+  function setForm(open) {
+    $('addForm').hidden = !open; $('listView').hidden = open;
+    $('toggleForm').textContent = open ? '← back to shelf' : '+ add a product';
+    $('toggleForm').setAttribute('aria-expanded', String(open));
+    $('rightTitle').textContent = open ? (ui.editing ? 'edit product' : 'add a product') : 'my shelf';
+    if (!open) paginate($('productList'));
+  }
+  $('toggleForm').addEventListener('click', () => { if (!$('addForm').hidden) { resetForm(); setForm(false); } else { setForm(true); $('fName').focus(); } });
+
   /* ── add / edit ── */
   function resetForm() {
     ['fName', 'fBrand', 'fShade', 'fOpened', 'fPrinted', 'phraseInput'].forEach(id => { $(id).value = ''; });
@@ -409,7 +458,7 @@
     $('saveBtn').textContent = '+ add to shelf'; $('cancelEdit').hidden = true;
     $('micStatus').textContent = ''; $('dupBox').replaceChildren(); validateDates(); updatePreview();
   }
-  $('cancelEdit').addEventListener('click', resetForm);
+  $('cancelEdit').addEventListener('click', () => { resetForm(); setForm(false); });
 
   function startEdit(p) {
     ui.editing = p.id;
@@ -417,10 +466,10 @@
     catSelect.set(p.category); $('fPao').value = p.pao;
     $('fOpened').value = p.opened ? formatDMY(p.opened) : ''; $('fPrinted').value = p.printedExpiry ? formatDMY(p.printedExpiry) : '';
     ui.photo = p.photo; showPhoto();
-    $('addForm').classList.add('editing'); $('formTitle').textContent = `editing: ${p.name}`;
+    $('addForm').classList.add('editing'); $('formTitle').textContent = `editing: ${p.name}`; $('rightTitle').textContent = 'edit product';
     $('saveBtn').textContent = 'save changes'; $('cancelEdit').hidden = false;
     validateDates(); updatePreview(); updateDup();
-    $('addForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('fName').focus();
+    setForm(true); $('fName').focus();
   }
 
   $('addForm').addEventListener('submit', (e) => {
@@ -447,8 +496,7 @@
     } else {
       state.products.push({ id: state.nextIds.product++, ...d, photo: ui.photo, notes: [], finished: false, love: false, added: Date.now() });
     }
-    resetForm(); refreshBrands(); persist(); render();
-    $('fName').focus();
+    resetForm(); setForm(false); refreshBrands(); persist(); render();
   });
 
   /* ── say it / type it → pre-fill the form ── */
@@ -558,6 +606,7 @@
     if (!state.products.length) list.appendChild(el('div', 'empty-state', 'your shelf is empty. Add your first product above, or tap speak and say it.'));
     else if (!shown.length) list.appendChild(el('div', 'empty-state', 'nothing matches these filters.'));
     shown.forEach(p => list.appendChild(makeCard(p, today)));
+    paginate(list);
   }
 
   function actionBtn(text, fn, extra) { const b = el('button', 'link-btn' + (extra ? ' ' + extra : ''), text); b.type = 'button'; b.addEventListener('click', fn); return b; }
@@ -573,18 +622,18 @@
     } else { const ic = el('div', 'p-icon'); ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = categoryIcon(p.category); vis.appendChild(ic); }
 
     const main = el('div', 'p-main');
-    main.appendChild(el('div', 'p-name', (p.love ? '♥ ' : '') + p.name));
-    const sub = [p.brand, p.shade].filter(Boolean).join(' · ');
-    if (sub) main.appendChild(el('div', 'p-sub', sub));
-    main.appendChild(el('div', 'p-meta', `${categoryInfo(p.category).label} · ${p.pao}M after opening`));
+    const top = el('div', 'p-top');
+    top.appendChild(el('div', 'p-name', (p.love ? '♥ ' : '') + p.name));
+    top.appendChild(p.finished ? el('span', 'chip done', 'finished ✓') : el('span', `chip ${s.kind}`, describeStatus(s)));
+    main.appendChild(top);
+    main.appendChild(el('div', 'p-sub', [p.brand, p.shade, categoryInfo(p.category).label, `${p.pao}M open`].filter(Boolean).join(' · ')));
 
     const dates = el('div', 'p-dates');
     const dl = (k, v) => { const d = el('span'); d.append(el('b', null, k + ' '), document.createTextNode(v)); dates.appendChild(d); };
     dl('opened', p.opened ? formatDMY(p.opened) : 'not yet');
-    if (p.printedExpiry) dl('printed', formatDMY(p.printedExpiry));
-    dl('expires', s.exp ? `${formatDMY(s.exp)}${s.basis === 'printed' ? ' (pack date)' : ' (after opening)'}` : '—');
+    if (p.printedExpiry) dl('pack', formatDMY(p.printedExpiry));
+    dl('expires', s.exp ? `${formatDMY(s.exp)}${s.basis === 'printed' ? ' (pack)' : ''}` : '—');
     main.appendChild(dates);
-    main.appendChild(p.finished ? el('span', 'chip done', 'finished ✓') : el('span', `chip ${s.kind}`, describeStatus(s)));
 
     const act = el('div', 'p-actions');
     if (!p.opened && !p.finished) act.appendChild(actionBtn('opened today', () => { p.opened = todayISO(); persist(); render(); }));

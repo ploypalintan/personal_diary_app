@@ -96,7 +96,7 @@
 
     .journal-box {
       width: 100%;
-      min-height: 110px;
+      min-height: 120px; height: 140px; flex: none;
       border: 0.5px solid var(--border-soft);
       border-radius: 12px;
       background: var(--almond-pale);
@@ -125,39 +125,36 @@
   </nav>
 
   <main class="page">
-    <div class="page-header">
-      <div class="page-title">mood of the day</div>
-      <div class="page-date js-today"></div>
-    </div>
-    <div class="page-body">
-
-      <!-- mood selector renders here -->
-      <div id="moodSelectorWrap"></div>
-
-      <!-- journal -->
-      <div class="sec-label" style="margin-top:20px">dear diary…</div>
-      <textarea class="journal-box" id="journalBox" placeholder="write anything your heart wants to say today… or tap speak"></textarea>
-      <div class="voice-row">
-        <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak your entry"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
-        <span class="mic-status" id="micStatus" role="status" aria-live="polite"></span>
+    <section class="pg pg-left" aria-label="left page">
+      <div class="page-header">
+        <div class="page-title">mood of the day</div>
+        <div class="page-date js-today"></div>
       </div>
-
-      <button class="btn-small" style="margin-top:12px" onclick="saveMood()">save this feeling</button>
-      <div class="saved-flash" id="savedFlash">✦ saved to your diary ✦</div>
-
-      <!-- history -->
-      <div style="margin-top:28px">
-        <div class="sec-label">recent entries</div>
-        <div id="moodHistory"></div>
+      <div class="pg-body">
+        <div id="moodSelectorWrap"></div>
       </div>
-
-    </div>
+    </section>
+    <section class="pg pg-right" aria-label="right page">
+      <div class="pg-body">
+        <div class="sec-label">dear diary…</div>
+        <textarea class="journal-box" id="journalBox" placeholder="write anything your heart wants to say today… or tap speak"></textarea>
+        <div class="voice-row">
+          <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak your entry"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
+          <button class="btn-small" onclick="saveMood()">save this feeling</button>
+        </div>
+        <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
+        <div class="saved-flash" id="savedFlash" role="status">✦ saved to your diary ✦</div>
+        <div class="sec-label" style="margin-top:8px">recent entries</div>
+        <div class="pg-grow" id="moodHistory"></div>
+      </div>
+    </section>
   </main>
 </div>
 
 <script src="../data/diaryData.js"></script>
 <script src="../components/moodSelector.js"></script>
 <script src="../components/navbar.js"></script>
+<script src="../components/pager.js"></script>
 <script src="../components/voice.js"></script>
 <script>
   let state = initPage();
@@ -171,7 +168,8 @@
   /* save */
   function saveMood() {
     if (!selectedMood) {
-      alert('pick a mood first 🌸');
+      const f = document.getElementById('savedFlash'); f.textContent = 'pick a mood on the left page first 🌸'; f.style.display = 'block';
+      setTimeout(() => { f.style.display = 'none'; f.textContent = '✦ saved to your diary ✦'; }, 2600);
       return;
     }
     const note = document.getElementById('journalBox').value.trim();
@@ -202,24 +200,24 @@
 
   function renderHistory() {
     const wrap = document.getElementById('moodHistory');
-    const entries = (state.moods || []).slice(0, 10);
+    const entries = state.moods || [];
+    wrap.replaceChildren();
     if (!entries.length) {
-      wrap.innerHTML = '<div class="empty-state" style="padding:16px 0">no entries yet — check in with yourself today.</div>';
-      return;
+      const d = document.createElement('div'); d.className = 'empty-state'; d.style.padding = '16px 0';
+      d.textContent = 'no entries yet — check in with yourself today.'; wrap.appendChild(d);
     }
-    wrap.innerHTML = '';
     entries.forEach(e => {
-      const row = document.createElement('div');
-      row.className = 'mood-history-row';
-      row.innerHTML = `
-        <div class="mood-history-dot" style="background:${MOOD_DOT_COLORS[e.key] || '#AA9DA1'}"></div>
-        <div style="flex:1">
-          <div class="mood-history-label">${e.label} <span style="font-size:13px;color:var(--text-muted);font-family:var(--font)">(${e.sub})</span></div>
-          <div class="mood-history-date">${e.date}</div>
-          ${e.note ? `<div class="mood-history-note">${e.note}</div>` : ''}
-        </div>`;
-      wrap.appendChild(row);
+      const row = document.createElement('div'); row.className = 'mood-history-row';
+      const dot = document.createElement('div'); dot.className = 'mood-history-dot'; dot.style.background = MOOD_DOT_COLORS[e.key] || '#AA9DA1';
+      const box = document.createElement('div'); box.style.flex = '1';
+      const lab = document.createElement('div'); lab.className = 'mood-history-label'; lab.textContent = e.label + ' ';
+      const sub = document.createElement('span'); sub.style.cssText = 'font-size:13px;color:var(--text-muted)'; sub.textContent = `(${e.sub})`; lab.appendChild(sub);
+      const date = document.createElement('div'); date.className = 'mood-history-date'; date.textContent = e.date;
+      box.append(lab, date);
+      if (e.note) { const n = document.createElement('div'); n.className = 'mood-history-note'; n.textContent = e.note; box.appendChild(n); }
+      row.append(dot, box); wrap.appendChild(row);
     });
+    paginate(wrap);
   }
 
   renderHistory();

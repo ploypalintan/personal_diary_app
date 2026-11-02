@@ -14,8 +14,8 @@
   
     .daybar { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 4px 0 6px; }
     .day-head { text-align: center; min-width: 0; flex: 0 1 420px; }
-    .day-name { font-family: var(--font-script); font-size: clamp(2.6rem, 7vw, 3.8rem); line-height: 1.05; color: var(--ink); }
-    .day-date { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .2em; font-size: 1.05rem; color: var(--ink-soft); }
+    .day-name { font-family: var(--font-script); font-size: clamp(2.8rem, 5vw, 3.6rem); line-height: 1.05; color: var(--ink); }
+    .day-date { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .12em; font-size: 1rem; white-space: nowrap; color: var(--ink-soft); }
     .day-tag { display: inline-block; margin-top: 6px; padding: 2px 14px; border-radius: 16px; font-size: .88rem; font-weight: 600; background: var(--accent-pink); color: var(--mauve-deep); }
     .day-tag.now { background: #B35878; color: #fff; }
     .day-arrow { flex: none; width: 52px; height: 52px; border-radius: 50%; border: 1.5px solid var(--border-strong); background: var(--card); color: var(--mauve-dark); font-size: 1.9rem; line-height: 1; cursor: pointer; transition: transform .2s, background .2s, color .2s, box-shadow .2s; }
@@ -24,11 +24,11 @@
     .day-arrow:last-child:hover { transform: scale(1.1) translateX(3px); }
     .link-btn { background: var(--card); border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 14px; font: 500 .92rem var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 40px; }
     .link-btn:hover { background: var(--almond-light); }
-    .day-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 8px 0 16px; position: relative; }
+    .day-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 6px 0 10px; position: relative; }
     .native-date { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
     .archive { margin-top: 26px; }
     .archive summary { cursor: pointer; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: .9rem; color: var(--ink-soft); min-height: 40px; display: flex; align-items: center; }
-    .archive-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; margin-top: 8px; }
+    .arch-item { display: block; width: 100%; margin-bottom: 8px; }
     .arch-item { text-align: left; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--card); cursor: pointer; font: 500 .95rem var(--font); color: var(--ink); min-height: 48px; }
     .arch-item:hover { background: var(--almond-light); }
     .arch-item[aria-current="date"] { border-color: var(--mauve); box-shadow: inset 4px 0 0 #B35878; }
@@ -61,58 +61,50 @@
 
   <!-- PAGE -->
   <main class="page">
-    <div class="page-header">
-      <div class="page-title">daily checklist</div>
-      <div class="page-date js-today"></div>
-    </div>
-    <div class="page-body">
-      <div class="daybar">
-        <button class="day-arrow" id="prevDay" type="button" aria-label="previous day" title="earlier day">‹</button>
-        <div class="day-head" role="group" aria-label="viewing day">
-          <div class="day-name" id="dayName"></div>
-          <div class="day-date" id="dayDate"></div>
-          <span class="day-tag" id="dayTag"></span>
+    <section class="pg pg-left" aria-label="left page">
+      <div class="page-header">
+        <div class="page-title">daily checklist</div>
+        <div class="page-date js-today"></div>
+      </div>
+      <div class="pg-body">
+        <div class="daybar">
+          <button class="day-arrow" id="prevDay" type="button" aria-label="previous day" title="earlier day">‹</button>
+          <div class="day-head" role="group" aria-label="viewing day">
+            <div class="day-name" id="dayName"></div>
+            <div class="day-date" id="dayDate"></div>
+            <span class="day-tag" id="dayTag"></span>
+          </div>
+          <button class="day-arrow" id="nextDay" type="button" aria-label="next day" title="later day">›</button>
         </div>
-        <button class="day-arrow" id="nextDay" type="button" aria-label="next day" title="later day">›</button>
+        <div class="day-tools">
+          <button class="link-btn" id="todayBtn" type="button">jump to today</button>
+          <button class="link-btn" id="pickBtn" type="button">📅 pick a date</button>
+          <input class="native-date" type="date" id="datePick" tabindex="-1" aria-hidden="true" />
+          <button class="link-btn" id="archiveBtn" type="button" aria-pressed="false">all days</button>
+          <button class="link-btn" id="carryBtn" type="button" hidden></button>
+        </div>
+        <div class="prog-wrap"><div class="prog-fill" id="progressFill" style="width:0%"></div></div>
+        <div class="add-row">
+          <input class="r-input" id="taskInput" placeholder="add a task to your day…" style="flex:1;min-width:100px" />
+          <select class="r-select" id="taskCat" aria-label="category">
+            <option value="work">work</option><option value="self care">self care</option><option value="home">home</option><option value="social">social</option><option value="creative">creative</option>
+          </select>
+          <select class="r-select" id="taskPrio" aria-label="priority">
+            <option value="hi">high</option><option value="me">medium</option><option value="lo">low</option>
+          </select>
+          <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a task"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
+          <button class="btn-small" onclick="addTask()">+ add</button>
+        </div>
+        <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
       </div>
-      <div class="day-tools">
-        <button class="link-btn" id="todayBtn" type="button">jump to today</button>
-        <button class="link-btn" id="pickBtn" type="button">📅 pick a date</button>
-        <input class="native-date" type="date" id="datePick" tabindex="-1" aria-hidden="true" />
-        <button class="link-btn" id="carryBtn" type="button" hidden></button>
+    </section>
+    <section class="pg pg-right" aria-label="right page">
+      <div class="pg-body">
+        <div class="sec-label" id="rightTitle">tasks</div>
+        <div class="pg-grow" id="todoList"></div>
+        <div class="pg-grow" id="archiveList" hidden></div>
       </div>
-
-      <div class="prog-wrap">
-        <div class="prog-fill" id="progressFill" style="width:0%"></div>
-      </div>
-
-      <!-- add row -->
-      <div class="add-row">
-        <input class="r-input" id="taskInput" placeholder="add a task to your day…" style="flex:1;min-width:100px" />
-        <select class="r-select" id="taskCat" aria-label="category">
-          <option value="work">work</option>
-          <option value="self care">self care</option>
-          <option value="home">home</option>
-          <option value="social">social</option>
-          <option value="creative">creative</option>
-        </select>
-        <select class="r-select" id="taskPrio" aria-label="priority">
-          <option value="hi">high</option>
-          <option value="me">medium</option>
-          <option value="lo">low</option>
-        </select>
-        <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a task"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
-        <button class="btn-small" onclick="addTask()">+ add</button>
-      </div>
-
-      <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
-      <div id="todoList"></div>
-
-      <details class="archive" id="archive">
-        <summary id="archiveSummary">past days</summary>
-        <div class="archive-list" id="archiveList"></div>
-      </details>
-    </div>
+    </section>
   </main>
 
 </div>
@@ -120,6 +112,7 @@
 <script src="../data/diaryData.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/navbar.js"></script>
+<script src="../components/pager.js"></script>
 <script src="../components/voice.js"></script>
 <script>
   let state = initPage();
@@ -141,7 +134,7 @@
   let viewDate = validISO(location.hash.slice(1)) ? location.hash.slice(1) : todayISO();
 
   function setView(iso, push) {
-    viewDate = iso;
+    viewDate = iso; showArchive = false;
     if (push !== false) history.replaceState(null, '', iso === todayISO() ? location.pathname : '#' + iso);
     render();
   }
@@ -177,14 +170,18 @@
     carry.textContent = `move ${open} unfinished to today`;
 
     renderArchive(today);
+    $('rightTitle').textContent = showArchive ? 'all days' : `tasks · ${dmy(viewDate)}`;
+    $('todoList').hidden = showArchive; $('archiveList').hidden = !showArchive;
+    paginate(showArchive ? $('archiveList') : $('todoList'));
     saveState(state);
   }
+  let showArchive = false;
 
   function renderArchive(today) {
     const byDay = {};
     state.todos.forEach(t => { (byDay[t.date] = byDay[t.date] || []).push(t); });
     const days = Object.keys(byDay).sort().reverse();
-    $('archiveSummary').textContent = `all days (${days.length})`;
+    $('archiveBtn').textContent = `all days (${days.length})`; $('archiveBtn').setAttribute('aria-pressed', String(showArchive));
     const box = $('archiveList'); box.innerHTML = '';
     if (!days.length) { box.textContent = 'days you write on will be listed here.'; return; }
     days.forEach(d => {
@@ -194,7 +191,7 @@
       const strong = document.createElement('span'); strong.textContent = `${dayLabel(d).slice(0, 3).toLowerCase()} ${dmy(d)}`;
       const small = document.createElement('small'); small.textContent = `${done} of ${items.length} done${d === today ? ' · today' : ''}`;
       b.append(strong, small);
-      b.addEventListener('click', () => { setView(d); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      b.addEventListener('click', () => { showArchive = false; setView(d); });
       box.appendChild(b);
     });
   }
@@ -219,6 +216,7 @@
   function deleteTask(id) { state.todos = state.todos.filter(x => x.id !== id); render(); }
 
   /* ── day navigation ── */
+  $('archiveBtn').addEventListener('click', () => { showArchive = !showArchive; render(); });
   $('prevDay').addEventListener('click', () => setView(shiftISO(viewDate, -1)));
   $('nextDay').addEventListener('click', () => setView(shiftISO(viewDate, 1)));
   $('todayBtn').addEventListener('click', () => setView(todayISO()));

@@ -76,6 +76,14 @@
       flex-wrap: wrap;
     }
 
+.view { display: flex; flex-direction: column; flex: 1 1 auto; min-height: 0; }
+    .view[hidden] { display: none; }
+    .seg { display: flex; gap: 6px; margin-bottom: 10px; }
+    .seg-btn { flex: 1; min-height: 42px; border-radius: 20px; border: 1.5px solid var(--border-strong); background: var(--card); color: var(--mauve-dark); font: 600 .95rem var(--font); cursor: pointer; text-transform: lowercase; }
+    .seg-btn[aria-pressed="true"] { background: var(--mauve); color: #fff; border-color: var(--mauve); }
+    .brk-row { display: grid; grid-template-columns: 7.5em 1fr auto; gap: 10px; align-items: center; margin-bottom: 8px; font-size: .95rem; }
+    .brk-bar { height: 10px; border-radius: 6px; background: rgba(154,74,99,.16); overflow: hidden; }
+    .brk-bar i { display: block; height: 100%; background: var(--mauve); border-radius: 6px; }
     .divider { height: 0.5px; background: var(--border-soft); margin: 12px 0; }
   </style>
 </head>
@@ -93,96 +101,71 @@
   </nav>
 
   <main class="page">
-    <div class="page-header">
-      <div class="page-title">finance</div>
-      <div class="page-date js-today"></div>
-    </div>
-    <div class="page-body">
-
-      <!-- CURRENCY -->
-      <div class="currency-row">
-        <span class="currency-label">currency</span>
-        <select class="r-select" id="currencySelect" aria-label="currency" onchange="onCurrencyChange()">
-          <option value="SGD">🇸🇬 SGD S$</option>
-          <option value="USD">🇺🇸 USD $</option>
-          <option value="GBP">🇬🇧 GBP £</option>
-          <option value="EUR">🇪🇺 EUR €</option>
-          <option value="JPY">🇯🇵 JPY ¥</option>
-          <option value="AUD">🇦🇺 AUD A$</option>
-          <option value="CAD">🇨🇦 CAD C$</option>
-          <option value="THB">🇹🇭 THB ฿</option>
-          <option value="MYR">🇲🇾 MYR RM</option>
-          <option value="IDR">🇮🇩 IDR Rp</option>
-          <option value="HKD">🇭🇰 HKD HK$</option>
-          <option value="KRW">🇰🇷 KRW ₩</option>
-          <option value="INR">🇮🇳 INR ₹</option>
-          <option value="CNY">🇨🇳 CNY ¥</option>
-          <option value="AED">🇦🇪 AED د.إ</option>
-        </select>
+    <section class="pg pg-left" aria-label="left page">
+      <div class="page-header">
+        <div class="page-title">finance</div>
+        <div class="page-date js-today"></div>
       </div>
-
-      <!-- SUMMARY -->
-      <div class="summary-grid">
-        <div class="summary-stat">
-          <div class="summary-label">total income</div>
-          <div class="summary-val pos" id="statIncome"></div>
-        </div>
-        <div class="summary-stat">
-          <div class="summary-label">total spent</div>
-          <div class="summary-val neg" id="statSpent"></div>
-        </div>
-        <div class="summary-stat">
-          <div class="summary-label">balance</div>
-          <div class="summary-val bal" id="statBalance"></div>
-        </div>
-      </div>
-
-      <!-- INCOME BOX -->
-      <div class="income-box">
-        <div class="income-box-title">income sources</div>
-        <div id="incomeList"></div>
-        <div class="income-add-row">
-          <input class="r-input" id="incomeDesc" placeholder="income source…" style="flex:1;min-width:80px" />
-          <input type="number" class="r-number" id="incomeAmt" placeholder="amount" step="0.01" min="0" />
-          <select class="r-select" id="incomeType" aria-label="income type">
-            <option value="salary">salary</option>
-            <option value="socials">socials</option>
-            <option value="freelance">freelance</option>
-            <option value="passive">passive</option>
-            <option value="investment">investment</option>
-            <option value="gift">gift</option>
-            <option value="other">other</option>
+      <div class="pg-body">
+        <div class="currency-row">
+          <span class="currency-label">currency</span>
+          <select class="r-select" id="currencySelect" aria-label="currency" onchange="onCurrencyChange()">
+            <option value="SGD">🇸🇬 SGD S$</option><option value="USD">🇺🇸 USD $</option><option value="GBP">🇬🇧 GBP £</option><option value="EUR">🇪🇺 EUR €</option>
+            <option value="JPY">🇯🇵 JPY ¥</option><option value="AUD">🇦🇺 AUD A$</option><option value="CAD">🇨🇦 CAD C$</option><option value="THB">🇹🇭 THB ฿</option>
+            <option value="MYR">🇲🇾 MYR RM</option><option value="IDR">🇮🇩 IDR Rp</option><option value="HKD">🇭🇰 HKD HK$</option><option value="KRW">🇰🇷 KRW ₩</option>
+            <option value="INR">🇮🇳 INR ₹</option><option value="CNY">🇨🇳 CNY ¥</option><option value="AED">🇦🇪 AED د.إ</option>
           </select>
-          <button class="btn-small" onclick="addIncome()">+ add</button>
+        </div>
+        <div class="summary-grid">
+          <div class="summary-stat"><div class="summary-label">total income</div><div class="summary-val pos" id="statIncome"></div></div>
+          <div class="summary-stat"><div class="summary-label">total spent</div><div class="summary-val neg" id="statSpent"></div></div>
+          <div class="summary-stat"><div class="summary-label">balance</div><div class="summary-val bal" id="statBalance"></div></div>
+        </div>
+        <div class="sec-label">where it went</div>
+        <div class="pg-grow" id="catBreakdown"></div>
+      </div>
+    </section>
+    <section class="pg pg-right" aria-label="right page">
+      <div class="pg-body">
+        <div class="seg" role="group" aria-label="finance view">
+          <button class="seg-btn" id="segExp" type="button" aria-pressed="true">expenses</button>
+          <button class="seg-btn" id="segInc" type="button" aria-pressed="false">income</button>
+        </div>
+
+        <div id="viewExp" class="view">
+          <div class="add-row">
+            <input class="r-input" id="expDesc" aria-label="what did you spend on" placeholder="what did you spend on…" style="flex:1;min-width:70px" />
+            <input type="number" class="r-number" id="expAmt" aria-label="amount" placeholder="amount" step="0.01" min="0" />
+            <select class="r-select" id="expCat" aria-label="expense category">
+              <option value="food">food</option><option value="beauty">beauty</option><option value="fashion">fashion</option><option value="transport">transport</option>
+              <option value="home">home</option><option value="health">health</option><option value="fun">fun</option><option value="other">other</option>
+            </select>
+            <button class="btn-small" onclick="addExpense()">+ log</button>
+          </div>
+          <div class="pg-grow" id="expList"></div>
+        </div>
+
+        <div id="viewInc" class="view" hidden>
+          <div class="add-row">
+            <input class="r-input" id="incomeDesc" aria-label="income source" placeholder="income source…" style="flex:1;min-width:80px" />
+            <input type="number" class="r-number" id="incomeAmt" aria-label="amount" placeholder="amount" step="0.01" min="0" />
+            <select class="r-select" id="incomeType" aria-label="income type">
+              <option value="salary">salary</option><option value="socials">socials</option><option value="freelance">freelance</option><option value="passive">passive</option>
+              <option value="investment">investment</option><option value="gift">gift</option><option value="other">other</option>
+            </select>
+            <button class="btn-small" onclick="addIncome()">+ add</button>
+          </div>
+          <div class="pg-grow" id="incomeList"></div>
         </div>
       </div>
-
-      <!-- EXPENSES -->
-      <div class="sec-label">expenses</div>
-      <div class="add-row">
-        <input class="r-input" id="expDesc" placeholder="what did you spend on…" style="flex:1;min-width:70px" />
-        <input type="number" class="r-number" id="expAmt" placeholder="amount" step="0.01" min="0" />
-        <select class="r-select" id="expCat" aria-label="expense category">
-          <option value="food">food</option>
-          <option value="beauty">beauty</option>
-          <option value="fashion">fashion</option>
-          <option value="transport">transport</option>
-          <option value="home">home</option>
-          <option value="health">health</option>
-          <option value="fun">fun</option>
-          <option value="other">other</option>
-        </select>
-        <button class="btn-small" onclick="addExpense()">+ log</button>
-      </div>
-      <div id="expList"></div>
-
-    </div>
+    </section>
   </main>
 </div>
 
 <script src="../data/diaryData.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/navbar.js"></script>
+<script src="../components/pager.js"></script>
 <script>
   let state = initPage();
 
@@ -221,7 +204,7 @@
     const il = document.getElementById('incomeList');
     il.innerHTML = '';
     if (!incomes.length) {
-      il.innerHTML = '<div style="font-size:14px;color:var(--text-muted);padding:4px 0">no income added yet…</div>';
+      il.innerHTML = '<div class="empty-state">no income added yet…</div>';
     } else {
       incomes.forEach(i => il.appendChild(makeFinanceRow(i, INC_COLORS, true, deleteIncome)));
     }
@@ -235,8 +218,33 @@
       expenses.forEach(e => el.appendChild(makeFinanceRow(e, EXP_COLORS, false, deleteExpense)));
     }
 
+    /* where the money went: spending by category */
+    const bd = document.getElementById('catBreakdown'); bd.replaceChildren();
+    const byCat = {}; expenses.forEach(e => { byCat[e.cat || 'other'] = (byCat[e.cat || 'other'] || 0) + e.amt; });
+    const rows = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
+    if (!rows.length) { const d = document.createElement('div'); d.className = 'empty-state'; d.textContent = 'log an expense and it will show up here.'; bd.appendChild(d); }
+    rows.forEach(([cat, amt]) => {
+      const r = document.createElement('div'); r.className = 'brk-row';
+      const n = document.createElement('span'); n.textContent = cat;
+      const bar = document.createElement('div'); bar.className = 'brk-bar'; const fill = document.createElement('i'); fill.style.width = Math.max(4, Math.round(amt / totalExp * 100)) + '%'; bar.appendChild(fill);
+      const v = document.createElement('span'); v.textContent = fmt(amt);
+      r.append(n, bar, v); bd.appendChild(r);
+    });
+    paginate(bd);
+    paginate(document.getElementById('expList')); paginate(document.getElementById('incomeList'));
     saveState(state);
   }
+
+  /* ── expenses / income view switch ── */
+  function showView(which) {
+    document.getElementById('viewExp').hidden = which !== 'exp';
+    document.getElementById('viewInc').hidden = which !== 'inc';
+    document.getElementById('segExp').setAttribute('aria-pressed', String(which === 'exp'));
+    document.getElementById('segInc').setAttribute('aria-pressed', String(which === 'inc'));
+    render();
+  }
+  document.getElementById('segExp').addEventListener('click', () => showView('exp'));
+  document.getElementById('segInc').addEventListener('click', () => showView('inc'));
 
   /* ── add income ── */
   function addIncome() {

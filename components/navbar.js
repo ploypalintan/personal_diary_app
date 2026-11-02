@@ -18,6 +18,7 @@ function initPage() {
   document.querySelectorAll('.js-today').forEach(el => el.textContent = getTodayString());
 
   buildMemoHeader(state);
+  buildTurnButtons();
   return state;
 }
 
@@ -33,7 +34,10 @@ function buildMemoHeader(state) {
 
   const subject = mk('div', 'memo-subject');
   const subj = mk('div', 'memo-lbl', 'subject:');
-  title.setAttribute('role', 'heading'); title.setAttribute('aria-level', '1');
+  /* the visible script title is decoration; a screen-reader h1 stays in the DOM even when a phone hides this page */
+  const h1 = mk('h1', 'sr-only', title.textContent);
+  title.setAttribute('aria-hidden', 'true');
+  const pgEl = document.querySelector('.page'); if (pgEl) pgEl.prepend(h1);
   subject.append(subj, title);
 
   const row = mk('div', 'memo-row');
@@ -42,9 +46,24 @@ function buildMemoHeader(state) {
   row.append(cell('to', 'to:', state.userName.toLowerCase()), cell('from', 'from:', 'me, today'), date);
 
   header.replaceChildren(mk('div', 'memo-kicker', 'diary memo'), row, subject);
-  const body = document.querySelector('.page-body');
-  if (body) body.prepend(mk('div', 'memo-lbl memo-msg', 'message:'));
+  const right = document.querySelector('.pg-right');
+  if (right) right.prepend(mk('div', 'memo-lbl memo-msg', 'message:'));
   const page = document.querySelector('.page');
   const side = mk('div', 'memo-side', `the diary of ${state.userName}`); side.setAttribute('aria-hidden', 'true');
   if (page) page.appendChild(side);
+}
+
+/* phones show one page at a time: a button turns to the other side of the spread */
+function buildTurnButtons() {
+  const app = document.getElementById('mainApp');
+  const left = document.querySelector('.pg-left'), right = document.querySelector('.pg-right');
+  if (!app || !left || !right) return;
+  app.dataset.side = 'left';
+  const mk = (label, side, cls) => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'turn ' + cls; b.textContent = label;
+    b.addEventListener('click', () => { app.dataset.side = side; window.dispatchEvent(new Event('resize')); });
+    return b;
+  };
+  left.appendChild(mk('turn the page ›', 'right', 'turn-next'));
+  right.appendChild(mk('‹ back', 'left', 'turn-back'));
 }

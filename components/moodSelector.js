@@ -29,7 +29,7 @@ function renderMoodSelector(containerId, selectedKey, onChange) {
 
   function makeGroup(groupLabel, moods) {
     const wrap = document.createElement('div');
-    wrap.style.marginBottom = '20px';
+    wrap.style.marginBottom = '8px';
 
     const label = document.createElement('div');
     label.className = 'sec-label';
@@ -44,6 +44,8 @@ function renderMoodSelector(containerId, selectedKey, onChange) {
       const tile = document.createElement('div');
       tile.className = 'mood-tile';
       tile.dataset.key = mood.key;
+      tile.setAttribute('role', 'button'); tile.setAttribute('tabindex', '0'); tile.setAttribute('aria-pressed', String(mood.key === selectedKey));
+      tile.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); tile.click(); } });
 
       const colors = MOOD_COLORS[mood.key] || { bg: '#f5f0f0', border: '#E1CCCC', dot: '#AA9DA1' };
       tile.style.background    = colors.bg;
@@ -57,8 +59,8 @@ function renderMoodSelector(containerId, selectedKey, onChange) {
       if (mood.key === selectedKey) tile.classList.add('sel');
 
       tile.addEventListener('click', () => {
-        container.querySelectorAll('.mood-tile').forEach(t => t.classList.remove('sel'));
-        tile.classList.add('sel');
+        container.querySelectorAll('.mood-tile').forEach(t => { t.classList.remove('sel'); t.setAttribute('aria-pressed', 'false'); });
+        tile.classList.add('sel'); tile.setAttribute('aria-pressed', 'true');
         if (onChange) onChange(mood);
       });
 
