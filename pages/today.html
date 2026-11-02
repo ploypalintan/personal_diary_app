@@ -64,9 +64,11 @@
           <option value="me">medium</option>
           <option value="lo">low</option>
         </select>
+        <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a task"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
         <button class="btn-small" onclick="addTask()">+ add</button>
       </div>
 
+      <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
       <div id="todoList"></div>
     </div>
   </main>
@@ -77,6 +79,7 @@
 <script src="../components/pixelChar.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/navbar.js"></script>
+<script src="../components/voice.js"></script>
 <script>
   let state = initPage();
 
@@ -133,6 +136,7 @@
     render();
   }
 
+  attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('taskInput'), append: false });
   render();
 </script>
 </body>

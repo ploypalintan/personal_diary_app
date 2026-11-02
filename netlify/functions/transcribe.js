@@ -12,11 +12,16 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { audio } = JSON.parse(event.body);
+    const { audio, mimetype } = JSON.parse(event.body);
     if (!audio) {
       return { statusCode: 400, body: JSON.stringify({ error: 'No audio field in request body.' }) };
     }
     const audioBuffer = Buffer.from(audio, 'base64');
+    if (audioBuffer.length > 5 * 1024 * 1024) {
+      return { statusCode: 413, body: JSON.stringify({ error: 'Recording too long. Keep it under about 90 seconds.' }) };
+    }
+    /* browsers record webm (Chrome/Firefox) or mp4 (Safari); only pass through audio/video types */
+    const contentType = /^(audio|video)\/[a-z0-9.+-]+$/i.test(mimetype || '') ? mimetype : 'audio/webm';
 
     const dgResponse = await fetch(
       'https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&punctuate=true',
@@ -24,7 +29,7 @@ exports.handler = async (event) => {
         method: 'POST',
         headers: {
           Authorization: `Token ${apiKey}`,
-          'Content-Type': 'audio/webm',
+          'Content-Type': contentType,
         },
         body: audioBuffer,
       }
