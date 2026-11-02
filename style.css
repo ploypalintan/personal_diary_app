@@ -686,7 +686,7 @@ body { min-height: 0; display: flow-root; overflow-x: hidden; }
 .pg { padding-top: 74px; padding-bottom: 74px; }
 .memo-side { top: 100px; }
 @media (max-width: 820px) { .pg { padding-top: 72px; padding-bottom: 60px; } }
-.pg .mood-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; margin-bottom: 4px; }
+.pg .mood-grid { grid-template-columns: repeat(auto-fit, minmax(70px, 1fr)); gap: 5px; margin-bottom: 4px; }
 .pg .mood-tile { padding: 7px 4px 6px; gap: 2px; }
 .pg .mood-label-main { font-size: 14px; }
 .pg .mood-label-sub { font-size: 13px; letter-spacing: 0; }
@@ -792,3 +792,7 @@ body::before { border: 0 !important; border-image: none !important;
 .page .pg-left .sec-label { font-size: 12px; letter-spacing: .16em; color: var(--text-muted); padding: 0; margin: 0 0 6px; border: 0; }
 .page .stat span { letter-spacing: .06em !important; font-size: 10.5px !important; white-space: nowrap; }
 .page .stat b { font-size: 1.6rem !important; }
+
+/* makeup: my shelf, a faint shelf illustration sitting between the lace bands (veiled so product names stay readable) */
+.pg-right.shelf-bg::after { content: ''; position: absolute; left: 0; right: 0; top: 84px; bottom: 66px; background: url('assets/shelf-illustration.jpg') center / cover no-repeat; opacity: .22; pointer-events: none; z-index: 0; }
+.pg-right.shelf-bg > .pg-body { position: relative; z-index: 1; }

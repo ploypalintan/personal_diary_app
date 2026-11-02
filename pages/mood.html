@@ -59,13 +59,20 @@
       padding: 10px 0;
       border-bottom: 0.5px solid var(--border-soft);
     }
-    .mood-history-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      margin-top: 5px;
-      flex-shrink: 0;
-    }
+    .mood-history-dot { width: 30px; height: 30px; flex-shrink: 0; margin-top: 1px; display: flex; }
+    .mood-face { display: flex; line-height: 0; }
+    .mood-tile { padding: 6px 4px 6px; gap: 2px; }
+    .mood-label-sub { font-size: 12px !important; }
+    /* monthly summary, pinned to the bottom of the right page */
+    .msum { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--border-strong); flex: none; }
+    .msum-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .msum-month { font-family: var(--font-script); font-size: 32px; line-height: 1; color: var(--ink); }
+    .msum-count { font-size: 13px; color: var(--text-muted); }
+    .msum-bar { display: flex; height: 10px; border-radius: 6px; overflow: hidden; margin: 6px 0 8px; background: var(--border-soft); }
+    .msum-bar i { display: block; height: 100%; }
+    .msum-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .msum-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--card); border: 1px solid var(--border-soft); border-radius: 16px; padding: 2px 10px 2px 3px; font-size: 13px; color: var(--ink-soft); }
+    .msum-chip b { font-weight: 700; color: var(--ink); }
     .mood-history-label {
       font-family: var(--font);
       font-size: 16px;
@@ -146,13 +153,16 @@
         <div class="saved-flash" id="savedFlash" role="status">✦ saved to your diary ✦</div>
         <div class="sec-label" style="margin-top:8px">recent entries</div>
         <div class="pg-grow" id="moodHistory"></div>
+        <div class="msum" id="moodSummary" aria-label="monthly mood summary"></div>
       </div>
     </section>
   </main>
 </div>
 
 <script src="../data/diaryData.js"></script>
+<script src="../components/expiry.js"></script>
 <script src="../components/moodSelector.js"></script>
+<script src="../components/moodFaces.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
 <script src="../components/pager.js"></script>
@@ -209,7 +219,7 @@
     }
     entries.forEach(e => {
       const row = document.createElement('div'); row.className = 'mood-history-row';
-      const dot = document.createElement('div'); dot.className = 'mood-history-dot'; dot.style.background = MOOD_DOT_COLORS[e.key] || '#AA9DA1';
+      const dot = document.createElement('div'); dot.className = 'mood-history-dot'; dot.innerHTML = moodFace(e.key, 30);
       const box = document.createElement('div'); box.style.flex = '1';
       const lab = document.createElement('div'); lab.className = 'mood-history-label'; lab.textContent = e.label + ' ';
       const sub = document.createElement('span'); sub.style.cssText = 'font-size:13px;color:var(--text-muted)'; sub.textContent = `(${e.sub})`; lab.appendChild(sub);
@@ -218,7 +228,38 @@
       if (e.note) { const n = document.createElement('div'); n.className = 'mood-history-note'; n.textContent = e.note; box.appendChild(n); }
       row.append(dot, box); wrap.appendChild(row);
     });
+    renderSummary();
     paginate(wrap);
+  }
+
+  /* monthly summary: entries dates look like "Monday, 2 November 2026" */
+  function renderSummary() {
+    const box = document.getElementById('moodSummary'); box.replaceChildren();
+    const now = fromISO(todayISO()), mi = now.getMonth(), yr = now.getFullYear();
+    const counts = {}; let total = 0;
+    (state.moods || []).forEach(e => {
+      const m = /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/.exec(e.date || ''); if (!m) return;
+      if (MONTHS.findIndex(n => n.toLowerCase() === m[2].toLowerCase()) !== mi || +m[3] !== yr) return;
+      counts[e.key] = (counts[e.key] || 0) + 1; total++;
+    });
+    const head = document.createElement('div'); head.className = 'msum-head';
+    head.innerHTML = '<span class="msum-month"></span><span class="msum-count"></span>';
+    head.firstChild.textContent = MONTHS[mi].toLowerCase() + ' in moods';
+    head.lastChild.textContent = total ? total + (total === 1 ? ' check-in' : ' check-ins') : 'no check-ins yet';
+    box.appendChild(head);
+    if (!total) return;
+    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+    const bar = document.createElement('div'); bar.className = 'msum-bar';
+    sorted.forEach(([k, n]) => { const i = document.createElement('i'); i.style.width = (n / total * 100) + '%'; i.style.background = MOOD_COLORS[k] ? MOOD_COLORS[k].dot : '#AA9DA1'; bar.appendChild(i); });
+    box.appendChild(bar);
+    const chips = document.createElement('div'); chips.className = 'msum-chips';
+    sorted.slice(0, 6).forEach(([k, n]) => {
+      const c = document.createElement('span'); c.className = 'msum-chip';
+      const lab = (state.moods.find(e => e.key === k) || {}).label || k;
+      c.innerHTML = moodFace(k, 24) + '<span></span><b></b>'; c.children[1].textContent = lab; c.children[2].textContent = '×' + n;
+      chips.appendChild(c);
+    });
+    box.appendChild(chips);
   }
 
   renderHistory();

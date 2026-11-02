@@ -52,7 +52,7 @@ function renderMoodSelector(containerId, selectedKey, onChange) {
       tile.style.borderColor   = colors.border;
 
       tile.innerHTML = `
-        <div class="mood-dot" style="background:${colors.dot}"></div>
+        <span class="mood-face">${moodFace(mood.key, 30)}</span>
         <div class="mood-label-main">${mood.label}</div>
         <div class="mood-label-sub">${mood.sub}</div>`;
 
