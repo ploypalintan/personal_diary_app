@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap');
 
 /* ═══════════════════════════════════════
    ROOT PALETTE — Dusty & Romantic
 ═══════════════════════════════════════ */
 :root {
-  --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   /* clean girl palette: white, baby pink, warm nude, deep rose */
   --almond:        #f4cdd6;   /* blush line / decorative */
   --almond-light:  #fbe9ed;   /* soft blush surface */
@@ -531,7 +531,7 @@ html, body {
 :focus-visible { outline: 3px solid var(--mauve-dark); outline-offset: 2px; }
 @media (max-width: 600px) { .spine { display: none; } .page-body { padding: 16px; } }
 
-h1,h2,h3,.page-title,.t-serif-lg,.t-serif-md{font-weight:600;letter-spacing:-0.01em}
+h1,h2,h3,.page-title,.t-serif-lg,.t-serif-md{font-weight:700;letter-spacing:-0.01em}
 body{font-family:var(--font)}
 
 /* soft clean-girl touches */

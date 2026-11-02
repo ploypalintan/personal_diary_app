@@ -104,7 +104,7 @@
       <!-- CURRENCY -->
       <div class="currency-row">
         <span class="currency-label">currency</span>
-        <select class="r-select" id="currencySelect" onchange="onCurrencyChange()">
+        <select class="r-select" id="currencySelect" aria-label="currency" onchange="onCurrencyChange()">
           <option value="SGD">🇸🇬 SGD S$</option>
           <option value="USD">🇺🇸 USD $</option>
           <option value="GBP">🇬🇧 GBP £</option>
@@ -146,7 +146,7 @@
         <div class="income-add-row">
           <input class="r-input" id="incomeDesc" placeholder="income source…" style="flex:1;min-width:80px" />
           <input type="number" class="r-number" id="incomeAmt" placeholder="amount" step="0.01" min="0" />
-          <select class="r-select" id="incomeType">
+          <select class="r-select" id="incomeType" aria-label="income type">
             <option value="salary">salary</option>
             <option value="socials">socials</option>
             <option value="freelance">freelance</option>
@@ -164,7 +164,7 @@
       <div class="add-row">
         <input class="r-input" id="expDesc" placeholder="what did you spend on…" style="flex:1;min-width:70px" />
         <input type="number" class="r-number" id="expAmt" placeholder="amount" step="0.01" min="0" />
-        <select class="r-select" id="expCat">
+        <select class="r-select" id="expCat" aria-label="expense category">
           <option value="food">food</option>
           <option value="beauty">beauty</option>
           <option value="fashion">fashion</option>
