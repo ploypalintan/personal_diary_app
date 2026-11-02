@@ -6,24 +6,12 @@
 ═══════════════════════════════════════ */
 (function () {
   const PROMPTS = {
-    _start:   ["i saved you a seat. what's on your mind?", "pour yourself something. i'm listening.", "no rush. say it however it comes out."],
-    soft:     ["soft is nice. what made today gentle?", "tell me about the quiet part."],
-    light:    ["ooh. what lit you up?", "say it out loud so it stays."],
-    alive:    ["i can feel it from here. what happened?", "tell me everything, fast is fine."],
-    held:     ["who made you feel held?", "keep that one. what did they say?"],
-    still:    ["still is okay. what's in the quiet?", "nothing to fix. just say what's here."],
-    heavy:    ["what's the heaviest part?", "you can set it down here for a minute."],
-    restless: ["what's your mind circling around?", "say the loud thought first."],
-    blue:     ["i'm here. what hurt today?", "you don't have to make it pretty."],
-    tight:    ["where is it sitting in your body?", "what's the one thing pressing hardest?"],
-    toomuch:  ["one thing at a time. what's first?", "say it all, we'll sort it after."],
-    alone:    ["i'm right here. who do you miss?", "tell me what being alone feels like today."],
-    itching:  ["where would you go right now?", "tell me about the escape in your head."],
-    tooaware: ["what are you noticing that you can't un-notice?", "say the strange thought out loud."],
-    _listen:  ["i'm listening…", "mm. keep going…"],
-    _done:    ["i heard you. add more, or save this feeling.", "got it. it's safe with me. save it when you're ready."],
+    _start: ["i saved you a seat. what's on your mind?", "pour yourself something. i'm listening.", "no rush. say it however it comes out.", "tell me about today. start anywhere.", "what are you carrying that you haven't told anyone?", "what's the loudest thought right now?", "what do you wish someone would ask you?", "say the thing you keep not saying."],
+    _listen: ["i'm listening…", "mm. keep going…", "i'm right here…"],
+    _done: ["i heard you. say more, or keep this one.", "got it. it's safe with me. keep it when you're ready."],
   };
-  const pick = (k) => { const a = PROMPTS[k] || PROMPTS._start; return a[Math.floor(Math.random() * a.length)]; };
+  let last = -1;
+  const pick = (k) => { const a = PROMPTS[k]; let i; do { i = Math.floor(Math.random() * a.length); } while (a.length > 1 && i === last && k === '_start'); if (k === '_start') last = i; return a[i]; };
 
   /* deterministic little pseudo-random so the fur looks the same every load */
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
@@ -60,14 +48,14 @@
     </svg>`;
   }
 
-  window.initFriend = function (host, micBtn, getMoodKey) {
+  window.initFriend = function (host, micBtn) {
     host.innerHTML = `<button class="fr-hit" type="button" aria-label="talk to your friend (starts the microphone)">${creatureSVG()}</button>
-      <div class="fr-side"><div class="fr-name">tea with your shadow friend</div><p class="fr-say" id="frSay" role="status" aria-live="polite"></p></div>`;
+      <div class="fr-name">tea with your shadow friend</div>
+      <p class="fr-say" id="frSay" role="status" aria-live="polite"></p>`;
     const say = host.querySelector('#frSay'), hit = host.querySelector('.fr-hit');
     const set = (t) => { say.textContent = t; };
     set(pick('_start'));
     hit.addEventListener('click', () => micBtn.click());
-    /* react to the mic: listening / done */
     const sync = () => {
       const on = micBtn.getAttribute('aria-pressed') === 'true';
       host.classList.toggle('listening', on);
@@ -76,7 +64,7 @@
     new MutationObserver(sync).observe(micBtn, { attributes: true, attributeFilter: ['aria-pressed'] });
     const status = document.getElementById('micStatus');
     if (status) new MutationObserver(() => { if (/transcribed/i.test(status.textContent)) set(pick('_done')); }).observe(status, { childList: true, characterData: true, subtree: true });
-    host.setMood = (k) => set(pick(k));
+    host.ask = () => set(pick('_start'));
     return host;
   };
 })();

@@ -117,10 +117,15 @@
     }
     .journal-box::placeholder { color: var(--text-muted); }
 
-    /* the imaginary friend */
-    .friend { display: flex; align-items: center; gap: 12px; flex: none; margin: -2px 0 4px; }
-    .fr-hit { background: none; border: 0; padding: 0; cursor: pointer; width: 128px; flex: none; border-radius: 16px; }
+    /* the imaginary friend takes the whole left page */
+    .friend-stage { align-items: center; justify-content: center; text-align: center; gap: 8px; }
+    .friend { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: none; }
+    .fr-hit { background: none; border: 0; padding: 0; cursor: pointer; width: min(215px, 56%); flex: none; border-radius: 20px; }
     .fr-hit:focus-visible { outline: 3px solid var(--mauve); outline-offset: 3px; }
+    .mic-big { font-size: 17px; padding: 10px 26px; min-height: 48px; }
+    .ask-btn { margin-top: 0; background: transparent; border: 0; text-decoration: underline; text-underline-offset: 3px; color: var(--mauve-dark); font: 600 14px var(--font); cursor: pointer; min-height: 32px; }
+    .mic-big { margin-top: 0; }
+    .pg-right .journal-box { min-height: 170px !important; height: 190px !important; }
     .fr-svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 6px rgba(60,25,45,.25)); }
     .fr-body { transform-origin: 100px 139px; animation: frBreathe 5s ease-in-out infinite; }
     .fr-eye { animation: frGlow 3.6s ease-in-out infinite; transform-origin: 113px 72px; }
@@ -133,7 +138,7 @@
     @media (prefers-reduced-motion: reduce) { .fr-body, .fr-eye, .fr-steam { animation: none; } }
     .fr-side { min-width: 0; }
     .fr-name { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--text-muted); }
-    .fr-say { margin: 4px 0 0; font-family: var(--font-script); font-size: 26px; line-height: 1.15; color: var(--ink); }
+    .fr-say { margin: 2px 0 6px; font-family: var(--font-script); font-size: 31px; line-height: 1.12; color: var(--ink); max-width: 15em; min-height: 2.3em; }
     .journal-box { min-height: 80px !important; height: 90px !important; }
   </style>
 </head>
@@ -145,7 +150,7 @@
   <nav class="bookmarks">
     <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
     <a class="bm" data-page="tracker.html"><span class="bm-icon">✧</span>makeup</a>
-    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
+    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>friend</a>
     <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
     <a class="bm" data-page="../index.html"><span class="bm-icon">❀</span>cover</a>
   </nav>
@@ -153,27 +158,24 @@
   <main class="page">
     <section class="pg pg-left" aria-label="left page">
       <div class="page-header">
-        <div class="page-title">mood of the day</div>
+        <div class="page-title">my imaginary friend</div>
         <div class="page-date js-today"></div>
       </div>
-      <div class="pg-body">
-        <div id="moodSelectorWrap"></div>
+      <div class="pg-body friend-stage">
+        <div class="friend" id="friend"></div>
+        <button class="mic-btn mic-big" id="micBtn" type="button" aria-pressed="false" aria-label="talk to your friend"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">talk to her</span></button>
+        <button class="link-btn ask-btn" id="askBtn" type="button">ask me something else</button>
+        <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
       </div>
     </section>
     <section class="pg pg-right" aria-label="right page">
       <div class="pg-body">
-        <div class="friend" id="friend"></div>
-        <div class="sec-label">dear diary…</div>
-        <textarea class="journal-box" id="journalBox" placeholder="write anything your heart wants to say today… or tap speak"></textarea>
-        <div class="voice-row">
-          <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak your entry"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
-          <button class="btn-small" onclick="saveMood()">save this feeling</button>
-        </div>
-        <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
-        <div class="saved-flash" id="savedFlash" role="status">✦ saved to your diary ✦</div>
-        <div class="sec-label" style="margin-top:8px">recent entries</div>
+        <div class="sec-label">what you said</div>
+        <textarea class="journal-box" id="journalBox" placeholder="your words land here as you speak. you can also type, or edit them."></textarea>
+        <div class="voice-row"><button class="btn-small" id="keepBtn" type="button">keep this talk</button></div>
+        <div class="saved-flash" id="savedFlash" role="status">✦ kept in your diary ✦</div>
+        <div class="sec-label" style="margin-top:10px" id="talksLabel">our past talks</div>
         <div class="pg-grow" id="moodHistory"></div>
-        <div class="msum" id="moodSummary" aria-label="monthly mood summary"></div>
       </div>
     </section>
   </main>
@@ -181,8 +183,6 @@
 
 <script src="../data/diaryData.js"></script>
 <script src="../components/expiry.js"></script>
-<script src="../components/moodSelector.js"></script>
-<script src="../components/moodFaces.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
 <script src="../components/pager.js"></script>
@@ -190,46 +190,21 @@
 <script src="../components/friend.js"></script>
 <script>
   let state = initPage();
-  let selectedMood = null;
 
-  /* init mood selector */
-  renderMoodSelector('moodSelectorWrap', null, mood => {
-    selectedMood = mood;
-    if (window.friendEl) window.friendEl.setMood(mood.key);
-  });
-
-  /* save */
-  function saveMood() {
-    if (!selectedMood) {
-      const f = document.getElementById('savedFlash'); f.textContent = 'pick a mood on the left page first 🌸'; f.style.display = 'block';
-      setTimeout(() => { f.style.display = 'none'; f.textContent = '✦ saved to your diary ✦'; }, 2600);
-      return;
-    }
-    const note = document.getElementById('journalBox').value.trim();
-    state.moods.unshift({
-      id:    state.nextIds.mood++,
-      date:  getTodayString(),
-      key:   selectedMood.key,
-      label: selectedMood.label,
-      sub:   selectedMood.sub,
-      note,
-    });
-    saveState(state);
-    document.getElementById('journalBox').value = '';
-    selectedMood = null;
-    renderMoodSelector('moodSelectorWrap', null, mood => { selectedMood = mood; });
-    renderHistory();
+  function keepTalk() {
+    const box = document.getElementById('journalBox'), note = box.value.trim();
     const flash = document.getElementById('savedFlash');
-    flash.style.display = 'block';
-    setTimeout(() => flash.style.display = 'none', 2400);
+    if (!note) { flash.textContent = 'say something first, or type it 🌸'; flash.style.display = 'block'; setTimeout(() => { flash.style.display = 'none'; }, 2400); return; }
+    state.moods.unshift({ id: state.nextIds.mood++, date: getTodayString(), key: 'talk', label: 'talk', sub: '', note });
+    saveState(state);
+    box.value = '';
+    renderHistory();
+    flash.textContent = '✦ kept in your diary ✦'; flash.style.display = 'block';
+    setTimeout(() => { flash.style.display = 'none'; }, 2400);
+    friend.ask();
   }
 
-  /* history */
-  const MOOD_DOT_COLORS = {
-    soft:'#AA9DA1', light:'#c8a848', alive:'#7aaa70', held:'#c080a8',
-    still:'#9a9490', heavy:'#8a7878', restless:'#c09050', blue:'#5880b8',
-    tight:'#c06060', toomuch:'#a060a0', alone:'#7070a8', itching:'#50a890', tooaware:'#8858b0',
-  };
+  const EYE = '<svg viewBox="0 0 30 30" width="30" height="30" aria-hidden="true"><circle cx="15" cy="15" r="14" fill="#2a1826"/><circle cx="15" cy="15" r="9" fill="rgba(255,235,246,.25)"/><circle cx="15" cy="15" r="3.6" fill="#fff"/></svg>';
 
   function renderHistory() {
     const wrap = document.getElementById('moodHistory');
@@ -237,16 +212,14 @@
     wrap.replaceChildren();
     if (!entries.length) {
       const d = document.createElement('div'); d.className = 'empty-state'; d.style.padding = '16px 0';
-      d.textContent = 'no entries yet — check in with yourself today.'; wrap.appendChild(d);
+      d.textContent = 'no talks yet. tap her and say something.'; wrap.appendChild(d);
     }
     entries.forEach(e => {
       const row = document.createElement('div'); row.className = 'mood-history-row';
-      const dot = document.createElement('div'); dot.className = 'mood-history-dot'; dot.innerHTML = moodFace(e.key, 30);
-      const box = document.createElement('div'); box.style.flex = '1';
-      const lab = document.createElement('div'); lab.className = 'mood-history-label'; lab.textContent = e.label + ' ';
-      const sub = document.createElement('span'); sub.style.cssText = 'font-size:13px;color:var(--text-muted)'; sub.textContent = `(${e.sub})`; lab.appendChild(sub);
-      const date = document.createElement('div'); date.className = 'mood-history-date'; date.textContent = e.date;
-      box.append(lab, date);
+      const dot = document.createElement('div'); dot.className = 'mood-history-dot'; dot.innerHTML = EYE;
+      const box = document.createElement('div'); box.style.flex = '1'; box.style.minWidth = '0';
+      const date = document.createElement('div'); date.className = 'mood-history-date'; date.textContent = e.date + (e.key !== 'talk' && e.label ? ' · felt ' + e.label : '');
+      box.appendChild(date);
       if (e.note) { const n = document.createElement('div'); n.className = 'mood-history-note'; n.textContent = e.note; box.appendChild(n); }
       row.append(dot, box); wrap.appendChild(row);
     });
@@ -254,41 +227,22 @@
     paginate(wrap);
   }
 
-  /* monthly summary: entries dates look like "Monday, 2 November 2026" */
+  /* entry dates look like "Monday, 2 November 2026" */
   function renderSummary() {
-    const box = document.getElementById('moodSummary'); box.replaceChildren();
     const now = fromISO(todayISO()), mi = now.getMonth(), yr = now.getFullYear();
-    const counts = {}; let total = 0;
+    let total = 0;
     (state.moods || []).forEach(e => {
       const m = /(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})/.exec(e.date || ''); if (!m) return;
-      if (MONTHS.findIndex(n => n.toLowerCase() === m[2].toLowerCase()) !== mi || +m[3] !== yr) return;
-      counts[e.key] = (counts[e.key] || 0) + 1; total++;
+      if (MONTHS.findIndex(n => n.toLowerCase() === m[2].toLowerCase()) === mi && +m[3] === yr) total++;
     });
-    const head = document.createElement('div'); head.className = 'msum-head';
-    head.innerHTML = '<span class="msum-month"></span><span class="msum-count"></span>';
-    head.firstChild.textContent = MONTHS[mi].toLowerCase() + ' in moods';
-    head.lastChild.textContent = total ? total + (total === 1 ? ' check-in' : ' check-ins') : 'no check-ins yet';
-    box.appendChild(head);
-    if (!total) return;
-    const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-    const bar = document.createElement('div'); bar.className = 'msum-bar';
-    sorted.forEach(([k, n]) => { const i = document.createElement('i'); i.style.width = (n / total * 100) + '%'; i.style.background = MOOD_COLORS[k] ? MOOD_COLORS[k].dot : '#AA9DA1'; bar.appendChild(i); });
-    box.appendChild(bar);
-    const chips = document.createElement('div'); chips.className = 'msum-chips';
-    sorted.slice(0, 6).forEach(([k, n]) => {
-      const c = document.createElement('span'); c.className = 'msum-chip';
-      const lab = (state.moods.find(e => e.key === k) || {}).label || k;
-      c.innerHTML = moodFace(k, 24) + '<span></span><b></b>'; c.children[1].textContent = lab; c.children[2].textContent = '×' + n;
-      chips.appendChild(c);
-    });
-    box.appendChild(chips);
+    document.getElementById('talksLabel').textContent = 'our past talks · ' + total + ' in ' + MONTHS[mi].toLowerCase();
   }
 
   renderHistory();
-
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderHistory);
-  window.friendEl = initFriend(document.getElementById('friend'), document.getElementById('micBtn'), () => selectedMood && selectedMood.key);
-
+  const friend = initFriend(document.getElementById('friend'), document.getElementById('micBtn'));
+  document.getElementById('askBtn').addEventListener('click', () => friend.ask());
+  document.getElementById('keepBtn').addEventListener('click', keepTalk);
   attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox') });
 </script>
 </body>
