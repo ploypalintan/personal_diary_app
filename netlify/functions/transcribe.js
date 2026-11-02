@@ -29,8 +29,8 @@ exports.handler = async (event) => {
       : [];
 
     /* Nova-3 multilingual (language=multi) follows mid-sentence switches; hints nudge detection
-       toward the languages Ploy actually speaks: English, Mandarin, Thai. */
-    const HINTS = ['en', 'zh', 'th'];
+       toward the languages Ploy actually speaks: English, Mandarin, Thai, German. */
+    const HINTS = ['en', 'zh', 'th', 'de'];
     const callDeepgram = ({ withTerms, multi, hints }) => {
       const params = new URLSearchParams({ model: 'nova-3', smart_format: 'true', punctuate: 'true' });
       if (multi) params.set('language', 'multi');
