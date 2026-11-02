@@ -743,3 +743,4 @@ body::before { background: none !important; border: 34px solid #f0c3d0; border-i
 /* stickers: decoration only */
 .sticker { position: absolute; z-index: 6; pointer-events: none; user-select: none; height: auto; filter: drop-shadow(0 3px 4px rgba(110,50,70,.35)); }
 @media (max-width: 820px) { .st-seal { display: none; } .st-clip { width: 52px !important; right: 18% !important; top: 2px !important; } }
+@media (max-width: 820px) { .st-deco { transform: none; } .st-deco:nth-of-type(n+6) { display: none; } }

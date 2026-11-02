@@ -48,6 +48,7 @@
     @keyframes shoeSway { 0%,100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg); } }
     @media (prefers-reduced-motion: reduce) { .hang-shoes { animation: none; } }
     .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 17cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.35)); z-index: 2; pointer-events: none; }
+    .cover-heart { position: absolute; left: 5cqw; bottom: 5.5cqw; width: 15cqw; height: auto; transform: rotate(-8deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.3)); z-index: 2; pointer-events: none; }
     .shelf-line { margin-top: 3cqw; font-size: 3cqw; min-height: 1em; }
     .book-actions { margin-top: auto; margin-bottom: 4.5cqw; display: flex; flex-direction: column; align-items: center; gap: 2cqw; }
     .book .btn-primary { font-size: 3.6cqw; padding: 2.2cqw 6.5cqw; box-shadow: 0 .8cqw 1.8cqw rgba(110,50,70,.25); }
@@ -141,6 +142,7 @@
     </div>
     <p class="t-body shelf-line" id="shelfLine" role="status"></p>
     <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
+    <img class="sticker cover-heart" src="assets/stickers/heart-cupid.png" alt="" aria-hidden="true" width="355" height="360"/>
     <div class="book-actions">
       <button class="btn-primary" id="openBtn" type="button">open today's diary</button>
       <button class="edit-name-btn" id="editName" type="button">change my name</button>
