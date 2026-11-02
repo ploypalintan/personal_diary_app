@@ -38,10 +38,10 @@
       box-shadow: 0 24px 40px rgba(80,30,60,.34), 0 2px 5px rgba(80,30,60,.25); }
     .book.active { display: flex; flex-direction: column; align-items: center; }
     .book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 6.5cqw; background: linear-gradient(90deg, #a87592 0, #c391ae 55%, #b48099 80%, rgba(255,255,255,.35) 82%, rgba(255,255,255,.12) 86%, transparent 100%); box-shadow: 1.2cqw 0 2cqw rgba(80,30,60,.22); }
-    .cover-head { margin: 15cqw 0 0 12cqw; align-self: flex-start; width: 62%; text-align: center; }
+    .cover-head { margin: 15cqw auto 0; align-self: center; width: 80%; text-align: center; }
     .book-top { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .3em; font-size: 2.5cqw; color: #4a2740; margin-bottom: 1.5cqw; }
-    .book .cover-title { font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
-    .book-line { margin-top: 3.5cqw; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
+    .book .cover-title { max-width: 6.2em; margin: 0 auto; font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
+    .book-line { margin: 3.5cqw auto 0; max-width: 17em; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
     .shelf-line { position: absolute; left: 12cqw; bottom: 3cqw; font-size: 2.8cqw; min-height: 1em; }
     .shoes-btn { position: absolute; left: 50%; bottom: 7cqw; margin-left: -11cqw; width: 22cqw; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; padding: 0; transform-origin: 50% 0; animation: shoeSway 5.5s ease-in-out infinite; }
     .shoes-btn:hover, .shoes-btn:focus-visible { animation-duration: 2.2s; }
@@ -54,7 +54,7 @@
     .book .edit-name-btn { position: absolute; right: 4cqw; top: 3cqw; background: rgba(255,240,246,.7); border-radius: 3cqw; padding: .6cqw 2.4cqw; color: #4a2740; font-size: 2.6cqw; min-height: 0; }
     .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 14cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(70,25,55,.45)); z-index: 2; pointer-events: none; }
     .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(70,25,55,.35)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
-    .cover-fly.f2 { right: 8cqw; top: 22cqw; width: 12cqw; --r: 14deg; }
+    .cover-fly.f2 { right: 7cqw; top: 40cqw; width: 12cqw; --r: 14deg; }
     @keyframes flutter { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 6deg)) scale(.93, 1.03); } }
     @media (prefers-reduced-motion: reduce) { .cover-fly { animation: none; transform: rotate(var(--r)); } }
     @media (max-width: 520px) { .book { aspect-ratio: 5 / 7.6; } .cover-head { margin-top: 18cqw; } }
@@ -131,10 +131,10 @@
       box-shadow: 0 24px 40px rgba(80,30,60,.34), 0 2px 5px rgba(80,30,60,.25); }
     .book.active { display: flex; flex-direction: column; align-items: center; }
     .book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 6.5cqw; background: linear-gradient(90deg, #a87592 0, #c391ae 55%, #b48099 80%, rgba(255,255,255,.35) 82%, rgba(255,255,255,.12) 86%, transparent 100%); box-shadow: 1.2cqw 0 2cqw rgba(80,30,60,.22); }
-    .cover-head { margin: 15cqw 0 0 12cqw; align-self: flex-start; width: 62%; text-align: center; }
+    .cover-head { margin: 15cqw auto 0; align-self: center; width: 80%; text-align: center; }
     .book-top { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .3em; font-size: 2.5cqw; color: #4a2740; margin-bottom: 1.5cqw; }
-    .book .cover-title { font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
-    .book-line { margin-top: 3.5cqw; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
+    .book .cover-title { max-width: 6.2em; margin: 0 auto; font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
+    .book-line { margin: 3.5cqw auto 0; max-width: 17em; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
     .shelf-line { position: absolute; left: 12cqw; bottom: 3cqw; font-size: 2.8cqw; min-height: 1em; }
     .shoes-btn { position: absolute; left: 50%; bottom: 7cqw; margin-left: -11cqw; width: 22cqw; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; padding: 0; transform-origin: 50% 0; animation: shoeSway 5.5s ease-in-out infinite; }
     .shoes-btn:hover, .shoes-btn:focus-visible { animation-duration: 2.2s; }
@@ -147,7 +147,7 @@
     .book .edit-name-btn { position: absolute; right: 4cqw; top: 3cqw; background: rgba(255,240,246,.7); border-radius: 3cqw; padding: .6cqw 2.4cqw; color: #4a2740; font-size: 2.6cqw; min-height: 0; }
     .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 14cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(70,25,55,.45)); z-index: 2; pointer-events: none; }
     .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(70,25,55,.35)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
-    .cover-fly.f2 { right: 8cqw; top: 22cqw; width: 12cqw; --r: 14deg; }
+    .cover-fly.f2 { right: 7cqw; top: 40cqw; width: 12cqw; --r: 14deg; }
     @keyframes flutter { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 6deg)) scale(.93, 1.03); } }
     @media (prefers-reduced-motion: reduce) { .cover-fly { animation: none; transform: rotate(var(--r)); } }
     @media (max-width: 520px) { .book { aspect-ratio: 5 / 7.6; } .cover-head { margin-top: 18cqw; } }
