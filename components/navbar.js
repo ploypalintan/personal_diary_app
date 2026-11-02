@@ -19,6 +19,7 @@ function initPage() {
 
   buildMemoHeader(state);
   buildTurnButtons();
+  if (typeof addStickers === 'function') addStickers(document.querySelector('.page'), STICKER_SETS.spread);
   return state;
 }
 

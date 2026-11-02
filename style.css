@@ -718,7 +718,7 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .bm:hover { transform: translateX(4px); }
 .bm.active { transform: translateX(10px); font-weight: 700; color: #7a2c47 !important; z-index: 2; box-shadow: inset 0 0 0 2px #B35878; }
 @media (max-width: 820px) {
-  .bookmarks { filter: none; right: 0; width: auto; }
+  .bookmarks { filter: none; position: fixed; top: auto; left: 0; right: 0; bottom: 0; width: auto; }
   .bm { flex: 1; width: auto; height: auto; margin: 0; writing-mode: horizontal-tb; border-radius: 12px 12px 0 0; padding: 12px 2px 10px; font-size: .74rem; letter-spacing: .06em;
     background: #fffaf7 !important; border-top: 5px solid var(--tab); box-shadow: none; }
   .bm:hover, .bm.active { transform: none; }
@@ -730,3 +730,16 @@ body::before { content: ''; position: fixed; inset: 0; z-index: -1; background: 
 .pg-left::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 48px; z-index: 1; pointer-events: none;
   background: url("assets/lace-side.png") left top / 48px auto repeat-y; filter: drop-shadow(1px 0 1px rgba(110,50,70,.2)); }
 @media (max-width: 820px) { .pg-left { padding-left: 44px; } .pg-left::before { width: 36px; background-size: 36px auto; } }
+
+/* very back layer: a pink-framed linen pinboard */
+html { background: #e9dcd7 !important; }
+body::before { background: none !important; border: 34px solid #f0c3d0; border-image: url("assets/pinboard.jpg") 84 fill / 34px stretch; box-sizing: border-box; }
+@media (max-width: 820px) { body::before { border-width: 14px; border-image-width: 14px; } }
+@media (max-width: 520px) {
+  .pg-left { padding-left: 34px; } .pg-left::before { width: 26px; background-size: 26px auto; }
+  #dayDate { letter-spacing: .04em; font-size: .78rem; white-space: normal; }
+}
+
+/* stickers: decoration only */
+.sticker { position: absolute; z-index: 6; pointer-events: none; user-select: none; height: auto; filter: drop-shadow(0 3px 4px rgba(110,50,70,.35)); }
+@media (max-width: 820px) { .st-seal { display: none; } .st-clip { width: 52px !important; right: 18% !important; top: 2px !important; } }
