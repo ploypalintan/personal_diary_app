@@ -28,8 +28,13 @@ exports.handler = async (event) => {
       ? keyterms.filter((t) => typeof t === 'string' && t.trim().length > 0 && t.length <= 40).slice(0, 60)
       : [];
 
-    const callDeepgram = (withTerms) => {
+    /* Nova-3 multilingual (language=multi) follows mid-sentence switches; hints nudge detection
+       toward the languages Ploy actually speaks: English, Mandarin, Thai. */
+    const HINTS = ['en', 'zh', 'th'];
+    const callDeepgram = ({ withTerms, multi, hints }) => {
       const params = new URLSearchParams({ model: 'nova-3', smart_format: 'true', punctuate: 'true' });
+      if (multi) params.set('language', 'multi');
+      if (multi && hints) HINTS.forEach((h) => params.append('language_hint', h));
       if (withTerms) terms.forEach((t) => params.append('keyterm', t.trim()));
       return fetch(`https://api.deepgram.com/v1/listen?${params}`, {
         method: 'POST',
@@ -38,9 +43,19 @@ exports.handler = async (event) => {
       });
     };
 
-    let dgResponse = await callDeepgram(terms.length > 0);
-    /* if Deepgram rejects the keyterms, retry once without them so voice still works */
-    if (dgResponse.status === 400 && terms.length > 0) dgResponse = await callDeepgram(false);
+    /* try the richest request first, then step down if Deepgram rejects an option (HTTP 400),
+       so voice always keeps working: multi+hints+keyterms -> multi+hints -> multi -> plain English */
+    const attempts = [
+      { withTerms: terms.length > 0, multi: true, hints: true },
+      { withTerms: false, multi: true, hints: true },
+      { withTerms: false, multi: true, hints: false },
+      { withTerms: false, multi: false, hints: false },
+    ].filter((a, i) => i === 0 || terms.length > 0 || i > 1);
+    let dgResponse;
+    for (const a of attempts) {
+      dgResponse = await callDeepgram(a);
+      if (dgResponse.status !== 400) break;
+    }
 
     if (!dgResponse.ok) {
       const errText = await dgResponse.text();
