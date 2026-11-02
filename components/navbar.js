@@ -47,7 +47,6 @@ function buildMemoHeader(state) {
 
   header.replaceChildren(mk('div', 'memo-kicker', 'diary memo'), row, subject);
   const right = document.querySelector('.pg-right');
-  if (right) right.prepend(mk('div', 'memo-lbl memo-msg', 'message:'));
   const page = document.querySelector('.page');
   const side = mk('div', 'memo-side', `the diary of ${state.userName}`); side.setAttribute('aria-hidden', 'true');
   if (page) page.appendChild(side);
