@@ -750,3 +750,45 @@ html { background: #efe3df !important; }
 body::before { border: 0 !important; border-image: none !important;
   background: linear-gradient(rgba(255,246,244,.14), rgba(255,246,244,.14)), url("assets/bedroom-bg.jpg") center 38% / cover no-repeat !important; }
 @media (max-width: 820px) { body::before { border-width: 0 !important; } }
+
+/* ═══ TYPE SYSTEM (same hierarchy on every page) ═══
+   display script  44 / 64 px   page title, day name
+   page heading    17 px caps   right-page heading
+   item text       17 px / 600  tasks, product names, entries
+   body            15 px        notes, inputs
+   meta            12.5 px      dates, subtitles, hints
+   label           11.5 px caps memo labels, stat labels
+   control         14 px / 600  buttons, selects, chips            */
+.page .memo-kicker { font-size: 2.1rem; }
+.page .memo-lbl, .page .memo-cell .memo-lbl { font-size: 11.5px; letter-spacing: .22em; color: var(--text-muted); }
+.page .memo-cell { font-size: 16px; }
+.page .page-title { font-size: clamp(2.4rem, 3.4vw, 2.9rem); }
+.page .day-name { font-size: 64px; line-height: .95; }
+.page .day-date { font-size: 12.5px; letter-spacing: .16em; color: var(--text-muted); }
+.page .day-tag { font-size: 12px; font-weight: 700; letter-spacing: .06em; }
+.page .sec-label { font-size: 17px; letter-spacing: .16em; color: var(--ink); padding-bottom: 8px; margin-bottom: 8px; border-bottom: 1px solid var(--rule, rgba(110,50,70,.25)); }
+.page .stat span { font-size: 11px !important; letter-spacing: .14em; }
+.page .stat b { font-size: 1.9rem !important; font-weight: 600; }
+.page .summary-label, .page .currency-label { font-size: 11.5px; letter-spacing: .14em; text-transform: uppercase; font-family: var(--font-caps); color: var(--text-muted); }
+.page .summary-val { font-size: 22px; font-weight: 700; color: var(--ink); }
+.page .tname, .page .mood-history-label { font-size: 17px; font-weight: 600; color: var(--ink); }
+.page .p-name { font-size: 19px; font-weight: 700; }
+.page .p-sub, .page .hint, .page .mood-history-date, .page .pill, .page .chip { font-size: 12.5px; }
+.page .p-sub { color: var(--text-mid); }
+.page .mood-history-note, .page .alert { font-size: 15px; }
+.page .mood-label-main { font-size: 15px; font-weight: 600; }
+.page .mood-label-sub { font-size: 12px; }
+.page .r-input { font-size: 17px; }
+.page .r-select, .page .r-number { font-size: 14px; font-weight: 500; }
+.page .btn-small, .page .mic-btn, .page .mic-label, .page .link-btn, .page .chip-btn, .page .seg-btn { font-size: 14px; font-weight: 600; }
+.page .memo-side { font-size: 12px; }
+
+/* today: the task line stands alone; options share the row below */
+.add-stack { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+.add-stack .r-input { width: 100%; flex: none; }
+.add-opts { display: flex; align-items: center; gap: 8px; }
+.add-opts .r-select { flex: 1 1 0; min-width: 0; }
+.add-opts .mic-btn, .add-opts .btn-small { flex: none; white-space: nowrap; }
+.page .pg-left .sec-label { font-size: 12px; letter-spacing: .16em; color: var(--text-muted); padding: 0; margin: 0 0 6px; border: 0; }
+.page .stat span { letter-spacing: .06em !important; font-size: 10.5px !important; white-space: nowrap; }
+.page .stat b { font-size: 1.6rem !important; }
