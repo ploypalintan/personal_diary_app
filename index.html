@@ -9,7 +9,7 @@
     /* ── name screen ── */
     #nameScreen{background:var(--almond-pale)}
     .ns-input{
-      font-family:'Playfair Display',serif;font-style:italic;font-size:22px;
+      font-family:var(--font);font-size:22px;
       color:var(--ink);border:none;border-bottom:1.5px solid var(--almond);
       background:transparent;text-align:center;padding:8px 16px;
       outline:none;width:300px;
@@ -20,7 +20,7 @@
     #splashScreen{background:var(--almond-pale);gap:12px}
     .splash-name-row{display:flex;align-items:center;gap:8px;justify-content:center}
     .edit-name-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;
-      letter-spacing:0.06em;text-decoration:underline;font-family:'DM Sans', system-ui, sans-serif;
+      letter-spacing:0.06em;text-decoration:underline;font-family:var(--font);
       padding:0;transition:color 0.2s}
     .edit-name-btn:hover{color:var(--mauve)}
 
@@ -28,8 +28,8 @@
     .char-area{display:flex;flex-direction:column;align-items:center;gap:6px}
     .char-canvas-wrap{position:relative;cursor:pointer}
     .customize-link{font-size:13px;color:var(--text-muted);letter-spacing:0.06em;
-      text-decoration:underline;cursor:pointer;font-family:'DM Sans', system-ui, sans-serif;
-      font-style:italic;background:none;border:none;padding:0;transition:color 0.2s}
+      text-decoration:underline;cursor:pointer;font-family:var(--font);
+      background:none;border:none;padding:0;transition:color 0.2s}
     .customize-link:hover{color:var(--mauve)}
 
     /* ── customiser modal ── */
@@ -42,12 +42,12 @@
       background:var(--almond-pale);border-radius:20px;border:0.5px solid var(--border);
       padding:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;
     }
-    .modal-title{font-family:'Playfair Display',serif;font-style:italic;font-size:18px;
+    .modal-title{font-family:var(--font);font-size:18px;
       color:var(--ink);margin-bottom:16px;text-align:center}
     .modal-row{background:#fff;border:0.5px solid var(--border-soft);border-radius:12px;
       padding:12px 14px;margin-bottom:10px}
     .opt-lbl{font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
-      color:var(--text-muted);margin-bottom:8px;font-family:'DM Sans', system-ui, sans-serif}
+      color:var(--text-muted);margin-bottom:8px;font-family:var(--font)}
     .swatches{display:flex;gap:7px;flex-wrap:wrap}
     .skin-sw{width:26px;height:26px;border-radius:50%;cursor:pointer;
       border:2px solid transparent;transition:all 0.15s}
@@ -57,14 +57,14 @@
     .hair-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
     .pill-o{padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);
       background:var(--almond-pale);font-size:13px;color:var(--text-muted);cursor:pointer;
-      font-family:'DM Sans', system-ui, sans-serif;font-style:italic;transition:all 0.15s;white-space:nowrap}
+      font-family:var(--font);transition:all 0.15s;white-space:nowrap}
     .pill-o:hover{background:var(--almond-light)}
     .pill-o.sel{background:var(--mauve);color:#faf5f5;border-color:var(--mauve)}
     .modal-preview{display:flex;justify-content:center;margin-bottom:16px}
     .modal-btns{display:flex;gap:8px}
     .modal-btns .btn-primary{flex:1}
     .btn-ghost2{flex:1;background:none;border:0.5px solid var(--border);border-radius:30px;
-      padding:11px;font-size:16px;cursor:pointer;font-family:'DM Sans', system-ui, sans-serif;
+      padding:11px;font-size:16px;cursor:pointer;font-family:var(--font);
       color:var(--text-mid);transition:all 0.2s}
     .btn-ghost2:hover{background:var(--almond-light)}
 
