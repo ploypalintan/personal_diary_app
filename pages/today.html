@@ -63,7 +63,7 @@
   <main class="page">
     <section class="pg pg-left" aria-label="left page">
       <div class="page-header">
-        <div class="page-title">daily checklist</div>
+        <div class="page-title">to do list</div>
         <div class="page-date js-today"></div>
       </div>
       <div class="pg-body">
@@ -160,7 +160,7 @@
     setMemo(viewDate, diff);
 
     if (!todos.length) {
-      list.innerHTML = diff < 0 ? '<div class="empty-state">nothing was written on this day.</div>' : '<div class="empty-state">nothing yet — what\'s calling you?</div>';
+      list.innerHTML = diff < 0 ? '<div class="empty-state">nothing was written on this day.</div>' : '';
     } else todos.forEach(item => list.appendChild(makeTodoCard(item, toggleTask, deleteTask)));
 
     const done = todos.filter(t => t.done).length, total = todos.length;

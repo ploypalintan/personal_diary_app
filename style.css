@@ -800,3 +800,6 @@ body::before { border: 0 !important; border-image: none !important;
 /* today: checklist page gets the same faint illustration treatment as the makeup shelf */
 .pg-right.room-bg::after { content: ''; position: absolute; left: 0; right: 0; top: 84px; bottom: 66px; background: url('assets/room-illustration.jpg') center / cover no-repeat; opacity: .22; pointer-events: none; z-index: 0; }
 .pg-right.room-bg > .pg-body { position: relative; z-index: 1; }
+
+.pg-right.money-bg::after { content: ''; position: absolute; left: 0; right: 0; top: 84px; bottom: 66px; background: url('assets/money-illustration.jpg') center / cover no-repeat; opacity: .1; pointer-events: none; z-index: 0; }
+.pg-right.money-bg > .pg-body { position: relative; z-index: 1; }
