@@ -27,38 +27,38 @@
     .doodle { position: absolute; left: 25%; top: 415px; width: 90px; height: 70px; opacity: .85; }
 
 
-    /* ── the cover: pink-striped cloth, an ornamental plate, script lettering ── */
-    .book { display: none; position: relative; container-type: inline-size; width: min(560px, calc(100% - 24px)); aspect-ratio: 4 / 5; margin: 24px auto;
-      background: repeating-linear-gradient(90deg, #f1d6e1 0 3.1cqw, #fffafa 3.1cqw 6.2cqw); border-radius: 1.4cqw 2.4cqw 2.4cqw 1.4cqw;
-      box-shadow: 0 22px 40px rgba(90,40,60,.30), inset 0 0 0 .5cqw rgba(255,255,255,.7); overflow: hidden; }
-    .book::before { content: ''; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(90deg, rgba(110,50,70,.20), rgba(110,50,70,0) 5cqw), var(--grain); }
+    /* ── the cover: dusty-pink linen hardback, lettering pressed into the cloth ── */
+    .book { display: none; position: relative; container-type: inline-size; width: min(540px, calc(100% - 24px)); aspect-ratio: 4 / 5; margin: 24px auto; overflow: hidden;
+      border-radius: .8cqw 1.6cqw 1.6cqw .8cqw;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, rgba(120,60,100,.05) 1px 2px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, rgba(120,60,100,.05) 1px 2px),
+        var(--grain),
+        linear-gradient(160deg, #e1b6cb, #d6a6c0 55%, #cf9db9);
+      box-shadow: 0 24px 40px rgba(80,30,60,.34), 0 2px 5px rgba(80,30,60,.25); }
     .book.active { display: flex; flex-direction: column; align-items: center; }
-    .book-top { margin-top: 5.5cqw; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .3em; font-size: 2.7cqw; color: #5a4650; }
-    .doily { position: absolute; left: 50%; top: 46cqw; width: 106cqw; height: auto; transform: translate(-50%, -50%); filter: drop-shadow(0 1cqw 1.6cqw rgba(110,50,70,.22)); pointer-events: none; }
-    .book-top, .cartouche, .book-actions, .shelf-line { position: relative; z-index: 1; }
-    .cartouche { position: relative; width: 94%; aspect-ratio: 600 / 420; margin-top: 4cqw; }
-    .cart-svg { position: absolute; inset: 0; width: 100%; height: 100%; filter: drop-shadow(0 .6cqw 1.2cqw rgba(110,50,70,.18)); }
-    .cart-text { position: absolute; left: 20%; right: 20%; top: 20%; bottom: 17%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-    .book .cover-title { font-size: 12.5cqw; line-height: .95; color: #4f4350; text-wrap: balance; max-width: 7em; }
-    .poem-rule { display: flex; align-items: center; gap: 1.6cqw; margin: 1.6cqw 0 1.4cqw; width: 52%; }
-    .poem-rule i { flex: 1; height: 1px; background: #8d7d88; }
-    .poem-rule b { width: 1.4cqw; height: 1.4cqw; background: #b35878; transform: rotate(45deg); }
-    .book-line { font-family: var(--font-caps); font-size: 3.1cqw; letter-spacing: .09em; line-height: 1.7; color: #4f4350; max-width: 17em; text-wrap: balance; }
-    .hang-shoes { position: absolute; left: 50%; top: 90%; width: 13cqw; height: auto; margin-left: -6.5cqw; transform-origin: 50% 0; filter: drop-shadow(0 .5cqw .8cqw rgba(110,50,70,.45)); animation: shoeSway 5.5s ease-in-out infinite; z-index: 2; }
+    .book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 6.5cqw; background: linear-gradient(90deg, #a87592 0, #c391ae 55%, #b48099 80%, rgba(255,255,255,.35) 82%, rgba(255,255,255,.12) 86%, transparent 100%); box-shadow: 1.2cqw 0 2cqw rgba(80,30,60,.22); }
+    .cover-head { margin: 15cqw 0 0 12cqw; align-self: flex-start; width: 62%; text-align: center; }
+    .book-top { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .3em; font-size: 2.5cqw; color: #4a2740; margin-bottom: 1.5cqw; }
+    .book .cover-title { font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
+    .book-line { margin-top: 3.5cqw; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
+    .shelf-line { position: absolute; left: 12cqw; bottom: 3cqw; font-size: 2.8cqw; min-height: 1em; }
+    .shoes-btn { position: absolute; left: 50%; bottom: 7cqw; margin-left: -11cqw; width: 22cqw; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; padding: 0; transform-origin: 50% 0; animation: shoeSway 5.5s ease-in-out infinite; }
+    .shoes-btn:hover, .shoes-btn:focus-visible { animation-duration: 2.2s; }
+    .shoes-btn:focus-visible { outline: 3px solid #fff; outline-offset: 6px; border-radius: 2cqw; }
+    .shoes-ribbon { display: block; width: .5cqw; height: 6cqw; background: linear-gradient(#fff, #f6dbe6); box-shadow: 0 0 .6cqw rgba(80,30,60,.35); }
+    .shoes-img { width: 17cqw; height: auto; filter: drop-shadow(0 .7cqw 1cqw rgba(70,25,55,.5)); }
+    .shoes-label { margin-top: 1.5cqw; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: 2.3cqw; color: #4a2740; background: rgba(255,240,246,.7); padding: .6cqw 2cqw; border-radius: 3cqw; white-space: nowrap; }
     @keyframes shoeSway { 0%,100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg); } }
-    @media (prefers-reduced-motion: reduce) { .hang-shoes { animation: none; } }
-    .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 17cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.35)); z-index: 2; pointer-events: none; }
-    .cover-heart { position: absolute; left: 5cqw; bottom: 5.5cqw; width: 15cqw; height: auto; transform: rotate(-8deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.3)); z-index: 2; pointer-events: none; }
-    .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(110,50,70,.3)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
-    .cover-fly.f1 { left: 2cqw; top: 54cqw; width: 14cqw; --r: -16deg; }
-    .cover-fly.f2 { right: 3cqw; top: 9cqw; width: 14cqw; --r: 14deg; animation-delay: -2s; }
+    @media (prefers-reduced-motion: reduce) { .shoes-btn { animation: none; } }
+    .book .edit-name-btn { position: absolute; right: 4cqw; top: 3cqw; background: rgba(255,240,246,.7); border-radius: 3cqw; padding: .6cqw 2.4cqw; color: #4a2740; font-size: 2.6cqw; min-height: 0; }
+    .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 14cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(70,25,55,.45)); z-index: 2; pointer-events: none; }
+    .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(70,25,55,.35)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
+    .cover-fly.f2 { right: 8cqw; top: 22cqw; width: 12cqw; --r: 14deg; }
     @keyframes flutter { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 6deg)) scale(.93, 1.03); } }
     @media (prefers-reduced-motion: reduce) { .cover-fly { animation: none; transform: rotate(var(--r)); } }
-    .shelf-line { margin-top: 3cqw; font-size: 3cqw; min-height: 1em; }
-    .book-actions { margin-top: auto; margin-bottom: 4.5cqw; display: flex; flex-direction: column; align-items: center; gap: 2cqw; }
-    .book .btn-primary { font-size: 3.6cqw; padding: 2.2cqw 6.5cqw; box-shadow: 0 .8cqw 1.8cqw rgba(110,50,70,.25); }
-    .book .edit-name-btn { background: rgba(255,250,250,.9); border-radius: 3cqw; padding: .6cqw 3cqw; color: var(--ink); font-size: 3cqw; }
-    @media (max-width: 400px) { .book .btn-primary { font-size: 14px; padding: 9px 22px; } .book .edit-name-btn { font-size: 13px; } .book-line { font-size: 11px; } }
+    @media (max-width: 520px) { .book { aspect-ratio: 5 / 7.6; } .cover-head { margin-top: 18cqw; } }
+    @media (max-width: 400px) { .book-line { font-size: 11px; } .shoes-label { font-size: 9px; } .book .edit-name-btn { font-size: 10px; } }
     .shelf { display: inline-block; color: var(--mauve-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
     .edit-name-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); font: 500 .9rem var(--font); text-decoration: underline; min-height: 36px; padding: 0 8px; }
     .edit-name-btn:hover { color: var(--mauve-dark); }
@@ -68,47 +68,99 @@
       .doodle { display: none; }
     }
 
-    /* ── the curtains open onto a little Paris window, then the diary opens ── */
-    .scene { position: fixed; inset: 0; z-index: 1000; display: none; overflow: hidden; background: #f3d6dd; opacity: 0; cursor: pointer; }
+    /* ── the curtains open onto a French bedroom; we walk toward the window, then the diary opens ── */
+    .scene { position: fixed; inset: 0; z-index: 1000; display: none; overflow: hidden; opacity: 0; cursor: pointer; background: #f6e9e6; }
     .scene.play { display: block; animation: sceneIn .45s ease forwards; }
-    .scene.leave { animation: sceneOut .6s ease forwards; }
+    .scene.leave { animation: sceneOut .7s ease forwards; }
     @keyframes sceneIn { to { opacity: 1; } }
     @keyframes sceneOut { from { opacity: 1; } to { opacity: 0; } }
-    .scene-view { position: absolute; inset: 0; transform-origin: 50% 60%; }
-    .scene.play .scene-view { animation: dolly 4.4s ease-out forwards; }
-    @keyframes dolly { from { transform: scale(1); } to { transform: scale(1.07); } }
-    .scene { background: var(--desk) url(assets/ballet-bg.jpg) center / cover; }
-    .scene-frame { position: absolute; top: 0; bottom: 0; left: 50%; width: min(100%, calc(100vh * .7)); transform: translateX(-50%); overflow: hidden; box-shadow: 0 0 40px rgba(90,40,60,.35); }
+    .scene-frame { position: absolute; top: 0; bottom: 0; left: 50%; width: min(100%, calc(100vh * .72)); transform: translateX(-50%); overflow: hidden; box-shadow: 0 0 40px rgba(90,40,60,.3); background: #fbefe9; }
+    .scene-view { position: absolute; inset: 0; }
     .scene-view svg { width: 100%; height: 100%; display: block; }
-    .scene .tie { width: 56px; height: 56px; }
-    .cloud { animation: drift 38s linear infinite; }
-    .cloud.b { animation-duration: 55s; animation-delay: -20s; }
-    @keyframes drift { from { transform: translateX(-90px); } to { transform: translateX(480px); } }
-    .bird { animation: fly 9s linear infinite; }
-    .bird.b { animation-duration: 12s; animation-delay: -5s; }
-    @keyframes fly { from { transform: translate(-40px, 0); } 50% { transform: translate(200px, -16px); } to { transform: translate(450px, 4px); } }
-    .twinkle { animation: twinkle 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-    .twinkle:nth-of-type(2n) { animation-delay: -.5s; } .twinkle:nth-of-type(3n) { animation-delay: -1.1s; }
-    @keyframes twinkle { 0%,100% { opacity: .15; transform: scale(.6); } 50% { opacity: 1; transform: scale(1.2); } }
-    .tree { animation: sway 5s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
-    @keyframes sway { 0%,100% { transform: rotate(-.8deg); } 50% { transform: rotate(.8deg); } }
+    .scene .bgL, .scene .fgL { transform-box: view-box; }
+    .scene .bgL { transform-origin: 72% 46%; }
+    .scene .fgL { transform-origin: 62% 100%; }
+    .scene.play .bgL { animation: walkBg 4.4s cubic-bezier(.45,0,.35,1) .9s forwards; }
+    .scene.play .fgL { animation: walkFg 4.4s cubic-bezier(.45,0,.35,1) .9s forwards; }
+    @keyframes walkBg { to { transform: scale(1.38); } }
+    @keyframes walkFg { to { transform: scale(1.7) translateY(70px); opacity: .0; } }
+    .scene .fgL { opacity: 1; }
+    .twinkle { animation: twinkle 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes twinkle { 0%,100% { opacity: .35; } 50% { opacity: 1; filter: drop-shadow(0 0 2px #fff); } }
+    .flame { animation: flick 1.4s ease-in-out infinite; transform-box: fill-box; transform-origin: 50% 100%; }
+    @keyframes flick { 0%,100% { transform: scaleY(1); } 50% { transform: scaleY(1.18); } }
+    .chand { transform-box: view-box; transform-origin: 30% 0; animation: swing 6s ease-in-out infinite; }
+    @keyframes swing { 0%,100% { transform: rotate(-.7deg); } 50% { transform: rotate(.7deg); } }
+    .sway { transform-box: fill-box; transform-origin: 50% 0; animation: sway 5s ease-in-out infinite; }
+    .sway.b { animation-delay: -2.2s; }
+    @keyframes sway { 0%,100% { transform: skewX(-1.2deg); } 50% { transform: skewX(1.4deg); } }
+    .rays { animation: rays 6s ease-in-out infinite; }
+    @keyframes rays { 0%,100% { opacity: .55; } 50% { opacity: 1; } }
+    .cloudW { animation: drift 26s linear infinite; } .cloudW.b { animation-duration: 38s; animation-delay: -14s; }
+    @keyframes drift { from { transform: translateX(-60px); } to { transform: translateX(170px); } }
+    .bird { animation: fly 8s linear infinite; } .bird.b { animation-duration: 11s; animation-delay: -4s; }
+    @keyframes fly { from { transform: translate(210px, 0); } to { transform: translate(400px, -24px); } }
 
+    /* the entrance curtains: very light baby pink, sheer and quiet */
     .curtain { position: absolute; top: 0; bottom: 0; width: 51%; z-index: 3;
-      background: repeating-linear-gradient(90deg, rgba(255,255,255,.30) 0 7px, rgba(160,70,100,.13) 14px 24px, rgba(255,255,255,.22) 30px 36px),
-                  linear-gradient(180deg, #f6c4d1, #f0a9bc 70%, #e993ab);
-      box-shadow: 0 0 30px rgba(110,40,70,.25); }
-    .curtain.l { left: 0; transform-origin: 0 50%; border-right: 2px solid rgba(255,255,255,.5); }
-    .curtain.r { right: 0; transform-origin: 100% 50%; border-left: 2px solid rgba(255,255,255,.5); }
-    .scene.play .curtain { animation: part 2.1s cubic-bezier(.66,0,.3,1) .55s forwards; }
-    @keyframes part { to { transform: scaleX(.2); } }
-    .rod { position: absolute; top: 0; left: 0; right: 0; height: 26px; z-index: 4; background: linear-gradient(#fbe7ec, #e7a9bb); border-bottom: 2px solid rgba(120,50,80,.35);
-      -webkit-mask: radial-gradient(circle 9px at 9px 100%, transparent 98%, #000) 0 0 / 18px 100%; mask: radial-gradient(circle 9px at 9px 100%, transparent 98%, #000) 0 0 / 18px 100%; }
-    .tie { position: absolute; top: 56%; width: 56px; height: 56px; z-index: 5; opacity: 0; }
+      background: repeating-linear-gradient(90deg, rgba(255,255,255,.55) 0 5px, rgba(214,150,170,.10) 10px 20px, rgba(255,255,255,.4) 26px 31px),
+                  linear-gradient(180deg, #fdf3f6, #f8e3ea 75%, #f4d9e1);
+      box-shadow: 0 0 26px rgba(150,90,110,.16); }
+    .curtain.l { left: 0; transform-origin: 0 50%; border-right: 1px solid rgba(255,255,255,.9); }
+    .curtain.r { right: 0; transform-origin: 100% 50%; border-left: 1px solid rgba(255,255,255,.9); }
+    .scene.play .curtain { animation: part 2.3s cubic-bezier(.66,0,.3,1) .5s forwards; }
+    @keyframes part { to { transform: scaleX(.16); } }
+    .rod { position: absolute; top: 0; left: 0; right: 0; height: 14px; z-index: 4; background: linear-gradient(#f4e2b0, #c79c4a 55%, #e9d08e); box-shadow: 0 2px 4px rgba(120,80,40,.3); }
+    .rod::before, .rod::after { content: ''; position: absolute; top: -2px; width: 18px; height: 18px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff3c4, #c79c4a 70%); }
+    .rod::before { left: -4px; } .rod::after { right: -4px; }
+    .tie { position: absolute; top: 56%; width: 46px; height: 46px; z-index: 5; opacity: 0; }
     .tie.l { left: 1%; } .tie.r { right: 1%; transform: scaleX(-1); }
-    .scene.play .tie { animation: tieIn .6s ease 2.1s forwards; }
+    .scene.play .tie { animation: tieIn .6s ease 2.2s forwards; }
     @keyframes tieIn { to { opacity: 1; } }
     .skip { position: absolute; left: 50%; bottom: max(18px, env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 6; padding: 6px 16px; border-radius: 16px; background: rgba(255,248,246,.85); color: var(--ink); font: 500 .85rem var(--font); }
     @media (prefers-reduced-motion: reduce) { .scene { display: none !important; } }
+
+    /* ── the cover: dusty-pink linen hardback, lettering pressed into the cloth ── */
+    .book { display: none; position: relative; container-type: inline-size; width: min(540px, calc(100% - 24px)); aspect-ratio: 4 / 5; margin: 24px auto; overflow: hidden;
+      border-radius: .8cqw 1.6cqw 1.6cqw .8cqw;
+      background:
+        repeating-linear-gradient(0deg, rgba(255,255,255,.07) 0 1px, rgba(120,60,100,.05) 1px 2px),
+        repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 1px, rgba(120,60,100,.05) 1px 2px),
+        var(--grain),
+        linear-gradient(160deg, #e1b6cb, #d6a6c0 55%, #cf9db9);
+      box-shadow: 0 24px 40px rgba(80,30,60,.34), 0 2px 5px rgba(80,30,60,.25); }
+    .book.active { display: flex; flex-direction: column; align-items: center; }
+    .book-spine { position: absolute; left: 0; top: 0; bottom: 0; width: 6.5cqw; background: linear-gradient(90deg, #a87592 0, #c391ae 55%, #b48099 80%, rgba(255,255,255,.35) 82%, rgba(255,255,255,.12) 86%, transparent 100%); box-shadow: 1.2cqw 0 2cqw rgba(80,30,60,.22); }
+    .cover-head { margin: 15cqw 0 0 12cqw; align-self: flex-start; width: 62%; text-align: center; }
+    .book-top { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .3em; font-size: 2.5cqw; color: #4a2740; margin-bottom: 1.5cqw; }
+    .book .cover-title { font-size: 13.5cqw; line-height: .98; color: #4a2740; text-wrap: balance; text-shadow: 0 .25cqw 0 rgba(255,255,255,.45), 0 -.2cqw 0 rgba(70,25,55,.35); }
+    .book-line { margin-top: 3.5cqw; font-family: var(--font-caps); font-size: 3cqw; letter-spacing: .1em; line-height: 1.7; color: #4a2740; text-wrap: balance; }
+    .shelf-line { position: absolute; left: 12cqw; bottom: 3cqw; font-size: 2.8cqw; min-height: 1em; }
+    .shoes-btn { position: absolute; left: 50%; bottom: 7cqw; margin-left: -11cqw; width: 22cqw; display: flex; flex-direction: column; align-items: center; background: none; border: 0; cursor: pointer; padding: 0; transform-origin: 50% 0; animation: shoeSway 5.5s ease-in-out infinite; }
+    .shoes-btn:hover, .shoes-btn:focus-visible { animation-duration: 2.2s; }
+    .shoes-btn:focus-visible { outline: 3px solid #fff; outline-offset: 6px; border-radius: 2cqw; }
+    .shoes-ribbon { display: block; width: .5cqw; height: 6cqw; background: linear-gradient(#fff, #f6dbe6); box-shadow: 0 0 .6cqw rgba(80,30,60,.35); }
+    .shoes-img { width: 17cqw; height: auto; filter: drop-shadow(0 .7cqw 1cqw rgba(70,25,55,.5)); }
+    .shoes-label { margin-top: 1.5cqw; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: 2.3cqw; color: #4a2740; background: rgba(255,240,246,.7); padding: .6cqw 2cqw; border-radius: 3cqw; white-space: nowrap; }
+    @keyframes shoeSway { 0%,100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg); } }
+    @media (prefers-reduced-motion: reduce) { .shoes-btn { animation: none; } }
+    .book .edit-name-btn { position: absolute; right: 4cqw; top: 3cqw; background: rgba(255,240,246,.7); border-radius: 3cqw; padding: .6cqw 2.4cqw; color: #4a2740; font-size: 2.6cqw; min-height: 0; }
+    .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 14cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(70,25,55,.45)); z-index: 2; pointer-events: none; }
+    .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(70,25,55,.35)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
+    .cover-fly.f2 { right: 8cqw; top: 22cqw; width: 12cqw; --r: 14deg; }
+    @keyframes flutter { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 6deg)) scale(.93, 1.03); } }
+    @media (prefers-reduced-motion: reduce) { .cover-fly { animation: none; transform: rotate(var(--r)); } }
+    @media (max-width: 520px) { .book { aspect-ratio: 5 / 7.6; } .cover-head { margin-top: 18cqw; } }
+    @media (max-width: 400px) { .book-line { font-size: 11px; } .shoes-label { font-size: 9px; } .book .edit-name-btn { font-size: 10px; } }
+    .shelf { display: inline-block; color: var(--mauve-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .edit-name-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); font: 500 .9rem var(--font); text-decoration: underline; min-height: 36px; padding: 0 8px; }
+    .edit-name-btn:hover { color: var(--mauve-dark); }
+    @media (max-width: 640px) {
+      .cover { margin: 11px; padding: 36px 20px 30px 52px; min-height: calc(100vh - 22px); }
+      .cover::before { left: -10px; width: 50px; background-size: 50px 21px; }
+      .doodle { display: none; }
+    }
+
   </style>
 </head>
 <body>
@@ -126,84 +178,98 @@
     <button class="btn-primary" id="beginBtn" type="button">begin my diary</button>
   </main>
 
-  <!-- cover: striped cloth book with an ornamental title plate -->
+  <!-- cover: dusty-pink cloth hardback; the hanging ballet shoes are the "open" button -->
   <main id="splashScreen" class="book">
-    <div class="book-top">my journal</div>
-    <img class="doily" src="assets/doily.png" alt="" width="760" height="760"/>
-    <div class="cartouche">
-      <svg class="cart-svg" viewBox="0 0 600 420" aria-hidden="true" focusable="false">
-<g fill="#fff" stroke="#fff" stroke-width="16" stroke-linejoin="round"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/><g transform="translate(600 0) scale(-1 1)"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/></g><rect x="150" y="70" width="300" height="300"/></g>
-<g fill="#fff" stroke="#fff" stroke-width="9"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380 L300 70Z"/><g transform="translate(600 0) scale(-1 1)"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380 L300 70Z"/></g></g>
-<g fill="none" stroke="#6e636b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/><path d="M99.0 156.5 L96.3 161.3 L92.6 165.2 L88.2 167.9 L83.3 169.4 L78.3 169.7 L73.5 168.7 L69.2 166.5 L65.7 163.5 L63.1 159.7 L61.6 155.6 L61.2 151.3 L61.9 147.2 L63.5 143.4 L66.0 140.3 L69.0 138.0 L72.5 136.6 L76.0 136.1 L79.5 136.5 L82.7 137.7 L85.3 139.7 L87.3 142.1 L88.5 144.9 L89.0 147.7 L88.8 150.5 L87.9 153.0 L86.4 155.2 L84.5 156.7 L82.4 157.7 L80.2 158.1 L78.1 158.0 L76.2 157.3 L74.7 156.2 L73.6 154.9 L72.9 153.3 L72.7 151.8 L72.8 150.4 L73.4 149.2 L74.1 148.3 L75.1 147.6 L76.0 147.4"/><path d="M92.1 252.7 L88.5 247.5 L83.7 243.5 L78.1 241.0 L72.3 240.2 L66.5 240.8 L61.2 243.0 L56.9 246.4 L53.6 250.7 L51.7 255.6 L51.1 260.7 L52.0 265.6 L54.0 270.0 L57.1 273.6 L60.8 276.2 L65.1 277.6 L69.4 277.8 L73.5 276.9 L77.0 275.0 L79.9 272.4 L81.8 269.1 L82.8 265.6 L82.8 262.1 L81.9 258.9 L80.2 256.1 L77.9 254.0 L75.3 252.6 L72.5 252.1 L69.8 252.3 L67.4 253.2 L65.4 254.6 L64.0 256.4 L63.2 258.5 L63.0 260.5 L63.3 262.4 L64.2 263.9 L65.3 265.1 L66.6 265.9 L68.0 266.2 L69.3 266.0 L70.3 265.6"/><path d="M160.5 122.8 L157.5 124.6 L154.2 125.7 L150.9 126.0 L147.7 125.5 L144.7 124.3 L142.2 122.5 L140.2 120.1 L138.8 117.5 L138.2 114.7 L138.2 111.8 L138.9 109.2 L140.1 106.8 L141.8 104.8 L143.9 103.4 L146.2 102.5 L148.6 102.2 L150.9 102.5 L153.0 103.2 L154.8 104.4 L156.2 106.0 L157.1 107.8 L157.6 109.6 L157.7 111.5 L157.2 113.3 L156.5 114.8 L155.4 116.0 L154.1 116.9 L152.7 117.5 L151.3 117.6 L149.9 117.4 L148.7 117.0 L147.8 116.2 L147.0 115.4 L146.6 114.4 L146.4 113.4 L146.5 112.5 L146.8 111.7 L147.3 111.1 L147.8 110.6 L148.4 110.4"/><path d="M162.5 323.2 L159.5 321.4 L156.2 320.3 L152.9 320.0 L149.7 320.5 L146.7 321.7 L144.2 323.5 L142.2 325.9 L140.8 328.5 L140.2 331.3 L140.2 334.2 L140.9 336.8 L142.1 339.2 L143.8 341.2 L145.9 342.6 L148.2 343.5 L150.6 343.8 L152.9 343.5 L155.0 342.8 L156.8 341.6 L158.2 340.0 L159.1 338.2 L159.6 336.4 L159.7 334.5 L159.2 332.7 L158.5 331.2 L157.4 330.0 L156.1 329.1 L154.7 328.5 L153.3 328.4 L151.9 328.6 L150.7 329.0 L149.8 329.8 L149.0 330.6 L148.6 331.6 L148.4 332.6 L148.5 333.5 L148.8 334.3 L149.3 334.9 L149.8 335.4 L150.4 335.6"/><path d="M245.7 89.3 L244.1 91.1 L242.2 92.5 L240.1 93.4 L237.9 93.9 L235.7 93.8 L233.6 93.3 L231.8 92.4 L230.2 91.1 L229.0 89.5 L228.2 87.7 L227.8 85.9 L227.8 84.0 L228.2 82.3 L229.0 80.7 L230.1 79.4 L231.4 78.4 L232.8 77.7 L234.3 77.4 L235.8 77.4 L237.2 77.8 L238.4 78.4 L239.4 79.3 L240.2 80.3 L240.7 81.4 L240.9 82.5 L240.9 83.7 L240.6 84.7 L240.1 85.6 L239.5 86.4 L238.7 86.9 L237.9 87.2 L237.1 87.3 L236.3 87.3 L235.6 87.0 L235.1 86.7 L234.6 86.2 L234.3 85.7 L234.2 85.1 L234.2 84.6 L234.4 84.2"/><path d="M245.7 344.7 L244.1 342.9 L242.2 341.5 L240.1 340.6 L237.9 340.1 L235.7 340.2 L233.6 340.7 L231.8 341.6 L230.2 342.9 L229.0 344.5 L228.2 346.3 L227.8 348.1 L227.8 350.0 L228.2 351.7 L229.0 353.3 L230.1 354.6 L231.4 355.6 L232.8 356.3 L234.3 356.6 L235.8 356.6 L237.2 356.2 L238.4 355.6 L239.4 354.7 L240.2 353.7 L240.7 352.6 L240.9 351.5 L240.9 350.3 L240.6 349.3 L240.1 348.4 L239.5 347.6 L238.7 347.1 L237.9 346.8 L237.1 346.7 L236.3 346.7 L235.6 347.0 L235.1 347.3 L234.6 347.8 L234.3 348.3 L234.2 348.9 L234.2 349.4 L234.4 349.8"/><path d="M96.0 176.0 Q108.8 162.2 129.3 169.2 Q113.2 183.7 96.0 176.0Z" fill="#fff"/><path d="M92.0 236.0 Q109.5 229.1 124.9 244.4 Q104.1 250.4 92.0 236.0Z" fill="#fff"/><path d="M176.0 92.0 Q182.7 78.1 200.6 78.6 Q191.4 93.9 176.0 92.0Z" fill="#fff"/><path d="M176.0 354.0 Q191.4 352.1 200.6 367.4 Q182.7 367.9 176.0 354.0Z" fill="#fff"/><path d="M250.0 62.0 Q260.8 52.9 275.9 59.4 Q262.4 68.8 250.0 62.0Z" fill="#fff"/><path d="M250.0 372.0 Q262.4 365.2 275.9 374.6 Q260.8 381.1 250.0 372.0Z" fill="#fff"/><path d="M118.0 206.0 Q131.5 197.0 148.0 206.0 Q131.5 215.0 118.0 206.0Z" fill="#fff"/><path d="M60.0 200.0 Q53.7 189.6 61.6 178.1 Q67.7 190.6 60.0 200.0Z" fill="#fff"/><g transform="translate(600 0) scale(-1 1)"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/><path d="M99.0 156.5 L96.3 161.3 L92.6 165.2 L88.2 167.9 L83.3 169.4 L78.3 169.7 L73.5 168.7 L69.2 166.5 L65.7 163.5 L63.1 159.7 L61.6 155.6 L61.2 151.3 L61.9 147.2 L63.5 143.4 L66.0 140.3 L69.0 138.0 L72.5 136.6 L76.0 136.1 L79.5 136.5 L82.7 137.7 L85.3 139.7 L87.3 142.1 L88.5 144.9 L89.0 147.7 L88.8 150.5 L87.9 153.0 L86.4 155.2 L84.5 156.7 L82.4 157.7 L80.2 158.1 L78.1 158.0 L76.2 157.3 L74.7 156.2 L73.6 154.9 L72.9 153.3 L72.7 151.8 L72.8 150.4 L73.4 149.2 L74.1 148.3 L75.1 147.6 L76.0 147.4"/><path d="M92.1 252.7 L88.5 247.5 L83.7 243.5 L78.1 241.0 L72.3 240.2 L66.5 240.8 L61.2 243.0 L56.9 246.4 L53.6 250.7 L51.7 255.6 L51.1 260.7 L52.0 265.6 L54.0 270.0 L57.1 273.6 L60.8 276.2 L65.1 277.6 L69.4 277.8 L73.5 276.9 L77.0 275.0 L79.9 272.4 L81.8 269.1 L82.8 265.6 L82.8 262.1 L81.9 258.9 L80.2 256.1 L77.9 254.0 L75.3 252.6 L72.5 252.1 L69.8 252.3 L67.4 253.2 L65.4 254.6 L64.0 256.4 L63.2 258.5 L63.0 260.5 L63.3 262.4 L64.2 263.9 L65.3 265.1 L66.6 265.9 L68.0 266.2 L69.3 266.0 L70.3 265.6"/><path d="M160.5 122.8 L157.5 124.6 L154.2 125.7 L150.9 126.0 L147.7 125.5 L144.7 124.3 L142.2 122.5 L140.2 120.1 L138.8 117.5 L138.2 114.7 L138.2 111.8 L138.9 109.2 L140.1 106.8 L141.8 104.8 L143.9 103.4 L146.2 102.5 L148.6 102.2 L150.9 102.5 L153.0 103.2 L154.8 104.4 L156.2 106.0 L157.1 107.8 L157.6 109.6 L157.7 111.5 L157.2 113.3 L156.5 114.8 L155.4 116.0 L154.1 116.9 L152.7 117.5 L151.3 117.6 L149.9 117.4 L148.7 117.0 L147.8 116.2 L147.0 115.4 L146.6 114.4 L146.4 113.4 L146.5 112.5 L146.8 111.7 L147.3 111.1 L147.8 110.6 L148.4 110.4"/><path d="M162.5 323.2 L159.5 321.4 L156.2 320.3 L152.9 320.0 L149.7 320.5 L146.7 321.7 L144.2 323.5 L142.2 325.9 L140.8 328.5 L140.2 331.3 L140.2 334.2 L140.9 336.8 L142.1 339.2 L143.8 341.2 L145.9 342.6 L148.2 343.5 L150.6 343.8 L152.9 343.5 L155.0 342.8 L156.8 341.6 L158.2 340.0 L159.1 338.2 L159.6 336.4 L159.7 334.5 L159.2 332.7 L158.5 331.2 L157.4 330.0 L156.1 329.1 L154.7 328.5 L153.3 328.4 L151.9 328.6 L150.7 329.0 L149.8 329.8 L149.0 330.6 L148.6 331.6 L148.4 332.6 L148.5 333.5 L148.8 334.3 L149.3 334.9 L149.8 335.4 L150.4 335.6"/><path d="M245.7 89.3 L244.1 91.1 L242.2 92.5 L240.1 93.4 L237.9 93.9 L235.7 93.8 L233.6 93.3 L231.8 92.4 L230.2 91.1 L229.0 89.5 L228.2 87.7 L227.8 85.9 L227.8 84.0 L228.2 82.3 L229.0 80.7 L230.1 79.4 L231.4 78.4 L232.8 77.7 L234.3 77.4 L235.8 77.4 L237.2 77.8 L238.4 78.4 L239.4 79.3 L240.2 80.3 L240.7 81.4 L240.9 82.5 L240.9 83.7 L240.6 84.7 L240.1 85.6 L239.5 86.4 L238.7 86.9 L237.9 87.2 L237.1 87.3 L236.3 87.3 L235.6 87.0 L235.1 86.7 L234.6 86.2 L234.3 85.7 L234.2 85.1 L234.2 84.6 L234.4 84.2"/><path d="M245.7 344.7 L244.1 342.9 L242.2 341.5 L240.1 340.6 L237.9 340.1 L235.7 340.2 L233.6 340.7 L231.8 341.6 L230.2 342.9 L229.0 344.5 L228.2 346.3 L227.8 348.1 L227.8 350.0 L228.2 351.7 L229.0 353.3 L230.1 354.6 L231.4 355.6 L232.8 356.3 L234.3 356.6 L235.8 356.6 L237.2 356.2 L238.4 355.6 L239.4 354.7 L240.2 353.7 L240.7 352.6 L240.9 351.5 L240.9 350.3 L240.6 349.3 L240.1 348.4 L239.5 347.6 L238.7 347.1 L237.9 346.8 L237.1 346.7 L236.3 346.7 L235.6 347.0 L235.1 347.3 L234.6 347.8 L234.3 348.3 L234.2 348.9 L234.2 349.4 L234.4 349.8"/><path d="M96.0 176.0 Q108.8 162.2 129.3 169.2 Q113.2 183.7 96.0 176.0Z" fill="#fff"/><path d="M92.0 236.0 Q109.5 229.1 124.9 244.4 Q104.1 250.4 92.0 236.0Z" fill="#fff"/><path d="M176.0 92.0 Q182.7 78.1 200.6 78.6 Q191.4 93.9 176.0 92.0Z" fill="#fff"/><path d="M176.0 354.0 Q191.4 352.1 200.6 367.4 Q182.7 367.9 176.0 354.0Z" fill="#fff"/><path d="M250.0 62.0 Q260.8 52.9 275.9 59.4 Q262.4 68.8 250.0 62.0Z" fill="#fff"/><path d="M250.0 372.0 Q262.4 365.2 275.9 374.6 Q260.8 381.1 250.0 372.0Z" fill="#fff"/><path d="M118.0 206.0 Q131.5 197.0 148.0 206.0 Q131.5 215.0 118.0 206.0Z" fill="#fff"/><path d="M60.0 200.0 Q53.7 189.6 61.6 178.1 Q67.7 190.6 60.0 200.0Z" fill="#fff"/></g>
-<g transform="translate(300 215) scale(.9) translate(-300 -215)" stroke-width="1.1" opacity=".8"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/><g transform="translate(600 0) scale(-1 1)"><path d="M300 66 C262 66 240 50 204 58 C172 66 152 90 122 92 C86 94 56 110 52 146 C48 178 74 194 60 220 C46 246 52 278 84 292 C104 302 104 324 130 338 C156 352 184 346 204 366 C228 388 262 374 300 380"/></g></g>
-<g stroke-width="2"><path d="M300 40 C280 4 238 10 240 34 C242 52 278 52 300 40 C322 52 358 52 360 34 C362 10 320 4 300 40Z M300 40 C290 62 276 80 266 98 M300 40 C310 62 324 80 334 98 M284 22 C270 22 258 28 256 34 M316 22 C330 22 342 28 344 34" fill="#fff"/><ellipse cx="300" cy="40" rx="9" ry="8" fill="#fff"/></g></g>
-</svg>
-      <div class="cart-text">
-        <h1 class="cover-title" id="splashTitle"></h1>
-        <div class="poem-rule" aria-hidden="true"><i></i><b></b><i></i></div>
-        <p class="book-line" id="quoteText"></p>
-      </div>
-      <img class="hang-shoes" src="assets/ballet-shoes-hang.png" alt="" width="172" height="420"/>
+    <div class="book-spine" aria-hidden="true"></div>
+    <div class="cover-head">
+      <div class="book-top">my journal</div>
+      <h1 class="cover-title" id="splashTitle"></h1>
+      <p class="book-line" id="quoteText"></p>
     </div>
-    <p class="t-body shelf-line" id="shelfLine" role="status"></p>
-    <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
-    <img class="sticker cover-heart" src="assets/stickers/heart-cupid.png" alt="" aria-hidden="true" width="355" height="360"/>
-    <img class="sticker cover-fly f1" src="assets/stickers/butterfly-3.png" alt="" aria-hidden="true" width="236" height="253"/>
     <img class="sticker cover-fly f2" src="assets/stickers/butterfly-4.png" alt="" aria-hidden="true" width="279" height="284"/>
-    <div class="book-actions">
-      <button class="btn-primary" id="openBtn" type="button">open today's diary</button>
-      <button class="edit-name-btn" id="editName" type="button">change my name</button>
-    </div>
+    <p class="t-body shelf-line" id="shelfLine" role="status"></p>
+    <button class="shoes-btn" id="openBtn" type="button">
+      <img class="shoes-img" src="assets/ballet-shoes-hang.png" alt="" width="172" height="420"/>
+      <span class="shoes-label">open today's diary</span>
+    </button>
+    <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
+    <button class="edit-name-btn" id="editName" type="button">change my name</button>
   </main>
 
   <!-- opening scene: curtains part onto a window; decorative, tap to skip -->
   <div class="scene" id="scene" aria-hidden="true">
     <div class="scene-frame"><div class="scene-view">
-      <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cdd6ea"/><stop offset=".55" stop-color="#f4d4de"/><stop offset="1" stop-color="#fbe6dc"/></linearGradient>
-          <radialGradient id="glow" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#fff6e6" stop-opacity=".95"/><stop offset="1" stop-color="#fff6e6" stop-opacity="0"/></radialGradient>
-        </defs>
-        <rect width="400" height="600" fill="url(#sky)"/>
-        <circle cx="300" cy="150" r="90" fill="url(#glow)"/>
-        <g class="cloud" fill="#fff" opacity=".8"><ellipse cx="60" cy="110" rx="34" ry="10"/><ellipse cx="82" cy="102" rx="22" ry="9"/></g>
-        <g class="cloud b" fill="#fff" opacity=".65"><ellipse cx="200" cy="190" rx="40" ry="11"/><ellipse cx="226" cy="182" rx="24" ry="9"/></g>
-        <!-- the tower -->
-        <g fill="#8c7683" stroke="#8c7683" stroke-linejoin="round">
-          <path d="M112 480 L136 372 L150 305 L160 235 L168 165 L172 120 L176 165 L184 235 L194 305 L208 372 L232 480 L214 480 L198 410 Q172 388 146 410 L130 480 Z"/>
-          <path d="M171 120 L172 82 L173 120" stroke-width="2" fill="none"/>
-          <rect x="143" y="302" width="58" height="6" rx="1"/><rect x="157" y="232" width="30" height="5" rx="1"/><rect x="133" y="370" width="78" height="7" rx="1"/>
-        </g>
-        <g stroke="#b7a2ad" stroke-width="1" fill="none"><path d="M152 308 L192 370 M192 308 L152 370 M162 238 L182 300 M182 238 L162 300"/></g>
-        <g fill="#fff3cf"><path class="twinkle" d="M172 76 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z"/><path class="twinkle" d="M150 300 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z"/><path class="twinkle" d="M196 232 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z"/><path class="twinkle" d="M214 368 l1.5 4 4 1.5 -4 1.5 -1.5 4 -1.5 -4 -4 -1.5 4 -1.5z"/></g>
-        <!-- the building -->
-        <path d="M258 262 L276 232 H344 L362 262 Z" fill="#8c7683"/>
-        <rect x="262" y="262" width="96" height="220" fill="#e4cdd3"/>
-        <rect x="258" y="262" width="104" height="6" fill="#c9afb8"/>
-        <g fill="#a98d99"><rect x="272" y="280" width="14" height="26" rx="6"/><rect x="298" y="280" width="14" height="26" rx="6"/><rect x="324" y="280" width="14" height="26" rx="6"/>
-          <rect x="272" y="326" width="14" height="26" rx="6"/><rect x="298" y="326" width="14" height="26" rx="6"/><rect x="324" y="326" width="14" height="26" rx="6"/>
-          <rect x="272" y="372" width="14" height="26" rx="6"/><rect x="298" y="372" width="14" height="26" rx="6"/><rect x="324" y="372" width="14" height="26" rx="6"/></g>
-        <g fill="#fff0c8" opacity=".85"><rect class="twinkle" x="300" y="328" width="10" height="20" rx="5"/><rect class="twinkle" x="326" y="374" width="10" height="20" rx="5"/></g>
-        <!-- trees -->
-        <g fill="#a8bea4"><ellipse class="tree" cx="60" cy="470" rx="62" ry="46"/><ellipse class="tree" cx="360" cy="478" rx="70" ry="40"/><ellipse class="tree" cx="230" cy="490" rx="64" ry="34" fill="#b7ccb2"/></g>
-        <!-- birds -->
-        <g fill="none" stroke="#6f5a66" stroke-width="1.6" stroke-linecap="round"><path class="bird" d="M0 70 q5 -6 10 0 q5 -6 10 0"/><path class="bird b" d="M0 120 q4 -5 8 0 q4 -5 8 0"/></g>
-        <!-- window frame -->
-        <g fill="none" stroke="#9a6c5c" stroke-linecap="round"><rect x="4" y="4" width="392" height="590" stroke-width="12"/><path d="M200 4 V590" stroke-width="12"/></g>
-        <g fill="#f3e2d0" stroke="#9a6c5c"><circle cx="186" cy="320" r="5"/><circle cx="214" cy="320" r="5"/></g>
-        <!-- balcony railing -->
-        <rect x="0" y="540" width="400" height="60" fill="#e9c7cf"/>
-        <g fill="none" stroke="#4f3b44" stroke-width="3" stroke-linecap="round">
-          <path d="M0 484 H400 M0 540 H400" stroke-width="4"/>
-          <path d="M0 484 V540 M40 484 V540 M80 484 V540 M120 484 V540 M160 484 V540 M200 484 V540 M240 484 V540 M280 484 V540 M320 484 V540 M360 484 V540 M400 484 V540" stroke-width="2.2"/>
-          <g stroke-width="2.4"><circle cx="20" cy="512" r="11"/><circle cx="60" cy="512" r="11"/><circle cx="100" cy="512" r="11"/><circle cx="140" cy="512" r="11"/><circle cx="180" cy="512" r="11"/><circle cx="220" cy="512" r="11"/><circle cx="260" cy="512" r="11"/><circle cx="300" cy="512" r="11"/><circle cx="340" cy="512" r="11"/><circle cx="380" cy="512" r="11"/></g>
-        </g>
-      </svg>
+      <svg viewBox="0 0 400 600" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs><pattern id="floral" width="64" height="64" patternUnits="userSpaceOnUse">
+<rect width="64" height="64" fill="#fbefe9"/>
+<g opacity=".95"><ellipse cx="22" cy="40" rx="9" ry="3.2" fill="#c9d8b8" transform="rotate(-30 22 40)"/><ellipse cx="44" cy="20" rx="8" ry="3" fill="#c9d8b8" transform="rotate(35 44 20)"/><ellipse cx="50" cy="52" rx="7" ry="2.6" fill="#d3e0c3" transform="rotate(-50 50 52)"/>
+<circle cx="20.2" cy="18.0" r="3.6" fill="#f0bcc8"/><circle cx="17.3" cy="22.0" r="3.6" fill="#f0bcc8"/><circle cx="12.6" cy="20.5" r="3.6" fill="#f0bcc8"/><circle cx="12.6" cy="15.5" r="3.6" fill="#f0bcc8"/><circle cx="17.3" cy="14.0" r="3.6" fill="#f0bcc8"/><circle cx="16" cy="18" r="1.9" fill="#f6dc9f"/><circle cx="49.6" cy="40.0" r="3.1" fill="#ecaebe"/><circle cx="47.1" cy="43.4" r="3.1" fill="#ecaebe"/><circle cx="43.1" cy="42.1" r="3.1" fill="#ecaebe"/><circle cx="43.1" cy="37.9" r="3.1" fill="#ecaebe"/><circle cx="47.1" cy="36.6" r="3.1" fill="#ecaebe"/><circle cx="46" cy="40" r="1.6" fill="#f6dc9f"/><circle cx="58.4" cy="10.0" r="2.0" fill="#f6d0d8"/><circle cx="56.7" cy="12.3" r="2.0" fill="#f6d0d8"/><circle cx="54.1" cy="11.4" r="2.0" fill="#f6d0d8"/><circle cx="54.1" cy="8.6" r="2.0" fill="#f6d0d8"/><circle cx="56.7" cy="7.7" r="2.0" fill="#f6d0d8"/><circle cx="56" cy="10" r="1.1" fill="#f6dc9f"/><circle cx="30" cy="56" r="1.6" fill="#f0bcc8"/><circle cx="8" cy="50" r="1.3" fill="#f6d0d8"/></g></pattern>
+<linearGradient id="sky2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef3fa"/><stop offset=".7" stop-color="#fff6f1"/></linearGradient>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1d890"/><stop offset=".5" stop-color="#b98c3c"/><stop offset="1" stop-color="#ecca7c"/></linearGradient>
+<linearGradient id="velvet" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eeb4c2"/><stop offset="1" stop-color="#d28fa3"/></linearGradient>
+<linearGradient id="ray" x1="1" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffaf0" stop-opacity=".75"/><stop offset="1" stop-color="#fffaf0" stop-opacity="0"/></linearGradient>
+<linearGradient id="sheer" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#f6dce4"/><stop offset=".5" stop-color="#fbeaef"/><stop offset="1" stop-color="#f1cfd9"/></linearGradient>
+<clipPath id="glass"><rect x="216" y="84" width="168" height="396"/></clipPath>
+</defs>
+<g class="bgL">
+<rect width="400" height="600" fill="#fbefe9"/>
+<rect x="0" y="26" width="262" height="474" fill="url(#floral)"/>
+<rect x="0" y="0" width="400" height="26" fill="#fffaf6"/><path d="M0 26H400" stroke="#e8d9cd" stroke-width="2"/><g fill="#efe3d9"><rect x="0" y="20" width="6" height="6"/><rect x="12" y="20" width="6" height="6"/><rect x="24" y="20" width="6" height="6"/><rect x="36" y="20" width="6" height="6"/><rect x="48" y="20" width="6" height="6"/><rect x="60" y="20" width="6" height="6"/><rect x="72" y="20" width="6" height="6"/><rect x="84" y="20" width="6" height="6"/><rect x="96" y="20" width="6" height="6"/><rect x="108" y="20" width="6" height="6"/><rect x="120" y="20" width="6" height="6"/><rect x="132" y="20" width="6" height="6"/><rect x="144" y="20" width="6" height="6"/><rect x="156" y="20" width="6" height="6"/><rect x="168" y="20" width="6" height="6"/><rect x="180" y="20" width="6" height="6"/><rect x="192" y="20" width="6" height="6"/><rect x="204" y="20" width="6" height="6"/><rect x="216" y="20" width="6" height="6"/><rect x="228" y="20" width="6" height="6"/><rect x="240" y="20" width="6" height="6"/><rect x="252" y="20" width="6" height="6"/><rect x="264" y="20" width="6" height="6"/><rect x="276" y="20" width="6" height="6"/><rect x="288" y="20" width="6" height="6"/><rect x="300" y="20" width="6" height="6"/><rect x="312" y="20" width="6" height="6"/><rect x="324" y="20" width="6" height="6"/><rect x="336" y="20" width="6" height="6"/><rect x="348" y="20" width="6" height="6"/><rect x="360" y="20" width="6" height="6"/><rect x="372" y="20" width="6" height="6"/><rect x="384" y="20" width="6" height="6"/><rect x="396" y="20" width="6" height="6"/></g>
+<!-- window -->
+<rect x="204" y="68" width="192" height="424" fill="#fffdfb" stroke="#e6dad0" stroke-width="2"/>
+<rect x="216" y="84" width="168" height="396" fill="url(#sky2)"/>
+<g clip-path="url(#glass)">
+<g class="cloudW" fill="#fff" opacity=".9"><ellipse cx="250" cy="150" rx="34" ry="9"/><ellipse cx="276" cy="143" rx="22" ry="8"/></g>
+<g class="cloudW b" fill="#fff" opacity=".8"><ellipse cx="330" cy="215" rx="30" ry="8"/></g>
+<path d="M216 332 l8 -14 h26 l8 14z" fill="#aab4c6"/><rect x="220" y="332" width="38" height="14" fill="#d9dde6"/><path d="M262 332 l8 -14 h26 l8 14z" fill="#aab4c6"/><rect x="266" y="332" width="38" height="14" fill="#d9dde6"/><path d="M308 332 l8 -14 h26 l8 14z" fill="#aab4c6"/><rect x="312" y="332" width="38" height="14" fill="#d9dde6"/><path d="M352 332 l8 -14 h26 l8 14z" fill="#aab4c6"/><rect x="356" y="332" width="38" height="14" fill="#d9dde6"/><rect x="236" y="306" width="5" height="10" fill="#b9c0cd"/><rect x="284" y="306" width="5" height="10" fill="#b9c0cd"/><rect x="330" y="306" width="5" height="10" fill="#b9c0cd"/><rect x="372" y="306" width="5" height="10" fill="#b9c0cd"/>
+<rect x="216" y="346" width="168" height="60" fill="#e3e6ee"/>
+<g fill="none" stroke="#6f6670" stroke-linecap="round"><path d="M216 400H384M216 470H384" stroke-width="3"/><circle cx="228" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><circle cx="254" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><circle cx="280" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><circle cx="306" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><circle cx="332" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><circle cx="358" cy="428" r="9" fill="none" stroke="#6f6670" stroke-width="1.6"/><path d="M222 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M235 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M248 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M261 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M274 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M287 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M300 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M313 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M326 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M339 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M352 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M365 400 V470" stroke="#6f6670" stroke-width="1.4"/><path d="M378 400 V470" stroke="#6f6670" stroke-width="1.4"/></g>
+<g fill="none" stroke="#7a6f78" stroke-width="1.3" stroke-linecap="round"><path class="bird" d="M0 130 q4 -5 8 0 q4 -5 8 0"/><path class="bird b" d="M0 175 q3 -4 6 0 q3 -4 6 0"/></g>
+</g>
+<g stroke="#fffdfb" stroke-width="5"><path d="M300 84V480M216 190H384M216 300H384"/></g>
+<g fill="#e9cf8d"><circle cx="372" cy="288" r="3"/></g>
+<!-- mirror -->
+<g><ellipse cx="102" cy="216" rx="40" ry="62" fill="#efe6e7" stroke="url(#gold)" stroke-width="8"/><ellipse cx="102" cy="216" rx="33" ry="55" fill="none" stroke="#f4e1a8" stroke-width="1"/>
+<path d="M82 180 L128 160 L128 190 L82 230z" fill="#fff" opacity=".35"/>
+<path d="M102 148 c-12 -14 -26 -2 -16 8 c4 4 10 0 8 -4 M102 148 c12 -14 26 -2 16 8 c-4 4 -10 0 -8 -4" fill="none" stroke="url(#gold)" stroke-width="3.4" stroke-linecap="round"/><circle cx="102" cy="144" r="4" fill="url(#gold)"/></g>
+<!-- side table + flowers -->
+<g><rect x="122" y="378" width="84" height="12" rx="3" fill="#fffdfb" stroke="#e6dad0"/><rect x="128" y="390" width="72" height="62" rx="3" fill="#fffaf6" stroke="#e6dad0"/>
+<path d="M142 404h44M142 424h44" stroke="url(#gold)" stroke-width="2.6" stroke-linecap="round"/><rect x="128" y="452" width="8" height="26" fill="#fffdfb" stroke="#e6dad0"/><rect x="192" y="452" width="8" height="26" fill="#fffdfb" stroke="#e6dad0"/>
+<rect x="136" y="346" width="14" height="30" rx="1" fill="#f6efe4" stroke="url(#gold)" stroke-width="2"/>
+<g fill="#fff" stroke="#e4e6ee" stroke-width=".8"><circle cx="170" cy="340" r="8"/><circle cx="160" cy="348" r="8"/><circle cx="180" cy="347" r="8"/><circle cx="172" cy="350" r="9"/><circle cx="164" cy="336" r="6"/><circle cx="178" cy="336" r="6"/><circle cx="156" cy="356" r="6"/><circle cx="184" cy="355" r="6"/></g>
+<rect x="164" y="360" width="12" height="18" rx="3" fill="#f2f6fb" stroke="#d9dfe9"/></g>
+<!-- headboard -->
+<path d="M-12 452 V312 Q-12 292 10 292 H92 Q114 292 114 316 V452z" fill="#fffdfb" stroke="#e6dad0" stroke-width="2"/><g><circle cx="16" cy="330" r="2.2" fill="#e9dccf"/><circle cx="44" cy="330" r="2.2" fill="#e9dccf"/><circle cx="72" cy="330" r="2.2" fill="#e9dccf"/><circle cx="100" cy="330" r="2.2" fill="#e9dccf"/><circle cx="16" cy="356" r="2.2" fill="#e9dccf"/><circle cx="44" cy="356" r="2.2" fill="#e9dccf"/><circle cx="72" cy="356" r="2.2" fill="#e9dccf"/><circle cx="100" cy="356" r="2.2" fill="#e9dccf"/><circle cx="16" cy="382" r="2.2" fill="#e9dccf"/><circle cx="44" cy="382" r="2.2" fill="#e9dccf"/><circle cx="72" cy="382" r="2.2" fill="#e9dccf"/><circle cx="100" cy="382" r="2.2" fill="#e9dccf"/><circle cx="16" cy="408" r="2.2" fill="#e9dccf"/><circle cx="44" cy="408" r="2.2" fill="#e9dccf"/><circle cx="72" cy="408" r="2.2" fill="#e9dccf"/><circle cx="100" cy="408" r="2.2" fill="#e9dccf"/></g>
+<!-- chandelier -->
+<g class="chand"><path d="M120 0V38" stroke="url(#gold)" stroke-width="2.4"/><circle cx="120" cy="40" r="5" fill="url(#gold)"/>
+<path d="M70 62 Q96 76 120 46 Q144 76 170 62" fill="none" stroke="url(#gold)" stroke-width="3.2" stroke-linecap="round"/>
+<path d="M120 46 V66" stroke="url(#gold)" stroke-width="2.6"/>
+<g><rect x="68.4" y="52" width="3.2" height="10" fill="#fffdfb"/><ellipse cx="70" cy="50" rx="2.2" ry="3.4" fill="#ffe9a8" class="flame"/></g><g><rect x="92.4" y="60" width="3.2" height="10" fill="#fffdfb"/><ellipse cx="94" cy="58" rx="2.2" ry="3.4" fill="#ffe9a8" class="flame"/></g><g><rect x="118.4" y="42" width="3.2" height="10" fill="#fffdfb"/><ellipse cx="120" cy="40" rx="2.2" ry="3.4" fill="#ffe9a8" class="flame"/></g><g><rect x="144.4" y="60" width="3.2" height="10" fill="#fffdfb"/><ellipse cx="146" cy="58" rx="2.2" ry="3.4" fill="#ffe9a8" class="flame"/></g><g><rect x="168.4" y="52" width="3.2" height="10" fill="#fffdfb"/><ellipse cx="170" cy="50" rx="2.2" ry="3.4" fill="#ffe9a8" class="flame"/></g>
+<path class="twinkle" d="M78 72.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M78 64.5 V72.5" stroke="#d8dfeb" stroke-width=".6"/><path d="M96 75.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M96 67.5 V75.5" stroke="#d8dfeb" stroke-width=".6"/><path class="twinkle" d="M114 78.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M114 70.5 V78.5" stroke="#d8dfeb" stroke-width=".6"/><path d="M132 78.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M132 70.5 V78.5" stroke="#d8dfeb" stroke-width=".6"/><path class="twinkle" d="M150 75.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M150 67.5 V75.5" stroke="#d8dfeb" stroke-width=".6"/><path d="M168 72.5 l3 6 -3 9 -3 -9z" fill="#fff" stroke="#cdd6e6" stroke-width=".6"/><path d="M168 64.5 V72.5" stroke="#d8dfeb" stroke-width=".6"/><path d="M88 86 l2.4 5 -2.4 7 -2.4 -7z" fill="#fff" stroke="#cdd6e6" stroke-width=".6" class=""/><path d="M106 86 l2.4 5 -2.4 7 -2.4 -7z" fill="#fff" stroke="#cdd6e6" stroke-width=".6" class="twinkle"/><path d="M124 86 l2.4 5 -2.4 7 -2.4 -7z" fill="#fff" stroke="#cdd6e6" stroke-width=".6" class=""/><path d="M142 86 l2.4 5 -2.4 7 -2.4 -7z" fill="#fff" stroke="#cdd6e6" stroke-width=".6" class="twinkle"/><path d="M160 86 l2.4 5 -2.4 7 -2.4 -7z" fill="#fff" stroke="#cdd6e6" stroke-width=".6" class=""/></g>
+</g>
+<!-- window light -->
+<polygon class="rays" points="216,100 384,120 160,480 20,420" fill="url(#ray)"/>
+<!-- sheer curtains tied back -->
+<g class="sway"><path d="M172 70 Q176 100 168 190 Q160 280 172 330 Q164 352 174 366 Q186 380 196 366 Q204 340 200 280 Q196 160 204 70z" fill="url(#sheer)" opacity=".96"/><path d="M180 90 Q176 200 184 330 M190 90 Q186 200 192 330" stroke="#efc4d0" stroke-width="1" fill="none" opacity=".7"/><rect x="170" y="338" width="30" height="5" rx="2.5" fill="url(#gold)"/></g>
+<g class="sway b"><path d="M360 70 H400 V300 Q392 380 396 470 L372 470 Q380 380 372 300 Q366 190 360 70z" fill="url(#sheer)" opacity=".94"/></g>
+<g class="fgL">
+<!-- bed -->
+<path d="M-20 456 Q150 430 330 478 L330 620 H-20z" fill="#fffdfb"/><g><path d="M-20 456 L14 600 M40 456 L6 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M30 456 L64 600 M90 456 L56 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M80 456 L114 600 M140 456 L106 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M130 456 L164 600 M190 456 L156 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M180 456 L214 600 M240 456 L206 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M230 456 L264 600 M290 456 L256 600" stroke="#efe5de" stroke-width="1" fill="none"/><path d="M280 456 L314 600 M340 456 L306 600" stroke="#efe5de" stroke-width="1" fill="none"/></g>
+<path d="M-20 456 Q150 430 330 478" fill="none" stroke="#efe5de" stroke-width="3"/>
+<g><rect x="-6" y="398" width="96" height="70" rx="14" fill="#f4c8d2" transform="rotate(-8 40 430)"/><rect x="58" y="388" width="92" height="66" rx="14" fill="#f0bcc8" transform="rotate(-6 100 420)"/>
+<path d="M14 412 l60 -8 M72 400 l66 -4" stroke="#fbdbe3" stroke-width="2" opacity=".7"/></g>
+<!-- footboard -->
+<path d="M150 600 C170 548 260 508 400 502 V600z" fill="#fffaf5" stroke="#e8dccf" stroke-width="2"/>
+<path d="M166 590 C190 546 270 514 400 508" fill="none" stroke="url(#gold)" stroke-width="3.2"/>
+<path d="M200 566 c10 -12 24 -8 22 2 c-2 8 -14 6 -12 -2 M262 536 c10 -12 24 -8 22 2 c-2 8 -14 6 -12 -2" fill="none" stroke="url(#gold)" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M214 600 C236 560 330 530 400 524 V600z" fill="url(#velvet)"/><path d="M214 600 C236 560 330 530 400 524" fill="none" stroke="#f6cdd7" stroke-width="3" opacity=".8"/><circle cx="230" cy="566" r="2.6" fill="#c98499"/><circle cx="270" cy="552" r="2.6" fill="#c98499"/><circle cx="310" cy="540" r="2.6" fill="#c98499"/><circle cx="350" cy="530" r="2.6" fill="#c98499"/><circle cx="390" cy="522" r="2.6" fill="#c98499"/><circle cx="250" cy="590" r="2.6" fill="#c98499"/><circle cx="296" cy="580" r="2.6" fill="#c98499"/><circle cx="342" cy="570" r="2.6" fill="#c98499"/><circle cx="388" cy="560" r="2.6" fill="#c98499"/>
+</g>
+</svg>
     </div>
     <div class="curtain l"></div><div class="curtain r"></div>
     <div class="rod"></div>
-    <svg class="tie l" viewBox="0 0 56 56"><path d="M28 28 C12 14 4 22 8 30 C4 40 18 40 28 28 C38 40 52 40 48 30 C52 22 44 14 28 28Z" fill="#ffffff" stroke="#b35878" stroke-width="2"/><circle cx="28" cy="28" r="5" fill="#e0869d" stroke="#b35878" stroke-width="1.5"/></svg>
-    <svg class="tie r" viewBox="0 0 56 56"><path d="M28 28 C12 14 4 22 8 30 C4 40 18 40 28 28 C38 40 52 40 48 30 C52 22 44 14 28 28Z" fill="#ffffff" stroke="#b35878" stroke-width="2"/><circle cx="28" cy="28" r="5" fill="#e0869d" stroke="#b35878" stroke-width="1.5"/></svg>
+    <svg class="tie l" viewBox="0 0 56 56"><path d="M28 28 C12 14 4 22 8 30 C4 40 18 40 28 28 C38 40 52 40 48 30 C52 22 44 14 28 28Z" fill="#ffffff" stroke="#c79c4a" stroke-width="2"/><circle cx="28" cy="28" r="5" fill="#f4e2b0" stroke="#c79c4a" stroke-width="1.5"/></svg>
+    <svg class="tie r" viewBox="0 0 56 56"><path d="M28 28 C12 14 4 22 8 30 C4 40 18 40 28 28 C38 40 52 40 48 30 C52 22 44 14 28 28Z" fill="#ffffff" stroke="#c79c4a" stroke-width="2"/><circle cx="28" cy="28" r="5" fill="#f4e2b0" stroke="#c79c4a" stroke-width="1.5"/></svg>
     </div><div class="skip">tap to skip</div>
   </div>
 
@@ -248,8 +314,8 @@
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) { goToday(); return; }
     opening = true;
     const sc = $('scene'); sc.classList.add('play');
-    const t1 = setTimeout(() => sc.classList.add('leave'), 3700);
-    const t2 = setTimeout(goToday, 4250);
+    const t1 = setTimeout(() => sc.classList.add('leave'), 4800);
+    const t2 = setTimeout(goToday, 5450);
     const skip = () => { clearTimeout(t1); clearTimeout(t2); goToday(); };
     sc.addEventListener('click', skip);
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') skip(); });
