@@ -70,31 +70,30 @@ function makeTodoCard(item, onToggle, onDelete) {
 /* ── EXPENSE / INCOME ROW ── */
 function makeFinanceRow(item, colorMap, isIncome, onDelete) {
   const el = document.createElement('div');
-  el.className = 'card';
+  el.className = 'card fin-row';
   el.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:7px';
 
   const dot = document.createElement('div');
-  dot.style.cssText = `width:8px;height:8px;border-radius:50%;flex-shrink:0;background:${colorMap[item.cat || item.type] || '#c8bfc3'}`;
+  dot.style.cssText = `width:10px;height:10px;border-radius:50%;flex-shrink:0;background:${colorMap[item.cat || item.type] || '#c8bfc3'}`;
   el.appendChild(dot);
 
-  const name = document.createElement('span');
-  name.style.cssText = "font-size:14px;color:var(--ink-soft);flex:1;font-family:var(--font);";
-  name.textContent = item.name;
-  el.appendChild(name);
-
-  const tag = document.createElement('span');
-  tag.className = 'pill pill-cat';
-  tag.textContent = item.cat || item.type;
-  el.appendChild(tag);
+  const mid = document.createElement('div'); mid.style.cssText = 'flex:1;min-width:0';
+  const name = document.createElement('div'); name.className = 'fin-name'; name.textContent = item.name;
+  const meta = document.createElement('div'); meta.className = 'fin-meta';
+  const when = (item.date && typeof formatDMY === 'function') ? formatDMY(item.date) : '';
+  meta.textContent = [when, item.cat || item.type].filter(Boolean).join(' · ');
+  mid.append(name, meta); el.appendChild(mid);
 
   const amt = document.createElement('span');
-  amt.style.cssText = `font-size:14px;font-family:var(--font);white-space:nowrap;color:${isIncome ? 'var(--positive)' : 'var(--mauve-dark)'}`;
+  amt.className = 'fin-amt';
+  amt.style.color = isIncome ? 'var(--positive)' : 'var(--mauve-dark)';
   amt.textContent = (isIncome ? '+' : '') + window._currSym + item.amt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   el.appendChild(amt);
 
   const del = document.createElement('button');
   del.className = 'del-btn';
   del.textContent = '×';
+  del.setAttribute('aria-label', 'delete ' + item.name);
   del.addEventListener('click', () => onDelete(item.id));
   el.appendChild(del);
 

@@ -85,6 +85,26 @@
     .brk-bar { height: 10px; border-radius: 6px; background: rgba(154,74,99,.16); overflow: hidden; }
     .brk-bar i { display: block; height: 100%; background: var(--mauve); border-radius: 6px; }
     .divider { height: 0.5px; background: var(--border-soft); margin: 12px 0; }
+
+    /* month navigator + MTD stats */
+    .monthbar { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 2px 0 4px; }
+    .month-head { text-align: center; min-width: 0; flex: 0 1 300px; }
+    .month-name { font-family: var(--font-script); font-size: 56px; line-height: .95; color: var(--ink); }
+    .month-sub { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .day-arrow { flex: none; width: 46px; height: 46px; border-radius: 50%; border: 1.5px solid var(--border-strong); background: var(--card); color: var(--mauve-dark); font-size: 1.7rem; line-height: 1; cursor: pointer; transition: transform .2s, background .2s, color .2s; }
+    .day-arrow:hover, .day-arrow:focus-visible { background: var(--mauve); color: #fff; transform: scale(1.1); }
+    .day-arrow:disabled { opacity: .35; cursor: default; transform: none; }
+    .month-tools { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 6px 0 10px; }
+    .link-btn { background: var(--card); border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 14px; font: 600 14px var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 38px; }
+    .link-btn[aria-pressed="true"] { background: var(--mauve); color: #fff; border-color: var(--mauve); }
+    .month-tools .r-select { min-height: 38px; max-width: 130px; }
+    .summary-grid { margin-bottom: 12px; }
+    .summary-val { font-size: 22px !important; font-weight: 700; }
+    .fin-meta { font-size: 12px; color: var(--text-muted); }
+    .fin-name { font-size: 17px; font-weight: 600; color: var(--ink); }
+    .fin-amt { font-size: 18px; font-weight: 700; white-space: nowrap; }
+    .brk-row { font-size: 15px; } .brk-row span:first-child { font-weight: 600; text-transform: capitalize; } .brk-row span:last-child { font-weight: 700; }
+    .pg-right .add-row { flex-wrap: wrap; } .pg-right .add-row .r-input { flex: 1 1 100% !important; } .pg-right .add-row .r-number { flex: 1 1 90px; min-width: 0; } .pg-right .add-row input[type=date] { flex: 1 1 150px; min-width: 150px; }
   </style>
 </head>
 <body>
@@ -107,8 +127,17 @@
         <div class="page-date js-today"></div>
       </div>
       <div class="pg-body">
-        <div class="currency-row">
-          <span class="currency-label">currency</span>
+        <div class="monthbar">
+          <button class="day-arrow" id="prevM" type="button" aria-label="previous month" title="earlier month">‹</button>
+          <div class="month-head" role="group" aria-label="viewing month">
+            <div class="month-name" id="monthName"></div>
+            <div class="month-sub" id="monthSub"></div>
+          </div>
+          <button class="day-arrow" id="nextM" type="button" aria-label="next month" title="later month">›</button>
+        </div>
+        <div class="month-tools">
+          <button class="link-btn" id="thisMonthBtn" type="button">this month</button>
+          <button class="link-btn" id="allTimeBtn" type="button" aria-pressed="false">all time</button>
           <select class="r-select" id="currencySelect" aria-label="currency" onchange="onCurrencyChange()">
             <option value="SGD">🇸🇬 SGD S$</option><option value="USD">🇺🇸 USD $</option><option value="GBP">🇬🇧 GBP £</option><option value="EUR">🇪🇺 EUR €</option>
             <option value="JPY">🇯🇵 JPY ¥</option><option value="AUD">🇦🇺 AUD A$</option><option value="CAD">🇨🇦 CAD C$</option><option value="THB">🇹🇭 THB ฿</option>
@@ -117,11 +146,11 @@
           </select>
         </div>
         <div class="summary-grid">
-          <div class="summary-stat"><div class="summary-label">total income</div><div class="summary-val pos" id="statIncome"></div></div>
-          <div class="summary-stat"><div class="summary-label">total spent</div><div class="summary-val neg" id="statSpent"></div></div>
-          <div class="summary-stat"><div class="summary-label">balance</div><div class="summary-val bal" id="statBalance"></div></div>
+          <div class="summary-stat"><div class="summary-label" id="lblIncome">MTD income</div><div class="summary-val pos" id="statIncome"></div></div>
+          <div class="summary-stat"><div class="summary-label" id="lblSpent">MTD spend</div><div class="summary-val neg" id="statSpent"></div></div>
+          <div class="summary-stat"><div class="summary-label" id="lblBal">MTD balance</div><div class="summary-val bal" id="statBalance"></div></div>
         </div>
-        <div class="sec-label">where it went</div>
+        <div class="sec-label" id="wentLabel">where it went</div>
         <div class="pg-grow" id="catBreakdown"></div>
       </div>
     </section>
@@ -140,6 +169,7 @@
               <option value="food">food</option><option value="beauty">beauty</option><option value="fashion">fashion</option><option value="transport">transport</option>
               <option value="home">home</option><option value="health">health</option><option value="fun">fun</option><option value="other">other</option>
             </select>
+            <input type="date" class="r-number" id="expDate" aria-label="date of expense" />
             <button class="btn-small" onclick="addExpense()">+ log</button>
           </div>
           <div class="pg-grow" id="expList"></div>
@@ -153,6 +183,7 @@
               <option value="salary">salary</option><option value="socials">socials</option><option value="freelance">freelance</option><option value="passive">passive</option>
               <option value="investment">investment</option><option value="gift">gift</option><option value="other">other</option>
             </select>
+            <input type="date" class="r-number" id="incomeDate" aria-label="date of income" />
             <button class="btn-small" onclick="addIncome()">+ add</button>
           </div>
           <div class="pg-grow" id="incomeList"></div>
@@ -163,6 +194,7 @@
 </div>
 
 <script src="../data/diaryData.js"></script>
+<script src="../components/expiry.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
@@ -186,14 +218,41 @@
     return window._currSym + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   }
 
+  /* ── month navigation: which month are we looking at? ('all' = everything) ── */
+  const MONTH_LC = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+  const thisMonthKey = () => todayISO().slice(0, 7);
+  let viewMonth = thisMonthKey();
+  const monthOf = (it) => (it.date || '').slice(0, 7);
+  const inView = (it) => viewMonth === 'all' || monthOf(it) === viewMonth;
+  function shiftMonth(key, n) { let [y, m] = key.split('-').map(Number); m += n - 1; y += Math.floor(m / 12); m = ((m % 12) + 12) % 12; return `${y}-${String(m + 1).padStart(2, '0')}`; }
+  function setViewMonth(k) { viewMonth = k; render(); }
+
+  /* older entries have no date: file them under today so they stay visible */
+  (state.incomes || []).concat(state.expenses || []).forEach(it => { if (!it.date) it.date = todayISO(); });
+
   /* ── render ── */
   function render() {
-    const incomes  = state.incomes  || [];
-    const expenses = state.expenses || [];
+    const all = viewMonth === 'all', cur = viewMonth === thisMonthKey();
+    const incomes  = (state.incomes  || []).filter(inView);
+    const expenses = (state.expenses || []).filter(inView);
 
     const totalInc = incomes.reduce((s, i) => s + i.amt, 0);
     const totalExp = expenses.reduce((s, e) => s + e.amt, 0);
     const bal      = totalInc - totalExp;
+
+    /* month header + MTD labels */
+    let nm, sub, pre;
+    if (all) { nm = 'all time'; sub = 'every month together'; pre = 'total'; }
+    else { const [y, m] = viewMonth.split('-').map(Number); nm = MONTH_LC[m - 1]; sub = String(y) + (cur ? ' · month to date' : ''); pre = cur ? 'MTD' : MONTH_LC[m - 1].slice(0, 3); }
+    document.getElementById('monthName').textContent = nm;
+    document.getElementById('monthSub').textContent = sub;
+    document.getElementById('lblIncome').textContent = pre + ' income';
+    document.getElementById('lblSpent').textContent  = pre + ' spend';
+    document.getElementById('lblBal').textContent    = pre + ' balance';
+    document.getElementById('wentLabel').textContent = all ? 'where it went · all time' : 'where it went · ' + nm;
+    document.getElementById('allTimeBtn').setAttribute('aria-pressed', String(all));
+    document.getElementById('thisMonthBtn').setAttribute('aria-pressed', String(cur));
+    document.getElementById('prevM').disabled = all; document.getElementById('nextM').disabled = all;
 
     document.getElementById('statIncome').textContent  = fmt(totalInc);
     document.getElementById('statSpent').textContent   = fmt(totalExp);
@@ -201,11 +260,12 @@
     balEl.textContent = (bal < 0 ? '-' : '') + fmt(bal);
     balEl.className   = 'summary-val ' + (bal >= 0 ? 'pos' : 'neg');
 
+    const emptyMsg = all ? '' : ' in ' + nm;
     /* income list */
     const il = document.getElementById('incomeList');
     il.innerHTML = '';
     if (!incomes.length) {
-      il.innerHTML = '<div class="empty-state">no income added yet…</div>';
+      il.innerHTML = '<div class="empty-state">no income added yet' + emptyMsg + '…</div>';
     } else {
       incomes.forEach(i => il.appendChild(makeFinanceRow(i, INC_COLORS, true, deleteIncome)));
     }
@@ -214,7 +274,7 @@
     const el = document.getElementById('expList');
     el.innerHTML = '';
     if (!expenses.length) {
-      el.innerHTML = '<div class="empty-state">no expenses yet…</div>';
+      el.innerHTML = '<div class="empty-state">no expenses yet' + emptyMsg + '…</div>';
     } else {
       expenses.forEach(e => el.appendChild(makeFinanceRow(e, EXP_COLORS, false, deleteExpense)));
     }
@@ -235,6 +295,11 @@
     paginate(document.getElementById('expList')); paginate(document.getElementById('incomeList'));
     saveState(state);
   }
+  document.getElementById('prevM').addEventListener('click', () => setViewMonth(shiftMonth(viewMonth, -1)));
+  document.getElementById('nextM').addEventListener('click', () => setViewMonth(shiftMonth(viewMonth, 1)));
+  document.getElementById('thisMonthBtn').addEventListener('click', () => setViewMonth(thisMonthKey()));
+  document.getElementById('allTimeBtn').addEventListener('click', () => setViewMonth(viewMonth === 'all' ? thisMonthKey() : 'all'));
+  document.getElementById('expDate').value = todayISO(); document.getElementById('incomeDate').value = todayISO();
 
   /* ── expenses / income view switch ── */
   function showView(which) {
@@ -257,7 +322,9 @@
       name,
       amt,
       type: document.getElementById('incomeType').value,
+      date: document.getElementById('incomeDate').value || todayISO(),
     });
+    if (viewMonth !== 'all') viewMonth = state.incomes[0].date.slice(0, 7);
     document.getElementById('incomeDesc').value = '';
     document.getElementById('incomeAmt').value  = '';
     render();
@@ -274,7 +341,9 @@
       name,
       amt,
       cat:  document.getElementById('expCat').value,
+      date: document.getElementById('expDate').value || todayISO(),
     });
+    if (viewMonth !== 'all') viewMonth = state.expenses[0].date.slice(0, 7);
     document.getElementById('expDesc').value = '';
     document.getElementById('expAmt').value  = '';
     render();
