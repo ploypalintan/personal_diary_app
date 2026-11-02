@@ -6,39 +6,108 @@
   <title>makeup tracker · my diary</title>
   <link rel="stylesheet" href="../style.css" />
   <style>
-    .alert { border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; font-weight: 500; line-height: 1.5; }
+    .alert { border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; font-weight: 500; line-height: 1.5; }
     .alert.warn { background: var(--accent-pink); color: var(--mauve-deep); }
     .alert.fine { background: var(--nude-light); color: var(--ink-soft); }
-    .alert .alert-sub { display: block; font-weight: 400; font-size: 0.9rem; margin-top: 2px; }
+    .alert .alert-sub { display: block; font-weight: 400; font-size: .92rem; margin-top: 2px; }
 
-    .panel { background: var(--almond-pale); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-bottom: 18px; }
+    .stat { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; text-align: center; }
+    .stat b { display: block; font-size: 1.6rem; line-height: 1.1; color: var(--mauve-dark); }
+    .stat span { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .12em; font-size: .8rem; color: var(--text-muted); }
+
+    .searchbox { background: #fff; border: 1.5px solid var(--border-strong); border-radius: 16px; padding: 12px 14px; margin-bottom: 14px; }
+    .search-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .search-row .r-input { flex: 1; min-width: 180px; }
+    .search-msg { margin-top: 8px; font-weight: 600; min-height: 1.5em; }
+    .search-msg.none { color: #2f4d2a; }
+    .search-msg.have { color: var(--mauve-deep); }
+
+    .panel { background: #fff; border: 1px dashed var(--border-strong); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
+    .panel.editing { border-style: solid; border-color: var(--mauve); }
     .voice-line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
     .voice-line .r-input { flex: 1; min-width: 200px; }
-    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 14px; align-items: end; margin-top: 14px; }
-    .field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; }
-    .field .r-input, .field .r-select { width: 100%; background: #fff; border: 1px solid var(--border-strong); border-radius: 10px; padding: 9px 12px; font-size: 1rem; }
-    .field .r-input { border-bottom: 1px solid var(--border-strong); }
-    .form-actions { margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-    .hint { font-size: 0.85rem; color: var(--text-muted); }
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px 14px; align-items: start; margin-top: 14px; }
+    .field label, .field .lbl { display: block; font-size: .88rem; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; }
+    .field .r-input, .field .r-select { width: 100%; background: #fff; border: 1px solid var(--border-strong); border-radius: 10px; padding: 9px 12px; font-size: 1rem; min-height: 44px; }
+    .field .help { font-size: .85rem; color: var(--text-muted); margin-top: 3px; min-height: 1.2em; }
+    .field .help.bad { color: var(--negative); font-weight: 600; }
+    .date-wrap { display: flex; gap: 6px; }
+    .date-wrap .r-input { flex: 1; min-width: 0; }
+    .cal-btn { flex: none; width: 44px; min-height: 44px; border: 1px solid var(--border-strong); border-radius: 10px; background: #fff; cursor: pointer; font-size: 1.1rem; color: var(--mauve-dark); }
+    .cal-btn:hover { background: var(--almond-light); }
+    .native-date { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+    .preview { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--almond-light); color: var(--mauve-deep); font-weight: 600; min-height: 1.5em; }
+    .dup-box { margin-top: 12px; padding: 10px 14px; border-radius: 12px; background: var(--accent-pink); color: var(--mauve-deep); }
+    .dup-box .btn-small { margin-top: 8px; margin-right: 8px; }
+    .form-actions { margin-top: 14px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .hint { font-size: .88rem; color: var(--text-muted); }
+    .photo-line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .photo-thumb { width: 44px; height: 55px; border-radius: 4px; object-fit: cover; border: 1px solid var(--border); }
 
-    .p-card { background: #fff; border: 1px solid var(--border); border-left: 6px solid var(--border-strong); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+    /* icon select */
+    .isel { position: relative; }
+    .isel-btn { width: 100%; display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 5px 12px; background: #fff; border: 1px solid var(--border-strong); border-radius: 10px; font: 500 1rem var(--font); color: var(--ink); cursor: pointer; text-align: left; }
+    .isel-ico { display: inline-flex; width: 32px; height: 32px; flex: none; }
+    .isel-text { flex: 1; }
+    .isel-caret { color: var(--text-muted); }
+    .isel-list { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 4px); max-height: 320px; overflow-y: auto; list-style: none; background: #fff; border: 1.5px solid var(--mauve); border-radius: 12px; box-shadow: 0 12px 24px rgba(120,60,80,.22); padding: 4px; }
+    .isel-opt { display: flex; align-items: center; gap: 10px; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
+    .isel-opt.active { background: var(--almond-light); }
+    .isel-opt[aria-selected="true"] { font-weight: 700; color: var(--mauve-deep); }
+
+    /* filters */
+    .filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+    .chip-btn { display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 4px 14px; border-radius: 20px; border: 1px solid var(--border-strong); background: #fff; color: var(--ink-soft); font: 500 .92rem var(--font); cursor: pointer; }
+    .chip-btn:hover { background: var(--almond-light); }
+    .chip-btn[aria-pressed="true"] { background: var(--mauve); color: #fff; border-color: var(--mauve); }
+    .chip-btn .isel-ico { width: 22px; height: 22px; }
+    .chip-btn .isel-ico svg { width: 22px; height: 22px; }
+    .sort-row { display: flex; gap: 8px; align-items: center; margin: 4px 0 14px; flex-wrap: wrap; }
+    .sort-row label { font-size: .9rem; font-weight: 600; color: var(--text-mid); }
+    .sort-row select { min-height: 40px; }
+
+    /* product cards */
+    .p-card { position: relative; background: #fff; border: 1px solid var(--border); border-left: 6px solid var(--border-strong); border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; display: flex; gap: 14px; align-items: flex-start; }
     .p-card.expired { border-left-color: var(--negative); background: #fff6f6; }
     .p-card.soon    { border-left-color: var(--accent-pink); background: #fff8fa; }
     .p-card.ok      { border-left-color: #8fb089; }
     .p-card.sealed  { border-left-color: var(--nude); }
+    .p-card.finished { opacity: .78; }
+    .p-visual { flex: none; width: 92px; }
+    .p-visual .film { padding: 8px 10px; width: 92px; --tilt: -2deg; }
+    .p-visual .film::before, .p-visual .film::after { display: none; }
+    .p-visual .ribbon { width: 52px; height: 15px; margin-left: -26px; top: -8px; }
+    .p-icon { width: 64px; height: 64px; display: grid; place-items: center; background: var(--satin); border-radius: 50%; margin: 0 auto; }
+    .p-icon svg { width: 44px; height: 44px; }
     .p-main { flex: 1; min-width: 0; }
-    .p-name { font-weight: 600; font-size: 1.05rem; overflow-wrap: anywhere; }
-    .p-sub  { color: var(--text-mid); font-size: 0.95rem; margin-top: 2px; overflow-wrap: anywhere; }
-    .p-meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
-    .chip { display: inline-block; border-radius: 20px; padding: 3px 12px; font-size: 0.85rem; font-weight: 600; margin-top: 8px; }
+    .p-name { font-weight: 700; font-size: 1.1rem; overflow-wrap: anywhere; }
+    .p-sub  { color: var(--text-mid); overflow-wrap: anywhere; }
+    .p-meta { color: var(--text-muted); font-size: .92rem; margin-top: 6px; }
+    .p-dates { display: flex; flex-wrap: wrap; gap: 4px 18px; margin-top: 6px; font-size: .95rem; color: var(--ink-soft); }
+    .p-dates b { font-weight: 700; }
+    .chip { display: inline-block; border-radius: 20px; padding: 3px 12px; font-size: .88rem; font-weight: 600; margin-top: 8px; }
     .chip.expired { background: var(--negative); color: #fff; }
     .chip.soon    { background: var(--accent-pink); color: var(--mauve-deep); }
     .chip.ok      { background: #e3efe0; color: #2f4d2a; }
     .chip.sealed  { background: var(--nude-light); color: var(--ink-soft); border: 1px solid var(--nude); }
-    .p-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-    .link-btn { background: none; border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 12px; font: 500 0.85rem var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 36px; }
+    .chip.done    { background: #e6dcee; color: #3d2d4d; }
+    .p-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .link-btn { background: none; border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 12px; font: 500 .88rem var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 40px; }
     .link-btn:hover { background: var(--almond-light); }
-    @media (max-width: 600px) { .p-card { flex-direction: column; } .p-actions { flex-direction: row; align-items: center; } }
+    .link-btn[aria-pressed="true"] { background: var(--accent-pink); color: var(--mauve-deep); }
+    .link-btn.danger { color: var(--negative); }
+
+    .notes { margin-top: 10px; }
+    .notes summary { cursor: pointer; font-weight: 600; color: var(--mauve-dark); min-height: 36px; display: flex; align-items: center; }
+    .note { padding: 6px 0; border-bottom: 1px dotted var(--border); overflow-wrap: anywhere; }
+    .note time { font-family: var(--font-caps); letter-spacing: .08em; font-size: .85rem; color: var(--text-muted); margin-right: 8px; }
+    .note-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+    .note-form .r-input { flex: 1; min-width: 160px; }
+
+    .backup { margin-top: 28px; padding-top: 14px; border-top: 1px dotted var(--border-strong); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+    @media (max-width: 600px) { .p-card { flex-direction: column; } .p-visual { width: 100%; display: flex; } }
   </style>
 </head>
 <body>
@@ -46,177 +115,539 @@
 
   <div class="spine"><div class="spine-text">my diary</div></div>
 
-  <nav class="bookmarks">
-    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+  <nav class="bookmarks" aria-label="diary pages">
     <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
     <a class="bm" data-page="tracker.html"><span class="bm-icon">✧</span>makeup</a>
     <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
     <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
-    <div style="flex:1"></div>
-    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+    <a class="bm" data-page="../index.html"><span class="bm-icon">❀</span>cover</a>
   </nav>
 
   <main class="page">
     <div class="page-header">
-      <div class="page-title">makeup &amp; skincare tracker</div>
+      <h1 class="page-title">makeup shelf</h1>
       <div class="page-date js-today"></div>
     </div>
     <div class="page-body">
 
       <div id="alertBox" role="status" aria-live="polite"></div>
+      <div class="stats" id="stats"></div>
 
-      <!-- add a product -->
-      <form class="panel" id="addForm" autocomplete="off">
-        <div class="sec-label">add a product</div>
+      <!-- search: am I about to buy a duplicate? -->
+      <section class="searchbox" aria-labelledby="searchLbl">
+        <div class="sec-label" id="searchLbl">already own it? search before you buy</div>
+        <div class="search-row">
+          <input class="r-input" id="searchInput" type="search" aria-labelledby="searchLbl" placeholder="e.g. rare beauty blush, or just “blush”" />
+          <button class="mic-btn" id="searchMic" type="button" aria-pressed="false" aria-label="speak to search"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
+          <button class="link-btn" id="searchClear" type="button" hidden>clear</button>
+        </div>
+        <div class="mic-status" id="searchMicStatus" role="status" aria-live="polite"></div>
+        <div class="search-msg" id="searchMsg" role="status" aria-live="polite"></div>
+      </section>
+
+      <!-- add / edit -->
+      <form class="panel" id="addForm" autocomplete="off" novalidate>
+        <div class="sec-label" id="formTitle">add a product</div>
 
         <div class="voice-line">
-          <input class="r-input" id="phraseInput" aria-label="say or type a product"
-                 placeholder='say or type: "add Cetaphil moisturiser, opened today"' />
+          <input class="r-input" id="phraseInput" aria-label="say or type a product to fill the form"
+                 placeholder='say or type: "add Anua toner, opened today, expires 15/03/2027"' />
           <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a product"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
           <button class="btn-small" id="fillBtn" type="button">fill form</button>
         </div>
         <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
 
         <div class="field-grid">
-          <div class="field"><label for="fName">product</label><input class="r-input" id="fName" required placeholder="e.g. moisturiser" /></div>
-          <div class="field"><label for="fBrand">brand</label><input class="r-input" id="fBrand" placeholder="e.g. Cetaphil" /></div>
-          <div class="field"><label for="fShade">shade (optional)</label><input class="r-input" id="fShade" placeholder="e.g. 02 rosy" /></div>
-          <div class="field"><label for="fCat">category</label><select class="r-select" id="fCat"></select></div>
-          <div class="field"><label for="fOpened">date opened</label><input class="r-input" id="fOpened" type="date" /></div>
-          <div class="field"><label for="fPao">after opening</label><select class="r-select" id="fPao"></select></div>
+          <div class="field"><label for="fName">product</label><input class="r-input" id="fName" required placeholder="e.g. soft pinch liquid blush" /></div>
+          <div class="field"><label for="fBrand">brand</label><input class="r-input" id="fBrand" list="brandList" placeholder="e.g. Rare Beauty" /><datalist id="brandList"></datalist></div>
+          <div class="field"><label for="fShade">shade (optional)</label><input class="r-input" id="fShade" placeholder="e.g. joy" /></div>
+          <div class="field"><span class="lbl" id="fCatLbl">category</span><div id="fCatRoot"></div></div>
+          <div class="field">
+            <label for="fOpened">date opened (DD/MM/YYYY)</label>
+            <div class="date-wrap">
+              <input class="r-input" id="fOpened" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY" aria-describedby="fOpenedHelp" />
+              <button class="cal-btn" type="button" data-cal="fOpened" aria-label="pick date opened from a calendar">📅</button>
+              <input class="native-date" type="date" id="nOpened" tabindex="-1" aria-hidden="true" />
+            </div>
+            <div class="help" id="fOpenedHelp">leave empty if still sealed</div>
+          </div>
+          <div class="field"><label for="fPao">after opening (jar symbol)</label><select class="r-select" id="fPao"></select></div>
+          <div class="field">
+            <label for="fPrinted">pack expiry (DD/MM/YYYY)</label>
+            <div class="date-wrap">
+              <input class="r-input" id="fPrinted" inputmode="numeric" maxlength="10" placeholder="DD/MM/YYYY" aria-describedby="fPrintedHelp" />
+              <button class="cal-btn" type="button" data-cal="fPrinted" aria-label="pick expiry date from a calendar">📅</button>
+              <input class="native-date" type="date" id="nPrinted" tabindex="-1" aria-hidden="true" />
+            </div>
+            <div class="help" id="fPrintedHelp">optional · the earlier of this and the open-jar date is used</div>
+          </div>
+          <div class="field">
+            <label for="fPhoto">photo (optional)</label>
+            <div class="photo-line">
+              <input id="fPhoto" type="file" accept="image/*" />
+              <img class="photo-thumb" id="photoThumb" alt="chosen photo" hidden />
+              <button class="link-btn" id="photoClear" type="button" hidden>remove photo</button>
+            </div>
+            <div class="help" id="photoHelp"></div>
+          </div>
         </div>
+
+        <div class="preview" id="expiryPreview" role="status" aria-live="polite"></div>
+        <div id="dupBox" role="status" aria-live="polite"></div>
+
         <div class="form-actions">
-          <button class="btn-small" type="submit">+ add product</button>
-          <span class="hint">leave the date empty if it's still sealed. The expiry date is worked out for you. The open-jar symbol on the packaging (6M, 12M…) gives the real period; the defaults here are rough guides.</span>
+          <button class="btn-small" id="saveBtn" type="submit">+ add to shelf</button>
+          <button class="link-btn" id="cancelEdit" type="button" hidden>cancel edit</button>
+          <span class="hint">the jar symbol on the pack (6M, 12M…) gives the real period; the defaults are rough guides.</span>
         </div>
       </form>
 
-      <div class="sec-label">soonest to expire first</div>
+      <!-- filters -->
+      <div class="filters" role="group" aria-label="filter by status" id="statusFilters"></div>
+      <div class="filters" role="group" aria-label="filter by category" id="catFilters"></div>
+      <div class="sort-row">
+        <label for="sortSel">sort by</label>
+        <select class="r-select" id="sortSel">
+          <option value="expiry">soonest to expire</option>
+          <option value="recent">recently added</option>
+          <option value="brand">brand A–Z</option>
+          <option value="name">product A–Z</option>
+        </select>
+        <span class="hint" id="countLine" role="status" aria-live="polite"></span>
+      </div>
+
       <div id="productList"></div>
+
+      <div class="backup">
+        <button class="link-btn" id="exportBtn" type="button">export backup (.json)</button>
+        <label class="link-btn" for="importFile" style="display:inline-flex;align-items:center">import backup</label>
+        <input class="sr-only" id="importFile" type="file" accept="application/json,.json" />
+        <span class="hint" id="backupMsg" role="status" aria-live="polite">everything is stored in this browser only. Export now and then so you never lose your shelf.</span>
+      </div>
 
     </div>
   </main>
 </div>
 
 <script src="../data/diaryData.js"></script>
-<script src="../components/pixelChar.js"></script>
 <script src="../components/navbar.js"></script>
 <script src="../components/expiry.js"></script>
+<script src="../components/categoryIcons.js"></script>
+<script src="../components/iconSelect.js"></script>
 <script src="../components/voice.js"></script>
 <script>
   let state = initPage();
-  state.products = state.products || [];
+  state.nextIds = state.nextIds || {};
   state.nextIds.product = state.nextIds.product || 1;
 
   const $ = (id) => document.getElementById(id);
-  const fmtDate = (iso) => fromISO(iso).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
-
-  /* ── form setup ── */
-  CATEGORIES.forEach(c => $('fCat').add(new Option(c.key, c.key)));
-  PAO_OPTIONS.forEach(m => $('fPao').add(new Option(`${m} months`, m)));
-  $('fPao').value = 12;
-  $('fCat').addEventListener('change', () => { $('fPao').value = categoryDefaultPao($('fCat').value); });
-  $('fOpened').max = todayISO();
-
-  /* ── render ── */
-  function render() {
-    const today = todayISO();
-    const list = $('productList');
-    list.innerHTML = '';
-    const sorted = sortProducts(state.products, today);
-
-    const expired = sorted.filter(p => productStatus(p, today).kind === 'expired').length;
-    const soon = sorted.filter(p => productStatus(p, today).kind === 'soon').length;
-    const box = $('alertBox');
-    if (!state.products.length) box.innerHTML = '';
-    else if (expired || soon) {
-      const parts = [];
-      if (soon) parts.push(`${soon} product${soon > 1 ? 's' : ''} expiring in the next ${SOON_DAYS} days`);
-      if (expired) parts.push(`${expired} already expired`);
-      box.innerHTML = `<div class="alert warn">⚠ ${parts.join(' · ')}<span class="alert-sub">use them up or replace them. They are at the top of the list.</span></div>`;
-    } else box.innerHTML = '<div class="alert fine">✦ nothing expires in the next 30 days</div>';
-
-    if (!sorted.length) {
-      list.innerHTML = '<div class="empty-state">nothing here yet. Add your first product above, or tap speak and say it.</div>';
-      return;
-    }
-    sorted.forEach(p => list.appendChild(makeCard(p, today)));
-    saveState(state);
-  }
-
   function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 
-  function makeCard(p, today) {
-    const s = productStatus(p, today);
-    const card = el('div', `p-card ${s.kind}`);
-    const main = el('div', 'p-main');
-    main.appendChild(el('div', 'p-name', p.name));
-    const sub = [p.brand, p.shade].filter(Boolean).join(' · ');
-    if (sub) main.appendChild(el('div', 'p-sub', sub));
-    const meta = el('div', 'p-meta');
-    meta.textContent = s.kind === 'sealed'
-      ? `${p.category} · sealed · ${p.pao}M after opening`
-      : `${p.category} · opened ${fmtDate(p.opened)} · ${p.pao}M → expires ${fmtDate(s.exp)}`;
-    main.appendChild(meta);
-    main.appendChild(el('span', `chip ${s.kind}`, describeStatus(s)));
+  /* ── migrate older products ── */
+  function normaliseProduct(p) {
+    const ok = (s) => typeof s === 'string' ? s : '';
+    return {
+      id: Number(p.id) || 0,
+      name: ok(p.name).slice(0, 120), brand: ok(p.brand).slice(0, 80), shade: ok(p.shade).slice(0, 80),
+      category: CATEGORIES.some(c => c.key === p.category) ? p.category : 'other',
+      opened: /^\d{4}-\d{2}-\d{2}$/.test(p.opened || '') ? p.opened : '',
+      pao: PAO_OPTIONS.includes(Number(p.pao)) ? Number(p.pao) : categoryDefaultPao(p.category),
+      printedExpiry: /^\d{4}-\d{2}-\d{2}$/.test(p.printedExpiry || '') ? p.printedExpiry : '',
+      photo: typeof p.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(p.photo) ? p.photo : '',
+      notes: Array.isArray(p.notes) ? p.notes.filter(n => n && typeof n.text === 'string').map(n => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(n.date || '') ? n.date : todayISO(), text: n.text.slice(0, 500) })) : [],
+      finished: !!p.finished, love: !!p.love,
+      added: Number(p.added) || 0,
+    };
+  }
+  state.products = (state.products || []).map(normaliseProduct);
+  let maxId = state.products.reduce((m, p) => Math.max(m, p.id), 0);
+  state.nextIds.product = Math.max(state.nextIds.product, maxId + 1);
 
-    const actions = el('div', 'p-actions');
-    if (s.kind === 'sealed') {
-      const open = el('button', 'link-btn', 'opened today');
-      open.type = 'button';
-      open.addEventListener('click', () => { p.opened = todayISO(); render(); });
-      actions.appendChild(open);
-    }
-    const del = el('button', 'link-btn', 'delete');
-    del.type = 'button';
-    del.setAttribute('aria-label', `delete ${p.name}`);
-    del.addEventListener('click', () => { state.products = state.products.filter(x => x.id !== p.id); render(); });
-    actions.appendChild(del);
-    card.append(main, actions);
-    return card;
+  const ui = { status: 'all', cat: 'all', sort: 'expiry', query: '', editing: null, photo: '', openNotes: new Set(), confirmDelete: null, dupOk: false };
+
+  function persist() {
+    if (!saveState(state)) setBackupMsg('could not save: browser storage is full. Remove some photos or export a backup.', true);
+  }
+  function setBackupMsg(t, bad) { const m = $('backupMsg'); m.textContent = t; m.style.color = bad ? 'var(--negative)' : ''; m.style.fontWeight = bad ? '600' : ''; }
+
+  /* ── category dropdown with pictures ── */
+  const catSelect = createIconSelect({
+    root: $('fCatRoot'), id: 'fCat', labelId: 'fCatLbl', value: 'skincare',
+    options: CATEGORIES.map(c => ({ value: c.key, label: c.label, icon: categoryIcon(c.key) })),
+    onChange: (v) => { $('fPao').value = categoryDefaultPao(v); updatePreview(); },
+  });
+  PAO_OPTIONS.forEach(m => $('fPao').add(new Option(`${m} months`, m)));
+  $('fPao').value = categoryDefaultPao('skincare');
+
+  function refreshBrands() {
+    const set = new Map();
+    [...KNOWN_BRANDS, ...state.products.map(p => p.brand)].filter(Boolean).forEach(b => set.set(b.toLowerCase(), b));
+    const dl = $('brandList'); dl.replaceChildren();
+    [...set.values()].sort((a, b) => a.localeCompare(b)).forEach(b => dl.appendChild(new Option(b)));
+  }
+  const voiceTerms = () => [...new Set([...KNOWN_BRANDS, ...state.products.map(p => p.brand).filter(Boolean)])].slice(0, 60);
+
+  /* ── DD/MM/YYYY inputs: auto-slash mask, validation, calendar ── */
+  function maskDate(input) {
+    input.addEventListener('input', () => {
+      const d = input.value.replace(/\D/g, '').slice(0, 8);
+      let out = d;
+      if (d.length > 4) out = d.slice(0, 2) + '/' + d.slice(2, 4) + '/' + d.slice(4);
+      else if (d.length > 2) out = d.slice(0, 2) + '/' + d.slice(2);
+      if (input.value !== out) input.value = out;
+      validateDates(); updatePreview(); updateDup();
+    });
+  }
+  maskDate($('fOpened')); maskDate($('fPrinted'));
+
+  function readDate(id) {                         /* '' | iso | null (invalid) */
+    const v = $(id).value.trim();
+    if (!v) return '';
+    return parseDMY(v);
+  }
+  function validateDates() {
+    let ok = true;
+    const o = readDate('fOpened'), pr = readDate('fPrinted');
+    const set = (id, msg, bad) => { const h = $(id); h.textContent = msg; h.classList.toggle('bad', !!bad); };
+    $('fOpened').setAttribute('aria-invalid', 'false'); $('fPrinted').setAttribute('aria-invalid', 'false');
+    if (o === null) { set('fOpenedHelp', 'not a real date. Use DD/MM/YYYY, e.g. 05/03/2026', true); $('fOpened').setAttribute('aria-invalid', 'true'); ok = false; }
+    else if (o && o > todayISO()) { set('fOpenedHelp', 'opened date cannot be in the future', true); $('fOpened').setAttribute('aria-invalid', 'true'); ok = false; }
+    else set('fOpenedHelp', 'leave empty if still sealed');
+    if (pr === null) { set('fPrintedHelp', 'not a real date. Use DD/MM/YYYY', true); $('fPrinted').setAttribute('aria-invalid', 'true'); ok = false; }
+    else set('fPrintedHelp', 'optional · the earlier of this and the open-jar date is used');
+    return ok;
+  }
+  document.querySelectorAll('[data-cal]').forEach(btn => {
+    const text = $(btn.dataset.cal), native = btn.parentElement.querySelector('.native-date');
+    native.addEventListener('change', () => { if (native.value) { text.value = formatDMY(native.value); text.dispatchEvent(new Event('input')); } });
+    btn.addEventListener('click', () => {
+      const iso = parseDMY(text.value); if (iso) native.value = iso;
+      if (text === $('fOpened')) native.max = todayISO();
+      try { native.showPicker(); } catch (e) { text.focus(); }
+    });
+  });
+
+  function currentDraft() {
+    return {
+      name: $('fName').value.trim(), brand: $('fBrand').value.trim(), shade: $('fShade').value.trim(),
+      category: catSelect.get(), opened: readDate('fOpened') || '', pao: Number($('fPao').value),
+      printedExpiry: readDate('fPrinted') || '',
+    };
+  }
+  function updatePreview() {
+    const box = $('expiryPreview');
+    if (readDate('fOpened') === null || readDate('fPrinted') === null) { box.textContent = ''; return; }
+    const d = currentDraft(); const s = productStatus(d, todayISO());
+    if (s.kind === 'sealed') { box.textContent = 'no expiry yet. Add the date you opened it, or the date printed on the pack.'; return; }
+    const why = s.basis === 'printed' ? 'printed date on the pack' : `opened + ${d.pao} months`;
+    box.textContent = `✦ expires ${formatDMY(s.exp)} (${why}) · ${describeStatus(s)}`;
   }
 
-  /* ── add ── */
+  /* ── duplicates ── */
+  const norm = (s) => (s || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
+  const key = (p) => [p.brand, p.name, p.shade].map(norm).join('|');
+  function findDuplicates(d, ignoreId) {
+    const exact = [], similar = [];
+    state.products.forEach(p => {
+      if (p.id === ignoreId) return;
+      if (!d.name) return;
+      if (key(p) === key(d)) { exact.push(p); return; }
+      const a = norm(p.name), b = norm(d.name);
+      const sameBrand = norm(p.brand) === norm(d.brand);
+      if (sameBrand && a && b && (a === b || a.includes(b) || b.includes(a))) similar.push(p);
+    });
+    return { exact, similar };
+  }
+  function label(p) { return [p.brand, p.name, p.shade].filter(Boolean).join(' · '); }
+  function updateDup() {
+    const box = $('dupBox'); box.replaceChildren(); ui.dupOk = false;
+    const d = currentDraft(); if (!d.name) return;
+    const { exact, similar } = findDuplicates(d, ui.editing);
+    if (exact.length) {
+      const w = el('div', 'dup-box'); w.appendChild(el('div', null, `⚠ you already have this: ${label(exact[0])}${exact[0].finished ? ' (finished)' : ''}.`));
+      box.appendChild(w);
+    } else if (similar.length) {
+      const w = el('div', 'dup-box'); w.appendChild(el('div', null, `similar on your shelf: ${similar.slice(0, 3).map(label).join(' / ')}. Different shade or size?`));
+      box.appendChild(w);
+    }
+  }
+  ['fName', 'fBrand', 'fShade'].forEach(id => $(id).addEventListener('input', updateDup));
+  $('fPao').addEventListener('change', updatePreview);
+
+  /* ── photo (resized so localStorage doesn't fill up) ── */
+  function resizePhoto(file) {
+    return new Promise((resolve, reject) => {
+      const url = URL.createObjectURL(file); const img = new Image();
+      img.onload = () => {
+        const max = 480, scale = Math.min(1, max / Math.max(img.width, img.height));
+        const c = document.createElement('canvas'); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(url); resolve(c.toDataURL('image/jpeg', 0.72));
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
+      img.src = url;
+    });
+  }
+  function showPhoto() {
+    $('photoThumb').hidden = !ui.photo; $('photoClear').hidden = !ui.photo;
+    if (ui.photo) $('photoThumb').src = ui.photo;
+  }
+  $('fPhoto').addEventListener('change', async () => {
+    const f = $('fPhoto').files[0]; if (!f) return;
+    try { ui.photo = await resizePhoto(f); $('photoHelp').textContent = ''; }
+    catch (e) { ui.photo = ''; $('photoHelp').textContent = 'could not read that image, try another'; }
+    showPhoto();
+  });
+  $('photoClear').addEventListener('click', () => { ui.photo = ''; $('fPhoto').value = ''; showPhoto(); });
+
+  /* ── add / edit ── */
+  function resetForm() {
+    ['fName', 'fBrand', 'fShade', 'fOpened', 'fPrinted', 'phraseInput'].forEach(id => { $(id).value = ''; });
+    catSelect.set('skincare'); $('fPao').value = categoryDefaultPao('skincare');
+    ui.photo = ''; ui.editing = null; $('fPhoto').value = ''; showPhoto();
+    $('addForm').classList.remove('editing'); $('formTitle').textContent = 'add a product';
+    $('saveBtn').textContent = '+ add to shelf'; $('cancelEdit').hidden = true;
+    $('micStatus').textContent = ''; $('dupBox').replaceChildren(); validateDates(); updatePreview();
+  }
+  $('cancelEdit').addEventListener('click', resetForm);
+
+  function startEdit(p) {
+    ui.editing = p.id;
+    $('fName').value = p.name; $('fBrand').value = p.brand; $('fShade').value = p.shade;
+    catSelect.set(p.category); $('fPao').value = p.pao;
+    $('fOpened').value = p.opened ? formatDMY(p.opened) : ''; $('fPrinted').value = p.printedExpiry ? formatDMY(p.printedExpiry) : '';
+    ui.photo = p.photo; showPhoto();
+    $('addForm').classList.add('editing'); $('formTitle').textContent = `editing: ${p.name}`;
+    $('saveBtn').textContent = 'save changes'; $('cancelEdit').hidden = false;
+    validateDates(); updatePreview(); updateDup();
+    $('addForm').scrollIntoView({ behavior: 'smooth', block: 'start' }); $('fName').focus();
+  }
+
   $('addForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const name = $('fName').value.trim();
-    if (!name) { $('fName').focus(); return; }
-    state.products.push({
-      id: state.nextIds.product++,
-      name,
-      brand: $('fBrand').value.trim(),
-      shade: $('fShade').value.trim(),
-      category: $('fCat').value,
-      opened: $('fOpened').value,            /* '' = sealed */
-      pao: Number($('fPao').value),
-    });
-    ['fName', 'fBrand', 'fShade', 'fOpened', 'phraseInput'].forEach(id => { $(id).value = ''; });
-    $('micStatus').textContent = '';
-    render();
+    const d = currentDraft();
+    if (!d.name) { $('fName').focus(); return; }
+    if (!validateDates()) { ($('fOpened').getAttribute('aria-invalid') === 'true' ? $('fOpened') : $('fPrinted')).focus(); return; }
+    if (!ui.editing) {
+      const { exact } = findDuplicates(d);
+      if (exact.length && !ui.dupOk) {
+        ui.dupOk = true;
+        const box = $('dupBox'); box.replaceChildren();
+        const w = el('div', 'dup-box'); w.appendChild(el('div', null, `you already have “${label(exact[0])}”. Add another one anyway?`));
+        const yes = el('button', 'btn-small', 'yes, add anyway'); yes.type = 'button';
+        yes.addEventListener('click', () => $('addForm').requestSubmit());
+        const no = el('button', 'link-btn', 'no, cancel'); no.type = 'button';
+        no.addEventListener('click', () => { ui.dupOk = false; box.replaceChildren(); });
+        w.append(yes, no); box.appendChild(w); yes.focus(); return;
+      }
+    }
+    if (ui.editing) {
+      const p = state.products.find(x => x.id === ui.editing);
+      if (p) Object.assign(p, d, { photo: ui.photo });
+    } else {
+      state.products.push({ id: state.nextIds.product++, ...d, photo: ui.photo, notes: [], finished: false, love: false, added: Date.now() });
+    }
+    resetForm(); refreshBrands(); persist(); render();
     $('fName').focus();
   });
 
-  /* ── say it / type it → pre-fill the form (you confirm before saving) ── */
+  /* ── say it / type it → pre-fill the form ── */
   function fillFromPhrase() {
     const r = parseProductPhrase($('phraseInput').value, todayISO());
-    if (!r || !r.name) { $('micStatus').textContent = 'type or say something like "add Cetaphil moisturiser, opened today"'; return; }
-    $('fName').value = r.name;
-    $('fBrand').value = r.brand;
-    $('fCat').value = r.category;
-    $('fPao').value = r.pao || categoryDefaultPao(r.category);
-    if (r.opened !== undefined) $('fOpened').value = r.opened;
-    $('micStatus').textContent = 'filled in below. Check it, then tap “add product”.';
+    if (!r || !r.name) { $('micStatus').textContent = 'type or say something like "add Anua toner, opened today"'; return; }
+    $('fName').value = r.name; $('fBrand').value = r.brand;
+    catSelect.set(r.category); $('fPao').value = r.pao || categoryDefaultPao(r.category);
+    if (r.opened !== undefined) $('fOpened').value = r.opened ? formatDMY(r.opened) : '';
+    if (r.printedExpiry) $('fPrinted').value = formatDMY(r.printedExpiry);
+    validateDates(); updatePreview(); updateDup();
+    $('micStatus').textContent = 'filled in below. Check it, then tap “add to shelf”.';
     $('fName').focus();
   }
   $('fillBtn').addEventListener('click', fillFromPhrase);
   $('phraseInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fillFromPhrase(); } });
+  attachVoice({ button: $('micBtn'), status: $('micStatus'), target: $('phraseInput'), append: false, onText: fillFromPhrase, keyterms: voiceTerms });
 
-  attachVoice({
-    button: $('micBtn'), status: $('micStatus'), target: $('phraseInput'),
-    append: false, onText: fillFromPhrase,
+  /* ── search ── */
+  function haystack(p) { return norm([p.brand, p.name, p.shade, categoryInfo(p.category).label, categoryInfo(p.category).words ? categoryInfo(p.category).words.join(' ') : ''].join(' ')); }
+  function matches(p, q) { const toks = norm(q).split(' ').filter(Boolean); if (!toks.length) return true; const h = haystack(p); return toks.every(t => h.includes(t)); }
+
+  function updateSearchMsg() {
+    const q = ui.query.trim(), msg = $('searchMsg'); $('searchClear').hidden = !q;
+    msg.className = 'search-msg';
+    if (!norm(q)) { msg.textContent = ''; return; }
+    const hits = state.products.filter(p => matches(p, q));
+    if (!hits.length) { msg.classList.add('none'); msg.textContent = '✓ you don’t own anything like this yet'; }
+    else {
+      msg.classList.add('have');
+      const names = hits.slice(0, 3).map(p => label(p) + (p.finished ? ' (finished)' : '')).join('  /  ');
+      msg.textContent = `you already have ${hits.length} matching item${hits.length > 1 ? 's' : ''}: ${names}${hits.length > 3 ? ' …' : ''}`;
+    }
+  }
+  $('searchInput').addEventListener('input', () => { ui.query = $('searchInput').value; updateSearchMsg(); render(); });
+  $('searchClear').addEventListener('click', () => { $('searchInput').value = ''; ui.query = ''; updateSearchMsg(); render(); $('searchInput').focus(); });
+  attachVoice({ button: $('searchMic'), status: $('searchMicStatus'), target: $('searchInput'), append: false, keyterms: voiceTerms });
+
+  /* ── filters / sort ── */
+  const STATUS_FILTERS = [['all', 'on my shelf'], ['soon', 'expiring soon'], ['expired', 'expired'], ['sealed', 'not opened'], ['loved', '♥ loved'], ['finished', 'finished']];
+  function buildFilters(today) {
+    const sf = $('statusFilters'); sf.replaceChildren();
+    STATUS_FILTERS.forEach(([k, lab]) => {
+      const b = el('button', 'chip-btn', lab); b.type = 'button'; b.setAttribute('aria-pressed', String(ui.status === k));
+      b.addEventListener('click', () => { ui.status = k; render(); }); sf.appendChild(b);
+    });
+    const cf = $('catFilters'); cf.replaceChildren();
+    const mk = (k, lab, icon, n) => {
+      const b = el('button', 'chip-btn'); b.type = 'button'; b.setAttribute('aria-pressed', String(ui.cat === k));
+      if (icon) { const i = el('span', 'isel-ico'); i.setAttribute('aria-hidden', 'true'); i.innerHTML = icon; b.appendChild(i); }
+      b.appendChild(el('span', null, `${lab} ${n}`));
+      b.addEventListener('click', () => { ui.cat = k; render(); }); cf.appendChild(b);
+    };
+    mk('all', 'all', '', state.products.length);
+    CATEGORIES.forEach(c => { const n = state.products.filter(p => p.category === c.key).length; if (n) mk(c.key, c.label, categoryIcon(c.key), n); });
+  }
+  $('sortSel').addEventListener('change', () => { ui.sort = $('sortSel').value; render(); });
+
+  function visibleProducts(today) {
+    let list = state.products.filter(p => matches(p, ui.query));
+    list = list.filter(p => {
+      const k = productStatus(p, today).kind;
+      if (ui.status === 'finished') return p.finished;
+      if (ui.query.trim()) return true;                 /* a search looks everywhere */
+      if (p.finished) return false;
+      if (ui.status === 'all') return true;
+      if (ui.status === 'loved') return p.love;
+      return k === ui.status;
+    });
+    if (ui.cat !== 'all') list = list.filter(p => p.category === ui.cat);
+    const by = {
+      expiry: () => sortProducts(list, today),
+      recent: () => [...list].sort((a, b) => b.added - a.added || b.id - a.id),
+      brand: () => [...list].sort((a, b) => (a.brand || '~').localeCompare(b.brand || '~') || a.name.localeCompare(b.name)),
+      name: () => [...list].sort((a, b) => a.name.localeCompare(b.name)),
+    };
+    return by[ui.sort]();
+  }
+
+  /* ── render ── */
+  function render() {
+    const today = todayISO();
+    const live = state.products.filter(p => !p.finished);
+    const st = (p) => productStatus(p, today).kind;
+    const expired = live.filter(p => st(p) === 'expired').length, soon = live.filter(p => st(p) === 'soon').length;
+
+    const box = $('alertBox');
+    if (!live.length) box.replaceChildren();
+    else if (expired || soon) {
+      const parts = [];
+      if (soon) parts.push(`${soon} expiring in the next ${SOON_DAYS} days`);
+      if (expired) parts.push(`${expired} already expired`);
+      const a = el('div', 'alert warn', `⚠ ${parts.join(' · ')}`);
+      a.appendChild(el('span', 'alert-sub', 'use them up or replace them. The soonest are at the top.'));
+      box.replaceChildren(a);
+    } else box.replaceChildren(el('div', 'alert fine', '✦ nothing expires in the next 30 days'));
+
+    const stats = $('stats'); stats.replaceChildren();
+    [[live.length, 'on shelf'], [soon, 'expiring soon'], [expired, 'expired'], [state.products.filter(p => p.finished).length, 'finished']].forEach(([n, l]) => {
+      const s = el('div', 'stat'); s.append(el('b', null, String(n)), el('span', null, l)); stats.appendChild(s);
+    });
+
+    buildFilters(today);
+    const list = $('productList'); list.replaceChildren();
+    const shown = visibleProducts(today);
+    $('countLine').textContent = state.products.length ? `showing ${shown.length} of ${state.products.length}` : '';
+    if (!state.products.length) list.appendChild(el('div', 'empty-state', 'your shelf is empty. Add your first product above, or tap speak and say it.'));
+    else if (!shown.length) list.appendChild(el('div', 'empty-state', 'nothing matches these filters.'));
+    shown.forEach(p => list.appendChild(makeCard(p, today)));
+  }
+
+  function actionBtn(text, fn, extra) { const b = el('button', 'link-btn' + (extra ? ' ' + extra : ''), text); b.type = 'button'; b.addEventListener('click', fn); return b; }
+
+  function makeCard(p, today) {
+    const s = productStatus(p, today);
+    const card = el('article', `p-card ${s.kind}${p.finished ? ' finished' : ''}`);
+
+    const vis = el('div', 'p-visual');
+    if (p.photo) {
+      const f = el('div', 'film'); f.appendChild(el('div', 'ribbon')); const sh = el('div', 'shot');
+      const img = document.createElement('img'); img.src = p.photo; img.alt = `photo of ${p.name}`; sh.appendChild(img); f.appendChild(sh); vis.appendChild(f);
+    } else { const ic = el('div', 'p-icon'); ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = categoryIcon(p.category); vis.appendChild(ic); }
+
+    const main = el('div', 'p-main');
+    main.appendChild(el('div', 'p-name', (p.love ? '♥ ' : '') + p.name));
+    const sub = [p.brand, p.shade].filter(Boolean).join(' · ');
+    if (sub) main.appendChild(el('div', 'p-sub', sub));
+    main.appendChild(el('div', 'p-meta', `${categoryInfo(p.category).label} · ${p.pao}M after opening`));
+
+    const dates = el('div', 'p-dates');
+    const dl = (k, v) => { const d = el('span'); d.append(el('b', null, k + ' '), document.createTextNode(v)); dates.appendChild(d); };
+    dl('opened', p.opened ? formatDMY(p.opened) : 'not yet');
+    if (p.printedExpiry) dl('printed', formatDMY(p.printedExpiry));
+    dl('expires', s.exp ? `${formatDMY(s.exp)}${s.basis === 'printed' ? ' (pack date)' : ' (after opening)'}` : '—');
+    main.appendChild(dates);
+    main.appendChild(p.finished ? el('span', 'chip done', 'finished ✓') : el('span', `chip ${s.kind}`, describeStatus(s)));
+
+    const act = el('div', 'p-actions');
+    if (!p.opened && !p.finished) act.appendChild(actionBtn('opened today', () => { p.opened = todayISO(); persist(); render(); }));
+    const love = actionBtn(p.love ? '♥ loved' : '♡ love', () => { p.love = !p.love; persist(); render(); }); love.setAttribute('aria-pressed', String(p.love)); act.appendChild(love);
+    act.appendChild(actionBtn('edit', () => startEdit(p)));
+    act.appendChild(actionBtn(p.finished ? 'back on shelf' : 'finished', () => { p.finished = !p.finished; persist(); render(); }));
+    if (ui.confirmDelete === p.id) {
+      act.appendChild(actionBtn('yes, delete', () => { state.products = state.products.filter(x => x.id !== p.id); ui.confirmDelete = null; refreshBrands(); persist(); updateSearchMsg(); render(); }, 'danger'));
+      act.appendChild(actionBtn('keep it', () => { ui.confirmDelete = null; render(); }));
+    } else {
+      const d = actionBtn('delete', () => { ui.confirmDelete = p.id; render(); }, 'danger'); d.setAttribute('aria-label', `delete ${p.name}`); act.appendChild(d);
+    }
+    main.appendChild(act);
+    main.appendChild(makeNotes(p));
+
+    card.append(vis, main);
+    return card;
+  }
+
+  function makeNotes(p) {
+    const det = document.createElement('details'); det.className = 'notes'; det.open = ui.openNotes.has(p.id);
+    det.addEventListener('toggle', () => { det.open ? ui.openNotes.add(p.id) : ui.openNotes.delete(p.id); });
+    det.appendChild(el('summary', null, `journal notes (${p.notes.length})`));
+    p.notes.forEach(n => { const row = el('div', 'note'); row.append(el('time', null, formatDMY(n.date)), document.createTextNode(n.text)); det.appendChild(row); });
+    const form = el('div', 'note-form');
+    const inp = el('input', 'r-input'); inp.type = 'text'; inp.maxLength = 500; inp.placeholder = 'how is it working for you?'; inp.setAttribute('aria-label', `new note for ${p.name}`);
+    const add = el('button', 'btn-small', 'add note'); add.type = 'button';
+    const mic = el('button', 'mic-btn'); mic.type = 'button'; mic.setAttribute('aria-pressed', 'false'); mic.setAttribute('aria-label', `speak a note for ${p.name}`);
+    const mi = el('span', 'mic-icon', '🎙'); mi.setAttribute('aria-hidden', 'true'); mic.append(mi, el('span', 'mic-label', 'speak'));
+    const status = el('div', 'mic-status'); status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+    const save = () => { const t = inp.value.trim(); if (!t) return; p.notes.push({ date: todayISO(), text: t }); ui.openNotes.add(p.id); persist(); render(); };
+    add.addEventListener('click', save);
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); save(); } });
+    form.append(inp, mic, add); det.append(form, status);
+    attachVoice({ button: mic, status, target: inp, append: true, keyterms: voiceTerms });
+    return det;
+  }
+
+  /* ── backup ── */
+  $('exportBtn').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify({ app: 'my-diary-makeup', version: 1, products: state.products }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `makeup-shelf-${todayISO()}.json`;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+    setBackupMsg('backup downloaded ✓');
+  });
+  $('importFile').addEventListener('change', async () => {
+    const f = $('importFile').files[0]; if (!f) return;
+    try {
+      const data = JSON.parse(await f.text());
+      const arr = Array.isArray(data) ? data : data.products;
+      if (!Array.isArray(arr)) throw new Error('no products');
+      let added = 0;
+      arr.forEach(raw => {
+        const p = normaliseProduct(raw || {});
+        if (!p.name || state.products.some(x => key(x) === key(p))) return;
+        p.id = state.nextIds.product++; state.products.push(p); added++;
+      });
+      refreshBrands(); persist(); render(); setBackupMsg(`imported ${added} new product${added === 1 ? '' : 's'} ✓ (duplicates skipped)`);
+    } catch (e) { setBackupMsg('that file is not a valid shelf backup', true); }
+    $('importFile').value = '';
   });
 
-  render();
+  refreshBrands(); validateDates(); updatePreview(); render();
 </script>
 </body>
 </html>

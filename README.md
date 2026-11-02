@@ -8,16 +8,16 @@ I'm Type A, so I need a checklist just to feel like my day has shape. But I also
 
 ## What It Does
 
-- **Character customization** — skin tone, hair, outfit, a small personal touch on the splash screen
+- **Notebook look** — a balletcore spiral-notebook cover with a daily quote on a taped photo strip, satin-ribbon page tabs, pearl dividers; all artwork is drawn in CSS/SVG for this app
 - **Daily quote/poetry** — rotates by day
 - **Checklist** — today's tasks, by category and priority
 - **Mood journal** — a free-text diary entry, now with voice input
-- **Makeup & skincare tracker** — product, brand, shade, date opened and period-after-opening; the expiry date is calculated, the list is sorted soonest-first, and a banner warns about anything expiring within 30 days. You can add a product by saying it ("add Cetaphil moisturiser, opened today"): the voice phrase pre-fills the form and you confirm before saving.
+- **Makeup shelf (digital journal)** — category picked from an icon dropdown, brand, shade, opened date and pack expiry date in DD/MM/YYYY; the earlier of "opened + period after opening" and the printed date is the expiry. Search before you buy (by text or voice) tells you if you already own something similar, with duplicate warnings when adding. Filters, sorting, photos, dated journal notes (typed or spoken), edit, love, mark finished, and JSON backup/import. Say a product to pre-fill the form ("add Anua toner, opened today"); you confirm before saving.
 - **Expense tracking** — multi-currency income and spending log
 
 ## The Voice Feature
 
-A labelled **speak** button on the today page (add a task by voice), the mood page (dictate a journal entry) and the makeup tracker (add a product by voice) records your voice, sends it to a serverless function, and returns a transcript from Deepgram's Nova-3 model, inserted straight into the text box. The recording code lives in one shared file, `components/voice.js`.
+A labelled **speak** button on the today page (add a task by voice), the mood page (dictate a journal entry) and the makeup tracker (add a product by voice) records your voice, sends it to a serverless function, and returns a transcript from Deepgram's Nova-3 model, inserted straight into the text box. The recording code lives in one shared file, `components/voice.js`. The makeup page also sends a list of beauty brand names as Nova-3 keyterms to help recognise them; if Deepgram rejects them the function retries without. This keyterm feature is untested against the live API from my build environment, so it should be tried live.
 
 **Why a serverless function, not a direct API call from the browser:** calling Deepgram's API directly from client-side JavaScript would expose the API key to anyone who opened developer tools. The `netlify/functions/transcribe.js` function keeps the key server-side, in a Netlify environment variable, and only ever proxies the audio through.
 

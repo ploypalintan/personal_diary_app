@@ -12,7 +12,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { audio, mimetype } = JSON.parse(event.body);
+    const { audio, mimetype, keyterms } = JSON.parse(event.body);
     if (!audio) {
       return { statusCode: 400, body: JSON.stringify({ error: 'No audio field in request body.' }) };
     }
@@ -23,17 +23,24 @@ exports.handler = async (event) => {
     /* browsers record webm (Chrome/Firefox) or mp4 (Safari); only pass through audio/video types */
     const contentType = /^(audio|video)\/[a-z0-9.+-]+$/i.test(mimetype || '') ? mimetype : 'audio/webm';
 
-    const dgResponse = await fetch(
-      'https://api.deepgram.com/v1/listen?model=nova-3&smart_format=true&punctuate=true',
-      {
+    /* Optional keyterm prompting (Nova-3): helps with brand names. Validated and capped. */
+    const terms = Array.isArray(keyterms)
+      ? keyterms.filter((t) => typeof t === 'string' && t.trim().length > 0 && t.length <= 40).slice(0, 60)
+      : [];
+
+    const callDeepgram = (withTerms) => {
+      const params = new URLSearchParams({ model: 'nova-3', smart_format: 'true', punctuate: 'true' });
+      if (withTerms) terms.forEach((t) => params.append('keyterm', t.trim()));
+      return fetch(`https://api.deepgram.com/v1/listen?${params}`, {
         method: 'POST',
-        headers: {
-          Authorization: `Token ${apiKey}`,
-          'Content-Type': contentType,
-        },
+        headers: { Authorization: `Token ${apiKey}`, 'Content-Type': contentType },
         body: audioBuffer,
-      }
-    );
+      });
+    };
+
+    let dgResponse = await callDeepgram(terms.length > 0);
+    /* if Deepgram rejects the keyterms, retry once without them so voice still works */
+    if (dgResponse.status === 400 && terms.length > 0) dgResponse = await callDeepgram(false);
 
     if (!dgResponse.ok) {
       const errText = await dgResponse.text();

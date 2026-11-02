@@ -6,320 +6,109 @@
   <title>my diary</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* ── name screen ── */
-    #nameScreen{background:var(--almond-pale)}
-    .ns-input{
-      font-family:var(--font);font-size:22px;
-      color:var(--ink);border:none;border-bottom:1.5px solid var(--almond);
-      background:transparent;text-align:center;padding:8px 16px;
-      outline:none;width:min(300px,100%);
+    body { min-height: 100%; }
+    .cover { position: relative; max-width: 760px; margin: 28px auto; padding: 44px 40px 40px 84px; min-height: calc(100vh - 56px);
+      background: var(--paper); border-radius: 6px 18px 18px 6px; box-shadow: 0 20px 38px rgba(140,70,90,.20), 0 2px 5px rgba(140,70,90,.14);
+      display: none; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
+    .cover.active { display: flex; }
+    .cover::before { content: ''; position: absolute; top: 24px; bottom: 24px; left: 4px; width: 70px; background: var(--coil) repeat-y 0 0 / 70px 30px; }
+    .cover .bow { position: absolute; top: -18px; right: 40px; transform: rotate(8deg); }
+    .cover-title { font-family: var(--font-script); font-weight: 400; font-size: clamp(3.2rem, 11vw, 5.4rem); line-height: 1.05; color: var(--ink); text-wrap: balance; }
+    .cover .pearls { width: min(320px, 100%); }
+    .ns-input { font-family: var(--font); font-size: 1.3rem; color: var(--ink); border: none; border-bottom: 1.5px solid var(--border-strong);
+      background: transparent; text-align: center; padding: 8px 16px; outline-offset: 4px; width: min(300px, 100%); }
+    .ns-input::placeholder { color: var(--text-muted); }
+    .intro { max-width: 340px; color: var(--text-mid); }
+
+    .quote-film { width: min(340px, 100%); margin: 18px 0 8px; --tilt: -1.4deg; padding: 22px 28px 18px; }
+    .quote-film .q-text { font-size: 1.06rem; line-height: 1.6; color: var(--ink); }
+    .quote-film .q-by { margin-top: 10px; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: .82rem; color: var(--text-muted); }
+    .doodle { position: absolute; left: 25%; top: 415px; width: 90px; height: 70px; opacity: .85; }
+
+    .shelf { display: inline-block; color: var(--mauve-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+    .edit-name-btn { background: none; border: none; cursor: pointer; color: var(--text-muted); font: 500 .9rem var(--font); text-decoration: underline; min-height: 36px; padding: 0 8px; }
+    .edit-name-btn:hover { color: var(--mauve-dark); }
+    @media (max-width: 640px) {
+      .cover { margin: 11px; padding: 36px 20px 30px 52px; min-height: calc(100vh - 22px); }
+      .cover::before { left: -10px; width: 50px; background-size: 50px 21px; }
+      .doodle { display: none; }
     }
-    .ns-input::placeholder{color:var(--text-muted)}
-
-    /* ── splash ── */
-    #splashScreen{background:var(--almond-pale);gap:14px}
-    .splash-name-row{display:flex;align-items:center;gap:8px;justify-content:center}
-    .edit-name-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;
-      letter-spacing:0.06em;text-decoration:underline;font-family:var(--font);
-      padding:0;transition:color 0.2s}
-    .edit-name-btn:hover{color:var(--mauve)}
-
-    /* ── character area ── */
-    .char-area{display:flex;flex-direction:column;align-items:center;gap:6px}
-    .char-canvas-wrap{position:relative;cursor:pointer}
-    .customize-link{font-size:13px;color:var(--text-muted);letter-spacing:0.06em;
-      text-decoration:underline;cursor:pointer;font-family:var(--font);
-      background:none;border:none;padding:0;transition:color 0.2s}
-    .customize-link:hover{color:var(--mauve)}
-
-    /* ── customiser modal ── */
-    .modal-overlay{
-      position:fixed;inset:0;background:rgba(46,32,34,0.35);
-      display:flex;align-items:center;justify-content:center;
-      z-index:100;padding:16px;
-    }
-    .modal-box{
-      background:var(--almond-pale);border-radius:20px;border:0.5px solid var(--border);
-      padding:24px 24px 0;max-width:420px;width:100%;max-height:92vh;overflow-y:auto;
-    }
-    .modal-title{font-family:var(--font);font-size:18px;
-      color:var(--ink);margin-bottom:16px;text-align:center}
-    .modal-row{background:#fff;border:0.5px solid var(--border-soft);border-radius:12px;
-      padding:12px 14px;margin-bottom:10px}
-    .opt-lbl{font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
-      color:var(--text-muted);margin-bottom:8px;font-family:var(--font)}
-    .swatches{display:flex;gap:7px;flex-wrap:wrap}
-    .skin-sw{width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;
-      border:2px solid var(--border);transition:all 0.15s}
-    .skin-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
-    .hair-sw{width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;
-      border:2px solid transparent;transition:all 0.15s}
-    .hair-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
-    .pill-o{padding:9px 16px;min-height:40px;border-radius:20px;border:0.5px solid var(--border);
-      background:var(--almond-pale);font-size:13px;color:var(--text-muted);cursor:pointer;
-      font-family:var(--font);transition:all 0.15s;white-space:nowrap}
-    .pill-o:hover{background:var(--almond-light)}
-    .pill-o.sel{background:var(--mauve);color:#faf5f5;border-color:var(--mauve)}
-    .modal-preview{display:flex;justify-content:center;margin-bottom:16px}
-    .modal-btns{display:flex;gap:10px;position:sticky;bottom:0;background:var(--almond-pale);padding:14px 0 20px;margin-top:6px}
-    .modal-btns .btn-primary{flex:1}
-    .btn-ghost2{flex:1;background:none;border:0.5px solid var(--border);border-radius:30px;
-      padding:11px;font-size:16px;cursor:pointer;font-family:var(--font);
-      color:var(--text-mid);transition:all 0.2s}
-    .btn-ghost2:hover{background:var(--almond-light)}
-
-    @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
-    .bob{animation:bob 2.8s ease-in-out infinite}
-    @media (prefers-reduced-motion: reduce){.bob{animation:none}}
   </style>
 </head>
 <body>
-<div class="diary-wrap">
 
-  <!-- ══ NAME SCREEN ══ -->
-  <div id="nameScreen" class="screen active">
-    <div class="t-eyebrow">welcome to your planner</div>
-    <div class="rule"></div>
-    <div class="t-serif-lg">what shall we call you?</div>
-    <div class="t-body" style="max-width:300px;text-align:center">
-      type your name or whatever you'd like to be called —<br/>this diary belongs entirely to you.
-    </div>
+  <!-- name screen -->
+  <main id="nameScreen" class="cover active">
+    <div class="bow" aria-hidden="true"></div>
+    <div class="t-eyebrow">a little digital journal</div>
+    <h1 class="cover-title">hello, you</h1>
+    <div class="pearls" aria-hidden="true"></div>
+    <p class="t-body intro">what shall we call you? this diary belongs entirely to you.</p>
+    <label for="nameInput" class="t-eyebrow">your name</label>
     <input class="ns-input" id="nameInput" placeholder="your name…" maxlength="32" autocomplete="off"/>
-    <button class="btn-primary" onclick="saveName()">begin my diary</button>
-  </div>
+    <button class="btn-primary" id="beginBtn" type="button">begin my diary</button>
+  </main>
 
-  <!-- ══ SPLASH SCREEN ══ -->
-  <div id="splashScreen" class="screen">
-    <div class="t-eyebrow">my planner</div>
-    <div class="splash-name-row">
-      <div class="t-serif-lg" id="splashTitle"></div>
-      <button class="edit-name-btn" onclick="goToNameScreen()">edit</button>
-    </div>
-    <div class="rule"></div>
+  <!-- cover -->
+  <main id="splashScreen" class="cover">
+    <div class="bow" aria-hidden="true"></div>
+    <div class="t-eyebrow">my journal</div>
+    <h1 class="cover-title" id="splashTitle"></h1>
+    <div class="pearls" aria-hidden="true"></div>
 
-    <!-- pixel character -->
-    <div class="char-area">
-      <div class="char-canvas-wrap" onclick="openCustomiser()">
-        <canvas id="mainChar" width="96" height="144"
-          style="image-rendering:pixelated;width:160px;height:240px"
-          class="bob" title="tap to customise"></canvas>
-      </div>
-      <button class="customize-link" onclick="openCustomiser()">customise your character ✦</button>
-    </div>
+    <figure class="film quote-film">
+      <div class="ribbon" aria-hidden="true"></div>
+      <blockquote class="q-text" id="quoteText"></blockquote>
+      <figcaption class="q-by" id="quoteAuthor"></figcaption>
+    </figure>
 
-    <!-- quote -->
-    <div class="card-white quote-card">
-      <span class="quote-badge" id="quoteBadge">quote of the day</span>
-      <div class="quote-mark" aria-hidden="true">“</div>
-      <div class="quote-text" id="quoteText"></div>
-      <div class="rule" style="margin:8px auto"></div>
-      <div class="quote-author" id="quoteAuthor"></div>
-    </div>
+    <svg class="doodle" viewBox="0 0 90 70" fill="none" stroke="#73364b" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8c26-6 50 6 58 34"/><path d="M64 42l-12-6M64 42l4-13"/></svg>
 
-    <button class="btn-primary" onclick="openDiary()">open today's diary</button>
-  </div>
-
-  <!-- ══ CUSTOMISER MODAL ══ -->
-  <div class="modal-overlay" id="customModal" style="display:none" onclick="closeCustomiser(event)">
-    <div class="modal-box" role="dialog" aria-modal="true" aria-label="customise your character" onclick="event.stopPropagation()">
-      <div class="modal-title">customise your character</div>
-      <div class="modal-preview">
-        <canvas id="previewChar" width="96" height="144"
-          style="image-rendering:pixelated;width:96px;height:144px"></canvas>
-      </div>
-      <div class="modal-row">
-        <div class="opt-lbl">skin tone</div>
-        <div class="swatches" id="skinOpts"></div>
-      </div>
-      <div class="modal-row">
-        <div class="opt-lbl">hair colour</div>
-        <div class="swatches" id="hairColOpts"></div>
-      </div>
-      <div class="modal-row">
-        <div class="opt-lbl">hair style</div>
-        <div class="swatches" id="hairStyleOpts"></div>
-      </div>
-      <div class="modal-row">
-        <div class="opt-lbl">outfit</div>
-        <div class="swatches" id="outfitOpts"></div>
-      </div>
-      <div class="modal-btns">
-        <button class="btn-ghost2" onclick="closeCustomiser()">cancel</button>
-        <button class="btn-primary" onclick="saveCustomiser()">save character</button>
-      </div>
-    </div>
-
-    <!-- quote -->
-    <div class="card-white quote-card">
-      <span class="quote-badge" id="quoteBadge">quote of the day</span>
-      <div class="quote-mark" aria-hidden="true">“</div>
-      <div class="quote-text" id="quoteText"></div>
-      <div class="rule" style="margin:8px auto"></div>
-      <div class="quote-author" id="quoteAuthor"></div>
-    </div>
-
-  </div>
-
-</div>
+    <p class="t-body" id="shelfLine" role="status"></p>
+    <button class="btn-primary" id="openBtn" type="button">open today's diary</button>
+    <button class="edit-name-btn" id="editName" type="button">change my name</button>
+  </main>
 
 <script src="data/diaryData.js"></script>
-<script src="components/pixelChar.js"></script>
+<script src="components/expiry.js"></script>
 <script>
-  /* ── LOOKUP TABLES ── */
-  const SKINS = [
-    {name:'porcelain',s:'#fde8d8'},{name:'fair',s:'#f5d0b0'},
-    {name:'light tan',s:'#e8b888'},{name:'medium',s:'#c89060'},
-    {name:'tan',s:'#a87048'},{name:'deep',s:'#7a4828'},
-  ];
-  const HAIR_COLS = [
-    {name:'dark brown',c:'#3d2010'},{name:'warm brown',c:'#7a5038'},
-    {name:'auburn',c:'#8a3820'},{name:'blonde',c:'#c8a050'},
-    {name:'black',c:'#1a1010'},{name:'dusty pink',c:'#c09098'},
-  ];
-  const HAIR_STYLES = [
-    {name:'long straight',key:'longstraight'},
-    {name:'wavy long',key:'wavylong'},
-    {name:'bob',key:'bob'},
-    {name:'curly',key:'curly'},
-    {name:'short',key:'short'},
-  ];
-  const OUTFITS = [
-    {name:'pink sweater',key:'sweater'},
-    {name:'lace dress',key:'dress'},
-    {name:'cosy knit',key:'knit'},
-    {name:'checkered top',key:'check'},
-    {name:'soft hoodie',key:'hoodie'},
-  ];
-
-  /* ── STATE ── */
   let state = loadState();
-  // default = user's chosen character: wavy long, warm brown, pink sweater, fair skin
-  if (state.charSkin === undefined) state.charSkin = 1;  // fair
-  if (state.charHairCol === undefined) state.charHairCol = 1;  // warm brown
-  if (state.charHairStyle === undefined) state.charHairStyle = 1;  // wavy long (index in array)
-  if (state.charOutfit === undefined) state.charOutfit = 0;  // pink sweater
+  const $ = (id) => document.getElementById(id);
 
-  let draft = {};
-
-  /* ── DRAW MAIN CHARACTER ── */
-  function drawMain() {
-    drawPixelChar(
-      document.getElementById('mainChar'),
-      state.charSkin, state.charHairCol,
-      HAIR_STYLES[state.charHairStyle].key,
-      OUTFITS[state.charOutfit].key
-    );
-  }
-  function drawPreview() {
-    drawPixelChar(
-      document.getElementById('previewChar'),
-      draft.skin, draft.hairCol,
-      HAIR_STYLES[draft.hairStyle].key,
-      OUTFITS[draft.outfit].key
-    );
-  }
-
-  /* ── QUOTE ── */
-  const q = getDailyQuote();
-  document.getElementById('quoteBadge').textContent = q.type === 'poetry' ? 'poetry of the day' : 'quote of the day';
-  document.getElementById('quoteText').textContent  = q.text;
-  document.getElementById('quoteAuthor').textContent = q.author;
-
-  /* ── NAME FLOW ── */
-  if (!state.userName) {
-    show('nameScreen');
-  } else {
-    applyName(state.userName);
-    show('splashScreen');
-    drawMain();
-  }
-
-  document.getElementById('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
-
-  function saveName() {
-    const v = document.getElementById('nameInput').value.trim();
-    if (!v) return;
-    state.userName = v;
-    saveState(state);
-    applyName(v);
-    show('splashScreen');
-    drawMain();
-  }
-  function applyName(n) {
-    document.getElementById('splashTitle').textContent = n.toLowerCase() + "'s diary";
-  }
-  function goToNameScreen() {
-    document.getElementById('nameInput').value = state.userName;
-    show('nameScreen');
-  }
   function show(id) {
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
+    ['nameScreen', 'splashScreen'].forEach(s => $(s).classList.toggle('active', s === id));
+    const h = $(id).querySelector('h1'); if (h) h.setAttribute('tabindex', '-1');
   }
-  function openDiary() {
-    saveState(state);
-    window.location.href = 'pages/today.html';
+  function paintCover() {
+    $('splashTitle').textContent = state.userName.toLowerCase() + "'s diary";
+    const q = getDailyQuote();
+    $('quoteText').textContent = '“' + q.text + '”';
+    $('quoteAuthor').textContent = q.author;
+
+    /* a live line about the makeup shelf, linking to the tracker */
+    const line = $('shelfLine');
+    const list = (state.products || []).filter(p => !p.finished);
+    if (!list.length) { line.textContent = ''; return; }
+    const today = todayISO();
+    const soon = list.filter(p => { const k = productStatus(p, today).kind; return k === 'soon' || k === 'expired'; }).length;
+    const a = document.createElement('a');
+    a.className = 'shelf'; a.href = 'pages/tracker.html';
+    a.textContent = `${list.length} product${list.length > 1 ? 's' : ''} on your shelf` + (soon ? ` · ${soon} need${soon > 1 ? '' : 's'} attention` : '');
+    line.replaceChildren(a);
+  }
+  function saveName() {
+    const v = $('nameInput').value.trim();
+    if (!v) { $('nameInput').focus(); return; }
+    state.userName = v; saveState(state);
+    paintCover(); show('splashScreen');
   }
 
-  /* ── CUSTOMISER ── */
-  function openCustomiser() {
-    draft = { skin: state.charSkin, hairCol: state.charHairCol, hairStyle: state.charHairStyle, outfit: state.charOutfit };
-    buildCustomiserUI();
-    drawPreview();
-    document.getElementById('customModal').style.display = 'flex';
-  }
-  function closeCustomiser(e) {
-    if (e && e.target !== document.getElementById('customModal')) return;
-    document.getElementById('customModal').style.display = 'none';
-  }
-  function saveCustomiser() {
-    state.charSkin      = draft.skin;
-    state.charHairCol   = draft.hairCol;
-    state.charHairStyle = draft.hairStyle;
-    state.charOutfit    = draft.outfit;
-    saveState(state);
-    drawMain();
-    document.getElementById('customModal').style.display = 'none';
-  }
+  $('beginBtn').addEventListener('click', saveName);
+  $('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+  $('openBtn').addEventListener('click', () => { window.location.href = 'pages/today.html'; });
+  $('editName').addEventListener('click', () => { $('nameInput').value = state.userName; show('nameScreen'); $('nameInput').focus(); });
 
-  function buildCustomiserUI() {
-    /* skin */
-    const sk = document.getElementById('skinOpts'); sk.innerHTML = '';
-    SKINS.forEach((s,i) => {
-      const d = document.createElement('button'); d.type = 'button';
-      d.className = 'skin-sw' + (i === draft.skin ? ' sel' : '');
-      d.style.background = s.s; d.title = s.name; d.setAttribute('aria-label', 'skin tone: ' + s.name); d.setAttribute('aria-pressed', i === draft.skin);
-      d.onclick = () => { draft.skin = i; sk.querySelectorAll('.skin-sw').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
-      sk.appendChild(d);
-    });
-    /* hair colour */
-    const hc = document.getElementById('hairColOpts'); hc.innerHTML = '';
-    HAIR_COLS.forEach((h,i) => {
-      const d = document.createElement('button'); d.type = 'button';
-      d.className = 'hair-sw' + (i === draft.hairCol ? ' sel' : '');
-      d.style.background = h.c; d.title = h.name; d.setAttribute('aria-label', 'hair colour: ' + h.name); d.setAttribute('aria-pressed', i === draft.hairCol);
-      d.onclick = () => { draft.hairCol = i; hc.querySelectorAll('.hair-sw').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
-      hc.appendChild(d);
-    });
-    /* hair style */
-    const hs = document.getElementById('hairStyleOpts'); hs.innerHTML = '';
-    HAIR_STYLES.forEach((s,i) => {
-      const d = document.createElement('button'); d.type = 'button';
-      d.className = 'pill-o' + (i === draft.hairStyle ? ' sel' : '');
-      d.textContent = s.name; d.setAttribute('aria-pressed', i === draft.hairStyle);
-      d.onclick = () => { draft.hairStyle = i; hs.querySelectorAll('.pill-o').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
-      hs.appendChild(d);
-    });
-    /* outfit */
-    const ot = document.getElementById('outfitOpts'); ot.innerHTML = '';
-    OUTFITS.forEach((o,i) => {
-      const d = document.createElement('button'); d.type = 'button';
-      d.className = 'pill-o' + (i === draft.outfit ? ' sel' : '');
-      d.textContent = o.name; d.setAttribute('aria-pressed', i === draft.outfit);
-      d.onclick = () => { draft.outfit = i; ot.querySelectorAll('.pill-o').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
-      ot.appendChild(d);
-    });
-  }
+  if (state.userName) { paintCover(); show('splashScreen'); } else show('nameScreen');
 </script>
 </body>
 </html>

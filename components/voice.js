@@ -10,7 +10,7 @@
 
 const VOICE_MAX_SECONDS = 90; /* keeps the request under Netlify's ~6 MB body limit */
 
-function attachVoice({ button, status, target, append = true, onText }) {
+function attachVoice({ button, status, target, append = true, onText, keyterms }) {
   let recorder = null;
   let chunks = [];
   let stream = null;
@@ -63,7 +63,7 @@ function attachVoice({ button, status, target, append = true, onText }) {
       const res = await fetch('/.netlify/functions/transcribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ audio, mimetype }),
+        body: JSON.stringify({ audio, mimetype, keyterms: typeof keyterms === 'function' ? keyterms() : keyterms }),
       });
       const data = await res.json();
       if (data.error) {
