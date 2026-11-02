@@ -116,6 +116,25 @@
       line-height: 1.8;
     }
     .journal-box::placeholder { color: var(--text-muted); }
+
+    /* the imaginary friend */
+    .friend { display: flex; align-items: center; gap: 12px; flex: none; margin: -2px 0 4px; }
+    .fr-hit { background: none; border: 0; padding: 0; cursor: pointer; width: 128px; flex: none; border-radius: 16px; }
+    .fr-hit:focus-visible { outline: 3px solid var(--mauve); outline-offset: 3px; }
+    .fr-svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 6px rgba(60,25,45,.25)); }
+    .fr-body { transform-origin: 100px 139px; animation: frBreathe 5s ease-in-out infinite; }
+    .fr-eye { animation: frGlow 3.6s ease-in-out infinite; transform-origin: 113px 72px; }
+    .fr-steam { animation: frSteam 3s ease-in-out infinite; }
+    .friend.listening .fr-eye { animation-duration: 1s; } .friend.listening .fr-body { animation-duration: 1.6s; }
+    .fr-hit:hover .fr-eye { transform: scale(1.25); }
+    @keyframes frBreathe { 0%,100% { transform: scale(1); } 50% { transform: scale(1.025, 1.015); } }
+    @keyframes frGlow { 0%,100% { opacity: .8; transform: scale(1); } 50% { opacity: 1; transform: scale(1.18); } }
+    @keyframes frSteam { 0%,100% { opacity: .2; } 50% { opacity: .8; } }
+    @media (prefers-reduced-motion: reduce) { .fr-body, .fr-eye, .fr-steam { animation: none; } }
+    .fr-side { min-width: 0; }
+    .fr-name { font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .14em; font-size: 11px; color: var(--text-muted); }
+    .fr-say { margin: 4px 0 0; font-family: var(--font-script); font-size: 26px; line-height: 1.15; color: var(--ink); }
+    .journal-box { min-height: 80px !important; height: 90px !important; }
   </style>
 </head>
 <body class="mood-page">
@@ -143,6 +162,7 @@
     </section>
     <section class="pg pg-right" aria-label="right page">
       <div class="pg-body">
+        <div class="friend" id="friend"></div>
         <div class="sec-label">dear diary…</div>
         <textarea class="journal-box" id="journalBox" placeholder="write anything your heart wants to say today… or tap speak"></textarea>
         <div class="voice-row">
@@ -167,6 +187,7 @@
 <script src="../components/navbar.js"></script>
 <script src="../components/pager.js"></script>
 <script src="../components/voice.js"></script>
+<script src="../components/friend.js"></script>
 <script>
   let state = initPage();
   let selectedMood = null;
@@ -174,6 +195,7 @@
   /* init mood selector */
   renderMoodSelector('moodSelectorWrap', null, mood => {
     selectedMood = mood;
+    if (window.friendEl) window.friendEl.setMood(mood.key);
   });
 
   /* save */
@@ -263,6 +285,9 @@
   }
 
   renderHistory();
+
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderHistory);
+  window.friendEl = initFriend(document.getElementById('friend'), document.getElementById('micBtn'), () => selectedMood && selectedMood.key);
 
   attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox') });
 </script>
