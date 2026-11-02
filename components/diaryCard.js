@@ -18,7 +18,10 @@ function makeTodoCard(item, onToggle, onDelete) {
   const chk = document.createElement('div');
   chk.className = `chk${item.done ? ' on' : ''}`;
   chk.style.marginTop = '2px';
+  chk.setAttribute('role', 'checkbox'); chk.setAttribute('tabindex', '0');
+  chk.setAttribute('aria-checked', String(!!item.done)); chk.setAttribute('aria-label', `${item.done ? 'done' : 'not done'}: ${item.name}`);
   chk.addEventListener('click', () => onToggle(item.id));
+  chk.addEventListener('keydown', (e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); onToggle(item.id); } });
   el.appendChild(chk);
 
   /* body */

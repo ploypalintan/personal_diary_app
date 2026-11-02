@@ -621,3 +621,9 @@ body { background: transparent; }
 .mood-page .page-body { padding-bottom: 120px; }
 .mood-page .memo-side { top: 230px; }
 @media (max-width: 820px) { .mood-page .page-header { padding-top: 100px; } }
+
+
+/* today page: angel-wing feathers, softly veiled */
+.today-page #mainApp {
+  background: linear-gradient(rgba(252,242,243,.66), rgba(252,242,243,.66)), url("assets/wings-bg.jpg") center / cover no-repeat, var(--paper);
+}
