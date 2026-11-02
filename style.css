@@ -744,3 +744,9 @@ body::before { background: none !important; border: 34px solid #f0c3d0; border-i
 @media (prefers-reduced-motion: reduce) { .st-fly { animation: none; transform: rotate(var(--r)); } }
 @media (max-width: 820px) { .st-fly-b { display: none; } .st-fly-a { width: 40px !important; left: -4px !important; } }
 @media (max-width: 820px) { .st-balle { display: none; } }
+
+/* very back layer, take 2: the French bedroom photo, softly veiled */
+html { background: #efe3df !important; }
+body::before { border: 0 !important; border-image: none !important;
+  background: linear-gradient(rgba(255,246,244,.14), rgba(255,246,244,.14)), url("assets/bedroom-bg.jpg") center 38% / cover no-repeat !important; }
+@media (max-width: 820px) { body::before { border-width: 0 !important; } }
