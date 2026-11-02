@@ -66,13 +66,16 @@ exports.handler = async (event) => {
     }
 
     const data = await dgResponse.json();
-    const transcript =
-      data?.results?.channels?.[0]?.alternatives?.[0]?.transcript || '';
+    const alt = data?.results?.channels?.[0]?.alternatives?.[0] || {};
+    const transcript = alt.transcript || '';
+    const confidence = typeof alt.confidence === 'number' ? alt.confidence : null;
+    /* multilingual responses tag each word with its language */
+    const languages = [...new Set((alt.words || []).map((w) => w.language).filter(Boolean))];
 
     return {
       statusCode: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ transcript }),
+      body: JSON.stringify({ transcript, confidence, languages }),
     };
   } catch (err) {
     return {

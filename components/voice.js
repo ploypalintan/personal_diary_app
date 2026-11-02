@@ -76,8 +76,13 @@ function attachVoice({ button, status, target, append = true, onText, keyterms }
       t.value = append && t.value.trim() ? t.value.trim() + ' ' + data.transcript : data.transcript;
       t.dispatchEvent(new Event('input', { bubbles: true }));
       if (onText) onText(data.transcript);
-      setStatus('✦ transcribed');
-      setTimeout(() => setStatus(''), 2500);
+      /* tell her what Deepgram thought it heard, so wrong text never slips in unnoticed */
+      const pct = typeof data.confidence === 'number' ? Math.round(data.confidence * 100) : null;
+      const langs = (data.languages || []).join(', ');
+      const info = [langs && 'heard: ' + langs, pct !== null && pct + '% sure'].filter(Boolean).join(' · ');
+      setStatus('✦ transcribed' + (info ? ' · ' + info : '') + (pct !== null && pct < 60 ? ' · not very sure, check it' : ''));
+      console.info('Deepgram result', { confidence: data.confidence, languages: data.languages });
+      setTimeout(() => setStatus(''), 9000);
     } catch (err) {
       setStatus('something went wrong, please try again');
       console.error('Send error:', err);

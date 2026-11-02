@@ -243,7 +243,7 @@
   const friend = initFriend(document.getElementById('friend'), document.getElementById('micBtn'));
   document.getElementById('askBtn').addEventListener('click', () => friend.ask());
   document.getElementById('keepBtn').addEventListener('click', keepTalk);
-  attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox') });
+  attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox'), keyterms: () => [...new Set(['Ploy', state.userName].filter(Boolean))] });
 </script>
 </body>
 </html>
