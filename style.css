@@ -749,3 +749,4 @@ body::before { background: none !important; border: 34px solid #f0c3d0; border-i
 @keyframes flutter2 { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 7deg)) scale(.93, 1.03); } }
 @media (prefers-reduced-motion: reduce) { .st-fly { animation: none; transform: rotate(var(--r)); } }
 @media (max-width: 820px) { .st-fly-b { display: none; } .st-fly-a { width: 40px !important; left: -4px !important; } }
+@media (max-width: 820px) { .st-balle { display: none; } }
