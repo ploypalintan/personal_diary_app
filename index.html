@@ -8,7 +8,7 @@
   <style>
     body { min-height: 100%; }
     .cover { position: relative; max-width: 760px; margin: 28px auto; padding: 44px 40px 40px 84px; min-height: calc(100vh - 56px);
-      background: var(--paper); border-radius: 6px 18px 18px 6px; box-shadow: 0 20px 38px rgba(140,70,90,.20), 0 2px 5px rgba(140,70,90,.14);
+      background: var(--grain), var(--paper); border-radius: 6px 18px 18px 6px; box-shadow: 0 20px 38px rgba(140,70,90,.20), 0 2px 5px rgba(140,70,90,.14);
       display: none; flex-direction: column; align-items: center; text-align: center; gap: 14px; }
     .cover.active { display: flex; }
     .cover::before { content: ''; position: absolute; top: 24px; bottom: 24px; left: 4px; width: 70px; background: var(--coil) repeat-y 0 0 / 70px 30px; }
@@ -23,6 +23,7 @@
     .quote-film { width: min(340px, 100%); margin: 18px 0 8px; --tilt: -1.4deg; padding: 22px 28px 18px; }
     .quote-film .q-text { font-size: 1.06rem; line-height: 1.6; color: var(--ink); }
     .quote-film .q-by { margin-top: 10px; font-family: var(--font-caps); text-transform: uppercase; letter-spacing: .16em; font-size: .82rem; color: var(--text-muted); }
+    .doodle[hidden] { display: none; }
     .doodle { position: absolute; left: 25%; top: 415px; width: 90px; height: 70px; opacity: .85; }
 
     .shelf { display: inline-block; color: var(--mauve-dark); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
@@ -39,6 +40,7 @@
 
   <!-- name screen -->
   <main id="nameScreen" class="cover active">
+    <div class="lace-band r" aria-hidden="true"></div>
     <div class="bow" aria-hidden="true"></div>
     <div class="t-eyebrow">a little digital journal</div>
     <h1 class="cover-title">hello, you</h1>
@@ -51,18 +53,15 @@
 
   <!-- cover -->
   <main id="splashScreen" class="cover">
+    <div class="lace-band r" aria-hidden="true"></div>
     <div class="bow" aria-hidden="true"></div>
     <div class="t-eyebrow">my journal</div>
     <h1 class="cover-title" id="splashTitle"></h1>
     <div class="pearls" aria-hidden="true"></div>
 
-    <figure class="film quote-film">
-      <div class="ribbon" aria-hidden="true"></div>
-      <blockquote class="q-text" id="quoteText"></blockquote>
-      <figcaption class="q-by" id="quoteAuthor"></figcaption>
-    </figure>
+    <figure class="cameo"><blockquote class="q-text" id="quoteText"></blockquote></figure>
 
-    <svg class="doodle" viewBox="0 0 90 70" fill="none" stroke="#73364b" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8c26-6 50 6 58 34"/><path d="M64 42l-12-6M64 42l4-13"/></svg>
+    <svg class="doodle" hidden viewBox="0 0 90 70" fill="none" stroke="#73364b" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 8c26-6 50 6 58 34"/><path d="M64 42l-12-6M64 42l4-13"/></svg>
 
     <p class="t-body" id="shelfLine" role="status"></p>
     <button class="btn-primary" id="openBtn" type="button">open today's diary</button>
@@ -81,9 +80,7 @@
   }
   function paintCover() {
     $('splashTitle').textContent = state.userName.toLowerCase() + "'s diary";
-    const q = getDailyQuote();
-    $('quoteText').textContent = '“' + q.text + '”';
-    $('quoteAuthor').textContent = q.author;
+    $('quoteText').textContent = 'she is pure poetry, walking & breathing';
 
     /* a live line about the makeup shelf, linking to the tracker */
     const line = $('shelfLine');
