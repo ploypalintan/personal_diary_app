@@ -604,7 +604,7 @@
     const list = $('productList'); list.replaceChildren();
     const shown = visibleProducts(today);
     $('countLine').textContent = state.products.length ? `showing ${shown.length} of ${state.products.length}` : '';
-    if (!state.products.length) list.appendChild(el('div', 'empty-state', 'your shelf is empty. Add your first product above, or tap speak and say it.'));
+    if (!state.products.length) list.appendChild(el('div', 'empty-state', 'shelf is empty, start adding now'));
     else if (!shown.length) list.appendChild(el('div', 'empty-state', 'nothing matches these filters.'));
     shown.forEach(p => list.appendChild(makeCard(p, today)));
     paginate(list);
