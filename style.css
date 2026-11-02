@@ -606,3 +606,18 @@ body { background: transparent; }
 /* tulle photo, faded into the notebook paper (a veil keeps text and designs crisp) */
 :root { --tulle: linear-gradient(rgba(245,227,229,.80), rgba(245,227,229,.80)), url("assets/tulle-bg.jpg") center / cover no-repeat; }
 #mainApp, .cover { background: var(--grain), var(--mist), var(--tulle), var(--paper); }
+
+/* mood page: pink lace paper (top and bottom lace borders, soft lace fill in the middle) */
+.mood-page #mainApp {
+  background:
+    url("assets/lace-top.jpg") top center / auto 96px repeat-x,
+    url("assets/lace-bottom.jpg") bottom center / auto 96px repeat-x,
+    linear-gradient(rgba(250,238,240,.56), rgba(250,238,240,.56)),
+    url("assets/lace-mid.jpg") center / cover no-repeat,
+    var(--paper);
+}
+.mood-page .page-header::before, .mood-page .page::after { display: none; }
+.mood-page .page-header { padding-top: 112px; }
+.mood-page .page-body { padding-bottom: 120px; }
+.mood-page .memo-side { top: 230px; }
+@media (max-width: 820px) { .mood-page .page-header { padding-top: 100px; } }
