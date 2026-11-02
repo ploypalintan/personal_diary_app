@@ -120,11 +120,14 @@
     /* the imaginary friend takes the whole left page */
     .friend-stage { align-items: center; justify-content: center; text-align: center; gap: 8px; }
     .friend { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: none; }
-    .fr-hit { background: none; border: 0; padding: 0; cursor: pointer; width: min(215px, 56%); flex: none; border-radius: 20px; }
+    .fr-hit { background: none; border: 0; padding: 0; cursor: pointer; width: min(190px, 52%); flex: none; border-radius: 20px; }
     .fr-hit:focus-visible { outline: 3px solid var(--mauve); outline-offset: 3px; }
     .mic-big { font-size: 17px; padding: 10px 26px; min-height: 48px; }
     .ask-btn { margin-top: 0; background: transparent; border: 0; text-decoration: underline; text-underline-offset: 3px; color: var(--mauve-dark); font: 600 14px var(--font); cursor: pointer; min-height: 32px; }
     .mic-big { margin-top: 0; }
+    .lang-row { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+    .lang { min-width: 44px; min-height: 36px; padding: 4px 12px; border-radius: 18px; border: 1px solid var(--border-strong); background: var(--card); color: var(--mauve-dark); font: 600 14px var(--font); cursor: pointer; }
+    .lang[aria-checked="true"] { background: var(--mauve); color: #fff; border-color: var(--mauve); }
     .pg-right .journal-box { min-height: 170px !important; height: 190px !important; }
     .fr-svg { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 6px rgba(60,25,45,.25)); }
     .fr-body { transform-origin: 100px 139px; animation: frBreathe 5s ease-in-out infinite; }
@@ -164,6 +167,13 @@
       <div class="pg-body friend-stage">
         <div class="friend" id="friend"></div>
         <button class="mic-btn mic-big" id="micBtn" type="button" aria-pressed="false" aria-label="talk to your friend"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">talk to her</span></button>
+        <div class="lang-row" role="radiogroup" aria-label="language you will speak">
+          <button type="button" class="lang" role="radio" aria-checked="true" data-l="auto">auto</button>
+          <button type="button" class="lang" role="radio" aria-checked="false" data-l="en">EN</button>
+          <button type="button" class="lang" role="radio" aria-checked="false" data-l="zh">中文</button>
+          <button type="button" class="lang" role="radio" aria-checked="false" data-l="th">ไทย</button>
+          <button type="button" class="lang" role="radio" aria-checked="false" data-l="de">DE</button>
+        </div>
         <button class="link-btn ask-btn" id="askBtn" type="button">ask me something else</button>
         <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
       </div>
@@ -240,10 +250,12 @@
 
   renderHistory();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderHistory);
+  let pickedLang = 'auto';
+  document.querySelectorAll('.lang').forEach(b => b.addEventListener('click', () => { pickedLang = b.dataset.l; document.querySelectorAll('.lang').forEach(x => x.setAttribute('aria-checked', String(x === b))); }));
   const friend = initFriend(document.getElementById('friend'), document.getElementById('micBtn'));
   document.getElementById('askBtn').addEventListener('click', () => friend.ask());
   document.getElementById('keepBtn').addEventListener('click', keepTalk);
-  attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox'), keyterms: () => [...new Set(['Ploy', state.userName].filter(Boolean))] });
+  attachVoice({ button: document.getElementById('micBtn'), status: document.getElementById('micStatus'), target: document.getElementById('journalBox'), keyterms: () => [...new Set(['Ploy', 'พลอย', state.userName].filter(Boolean))], language: () => pickedLang });
 </script>
 </body>
 </html>

@@ -12,7 +12,9 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { audio, mimetype, keyterms } = JSON.parse(event.body);
+    const { audio, mimetype, keyterms, language } = JSON.parse(event.body);
+    /* a language the person picked in the app; anything else means auto-detect */
+    const PICKED = ['en', 'zh', 'th', 'de'].includes(language) ? language : null;
     if (!audio) {
       return { statusCode: 400, body: JSON.stringify({ error: 'No audio field in request body.' }) };
     }
@@ -31,9 +33,10 @@ exports.handler = async (event) => {
     /* Nova-3 multilingual (language=multi) follows mid-sentence switches; hints nudge detection
        toward the languages Ploy actually speaks: English, Mandarin, Thai, German. */
     const HINTS = ['en', 'zh', 'th', 'de'];
-    const callDeepgram = ({ withTerms, multi, hints }) => {
+    const callDeepgram = ({ withTerms, multi, hints, lang }) => {
       const params = new URLSearchParams({ model: 'nova-3', smart_format: 'true', punctuate: 'true' });
-      if (multi) params.set('language', 'multi');
+      if (lang) params.set('language', lang);
+      else if (multi) params.set('language', 'multi');
       if (multi && hints) HINTS.forEach((h) => params.append('language_hint', h));
       if (withTerms) terms.forEach((t) => params.append('keyterm', t.trim()));
       return fetch(`https://api.deepgram.com/v1/listen?${params}`, {
@@ -45,7 +48,11 @@ exports.handler = async (event) => {
 
     /* try the richest request first, then step down if Deepgram rejects an option (HTTP 400),
        so voice always keeps working: multi+hints+keyterms -> multi+hints -> multi -> plain English */
-    const attempts = [
+    const attempts = PICKED ? [
+      { withTerms: terms.length > 0, lang: PICKED },
+      { withTerms: false, lang: PICKED },
+      { withTerms: false, multi: true, hints: true },
+    ] : [
       { withTerms: terms.length > 0, multi: true, hints: true },
       { withTerms: false, multi: true, hints: true },
       { withTerms: false, multi: true, hints: false },
