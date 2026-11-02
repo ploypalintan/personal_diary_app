@@ -550,4 +550,4 @@ body{font-family:var(--font)}
 .mic-btn:disabled { opacity:.6; cursor:not-allowed; }
 .voice-row { display:flex; align-items:center; gap:12px; margin-top:10px; flex-wrap:wrap; }
 .mic-status { font-size:0.9rem; color:var(--text-muted); min-height:1.4em; }
-@media (prefers-reduced-motion: reduce) { .mic-btn.recording { animation:none } *{ animation-duration:.01ms !important; transition-duration:.01ms !important } }
+@media (prefers-reduced-motion: reduce) { .mic-btn.recording { animation:none } *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important } }

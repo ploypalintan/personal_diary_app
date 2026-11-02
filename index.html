@@ -12,12 +12,12 @@
       font-family:var(--font);font-size:22px;
       color:var(--ink);border:none;border-bottom:1.5px solid var(--almond);
       background:transparent;text-align:center;padding:8px 16px;
-      outline:none;width:300px;
+      outline:none;width:min(300px,100%);
     }
     .ns-input::placeholder{color:var(--text-muted)}
 
     /* ── splash ── */
-    #splashScreen{background:var(--almond-pale);gap:12px}
+    #splashScreen{background:var(--almond-pale);gap:14px}
     .splash-name-row{display:flex;align-items:center;gap:8px;justify-content:center}
     .edit-name-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:13px;
       letter-spacing:0.06em;text-decoration:underline;font-family:var(--font);
@@ -40,7 +40,7 @@
     }
     .modal-box{
       background:var(--almond-pale);border-radius:20px;border:0.5px solid var(--border);
-      padding:24px;max-width:420px;width:100%;max-height:90vh;overflow-y:auto;
+      padding:24px 24px 0;max-width:420px;width:100%;max-height:92vh;overflow-y:auto;
     }
     .modal-title{font-family:var(--font);font-size:18px;
       color:var(--ink);margin-bottom:16px;text-align:center}
@@ -49,19 +49,19 @@
     .opt-lbl{font-size:13px;letter-spacing:0.12em;text-transform:uppercase;
       color:var(--text-muted);margin-bottom:8px;font-family:var(--font)}
     .swatches{display:flex;gap:7px;flex-wrap:wrap}
-    .skin-sw{width:26px;height:26px;border-radius:50%;cursor:pointer;
-      border:2px solid transparent;transition:all 0.15s}
+    .skin-sw{width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;
+      border:2px solid var(--border);transition:all 0.15s}
     .skin-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
-    .hair-sw{width:22px;height:22px;border-radius:50%;cursor:pointer;
+    .hair-sw{width:36px;height:36px;padding:0;border-radius:50%;cursor:pointer;
       border:2px solid transparent;transition:all 0.15s}
     .hair-sw.sel{border-color:var(--mauve);transform:scale(1.15)}
-    .pill-o{padding:5px 12px;border-radius:20px;border:0.5px solid var(--border);
+    .pill-o{padding:9px 16px;min-height:40px;border-radius:20px;border:0.5px solid var(--border);
       background:var(--almond-pale);font-size:13px;color:var(--text-muted);cursor:pointer;
       font-family:var(--font);transition:all 0.15s;white-space:nowrap}
     .pill-o:hover{background:var(--almond-light)}
     .pill-o.sel{background:var(--mauve);color:#faf5f5;border-color:var(--mauve)}
     .modal-preview{display:flex;justify-content:center;margin-bottom:16px}
-    .modal-btns{display:flex;gap:8px}
+    .modal-btns{display:flex;gap:10px;position:sticky;bottom:0;background:var(--almond-pale);padding:14px 0 20px;margin-top:6px}
     .modal-btns .btn-primary{flex:1}
     .btn-ghost2{flex:1;background:none;border:0.5px solid var(--border);border-radius:30px;
       padding:11px;font-size:16px;cursor:pointer;font-family:var(--font);
@@ -70,6 +70,7 @@
 
     @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
     .bob{animation:bob 2.8s ease-in-out infinite}
+    @media (prefers-reduced-motion: reduce){.bob{animation:none}}
   </style>
 </head>
 <body>
@@ -96,23 +97,23 @@
     </div>
     <div class="rule"></div>
 
-    <!-- quote -->
-    <div class="card-white quote-card">
-      <span class="quote-badge" id="quoteBadge">quote of the day</span>
-      <div class="quote-mark">"</div>
-      <div class="quote-text" id="quoteText"></div>
-      <div class="rule" style="margin:8px auto"></div>
-      <div class="quote-author" id="quoteAuthor"></div>
-    </div>
-
     <!-- pixel character -->
     <div class="char-area">
       <div class="char-canvas-wrap" onclick="openCustomiser()">
         <canvas id="mainChar" width="96" height="144"
-          style="image-rendering:pixelated;width:96px;height:144px"
+          style="image-rendering:pixelated;width:160px;height:240px"
           class="bob" title="tap to customise"></canvas>
       </div>
       <button class="customize-link" onclick="openCustomiser()">customise your character ✦</button>
+    </div>
+
+    <!-- quote -->
+    <div class="card-white quote-card">
+      <span class="quote-badge" id="quoteBadge">quote of the day</span>
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <div class="quote-text" id="quoteText"></div>
+      <div class="rule" style="margin:8px auto"></div>
+      <div class="quote-author" id="quoteAuthor"></div>
     </div>
 
     <button class="btn-primary" onclick="openDiary()">open today's diary</button>
@@ -120,7 +121,7 @@
 
   <!-- ══ CUSTOMISER MODAL ══ -->
   <div class="modal-overlay" id="customModal" style="display:none" onclick="closeCustomiser(event)">
-    <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-label="customise your character" onclick="event.stopPropagation()">
       <div class="modal-title">customise your character</div>
       <div class="modal-preview">
         <canvas id="previewChar" width="96" height="144"
@@ -142,11 +143,21 @@
         <div class="opt-lbl">outfit</div>
         <div class="swatches" id="outfitOpts"></div>
       </div>
-      <div class="modal-btns" style="margin-top:16px">
+      <div class="modal-btns">
         <button class="btn-ghost2" onclick="closeCustomiser()">cancel</button>
         <button class="btn-primary" onclick="saveCustomiser()">save character</button>
       </div>
     </div>
+
+    <!-- quote -->
+    <div class="card-white quote-card">
+      <span class="quote-badge" id="quoteBadge">quote of the day</span>
+      <div class="quote-mark" aria-hidden="true">“</div>
+      <div class="quote-text" id="quoteText"></div>
+      <div class="rule" style="margin:8px auto"></div>
+      <div class="quote-author" id="quoteAuthor"></div>
+    </div>
+
   </div>
 
 </div>
@@ -183,10 +194,10 @@
   /* ── STATE ── */
   let state = loadState();
   // default = user's chosen character: wavy long, warm brown, pink sweater, fair skin
-  if (!state.charSkin)      state.charSkin      = 1;  // fair
-  if (!state.charHairCol)   state.charHairCol   = 1;  // warm brown
-  if (!state.charHairStyle) state.charHairStyle = 1;  // wavy long (index in array)
-  if (!state.charOutfit)    state.charOutfit    = 0;  // pink sweater
+  if (state.charSkin === undefined) state.charSkin = 1;  // fair
+  if (state.charHairCol === undefined) state.charHairCol = 1;  // warm brown
+  if (state.charHairStyle === undefined) state.charHairStyle = 1;  // wavy long (index in array)
+  if (state.charOutfit === undefined) state.charOutfit = 0;  // pink sweater
 
   let draft = {};
 
@@ -275,37 +286,37 @@
     /* skin */
     const sk = document.getElementById('skinOpts'); sk.innerHTML = '';
     SKINS.forEach((s,i) => {
-      const d = document.createElement('div');
+      const d = document.createElement('button'); d.type = 'button';
       d.className = 'skin-sw' + (i === draft.skin ? ' sel' : '');
-      d.style.background = s.s; d.title = s.name;
-      d.onclick = () => { draft.skin = i; sk.querySelectorAll('.skin-sw').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      d.style.background = s.s; d.title = s.name; d.setAttribute('aria-label', 'skin tone: ' + s.name); d.setAttribute('aria-pressed', i === draft.skin);
+      d.onclick = () => { draft.skin = i; sk.querySelectorAll('.skin-sw').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
       sk.appendChild(d);
     });
     /* hair colour */
     const hc = document.getElementById('hairColOpts'); hc.innerHTML = '';
     HAIR_COLS.forEach((h,i) => {
-      const d = document.createElement('div');
+      const d = document.createElement('button'); d.type = 'button';
       d.className = 'hair-sw' + (i === draft.hairCol ? ' sel' : '');
-      d.style.background = h.c; d.title = h.name;
-      d.onclick = () => { draft.hairCol = i; hc.querySelectorAll('.hair-sw').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      d.style.background = h.c; d.title = h.name; d.setAttribute('aria-label', 'hair colour: ' + h.name); d.setAttribute('aria-pressed', i === draft.hairCol);
+      d.onclick = () => { draft.hairCol = i; hc.querySelectorAll('.hair-sw').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
       hc.appendChild(d);
     });
     /* hair style */
     const hs = document.getElementById('hairStyleOpts'); hs.innerHTML = '';
     HAIR_STYLES.forEach((s,i) => {
-      const d = document.createElement('div');
+      const d = document.createElement('button'); d.type = 'button';
       d.className = 'pill-o' + (i === draft.hairStyle ? ' sel' : '');
-      d.textContent = s.name;
-      d.onclick = () => { draft.hairStyle = i; hs.querySelectorAll('.pill-o').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      d.textContent = s.name; d.setAttribute('aria-pressed', i === draft.hairStyle);
+      d.onclick = () => { draft.hairStyle = i; hs.querySelectorAll('.pill-o').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
       hs.appendChild(d);
     });
     /* outfit */
     const ot = document.getElementById('outfitOpts'); ot.innerHTML = '';
     OUTFITS.forEach((o,i) => {
-      const d = document.createElement('div');
+      const d = document.createElement('button'); d.type = 'button';
       d.className = 'pill-o' + (i === draft.outfit ? ' sel' : '');
-      d.textContent = o.name;
-      d.onclick = () => { draft.outfit = i; ot.querySelectorAll('.pill-o').forEach((x,j) => x.classList.toggle('sel', j===i)); drawPreview(); };
+      d.textContent = o.name; d.setAttribute('aria-pressed', i === draft.outfit);
+      d.onclick = () => { draft.outfit = i; ot.querySelectorAll('.pill-o').forEach((x,j) => { x.classList.toggle('sel', j===i); x.setAttribute('aria-pressed', j===i); }); drawPreview(); };
       ot.appendChild(d);
     });
   }
