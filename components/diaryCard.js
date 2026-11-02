@@ -2,7 +2,6 @@
    components/diaryCard.js
    Reusable card renderers for:
    – todo items
-   – wish items
    – expense / income rows
 ═══════════════════════════════════════ */
 
@@ -56,37 +55,6 @@ function makeTodoCard(item, onToggle, onDelete) {
   el.appendChild(body);
 
   /* delete */
-  const del = document.createElement('button');
-  del.className = 'del-btn';
-  del.textContent = '×';
-  del.addEventListener('click', () => onDelete(item.id));
-  el.appendChild(del);
-
-  return el;
-}
-
-/* ── WISH CARD ── */
-function makeWishCard(item, onStar, onDelete) {
-  const el = document.createElement('div');
-  el.className = 'card';
-  el.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:8px';
-
-  const star = document.createElement('span');
-  star.style.cssText = 'font-size:16px;cursor:pointer;flex-shrink:0;transition:transform 0.2s';
-  star.textContent = item.star ? '✦' : '✧';
-  star.addEventListener('click', () => onStar(item.id));
-  el.appendChild(star);
-
-  const name = document.createElement('span');
-  name.style.cssText = "font-size:16px;color:var(--ink-soft);flex:1;font-family:var(--font);";
-  name.textContent = item.name;
-  el.appendChild(name);
-
-  const tag = document.createElement('span');
-  tag.className = 'pill pill-cat';
-  tag.textContent = item.cat;
-  el.appendChild(tag);
-
   const del = document.createElement('button');
   del.className = 'del-btn';
   del.textContent = '×';

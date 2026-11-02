@@ -96,11 +96,11 @@ function defaultState() {
     character: '',
     currency:  'SGD',
     todos:     [],
-    wishes:    [],
+    products:  [],   // { id, name, brand, shade, category, opened:'YYYY-MM-DD'|'', pao:months }
     moods:     [],   // { date, key, label, note }
     incomes:   [],
     expenses:  [],
-    nextIds:   { todo: 1, wish: 1, mood: 1, income: 1, expense: 1 },
+    nextIds:   { todo: 1, product: 1, mood: 1, income: 1, expense: 1 },
   };
 }
 

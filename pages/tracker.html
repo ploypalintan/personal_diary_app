@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>makeup tracker · my diary</title>
+  <link rel="stylesheet" href="../style.css" />
+  <style>
+    .alert { border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; font-weight: 500; line-height: 1.5; }
+    .alert.warn { background: var(--accent-pink); color: var(--mauve-deep); }
+    .alert.fine { background: var(--nude-light); color: var(--ink-soft); }
+    .alert .alert-sub { display: block; font-weight: 400; font-size: 0.9rem; margin-top: 2px; }
+
+    .panel { background: var(--almond-pale); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 22px; }
+    .voice-line { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .voice-line .r-input { flex: 1; min-width: 200px; }
+    .field-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px 14px; align-items: end; margin-top: 14px; }
+    .field label { display: block; font-size: 0.85rem; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; }
+    .field .r-input, .field .r-select { width: 100%; background: #fff; border: 1px solid var(--border-strong); border-radius: 10px; padding: 9px 12px; font-size: 1rem; }
+    .field .r-input { border-bottom: 1px solid var(--border-strong); }
+    .form-actions { margin-top: 14px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .hint { font-size: 0.85rem; color: var(--text-muted); }
+
+    .p-card { background: #fff; border: 1px solid var(--border); border-left: 6px solid var(--border-strong); border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; display: flex; gap: 12px; align-items: flex-start; }
+    .p-card.expired { border-left-color: var(--negative); background: #fff6f6; }
+    .p-card.soon    { border-left-color: var(--accent-pink); background: #fff8fa; }
+    .p-card.ok      { border-left-color: #8fb089; }
+    .p-card.sealed  { border-left-color: var(--nude); }
+    .p-main { flex: 1; min-width: 0; }
+    .p-name { font-weight: 600; font-size: 1.05rem; overflow-wrap: anywhere; }
+    .p-sub  { color: var(--text-mid); font-size: 0.95rem; margin-top: 2px; overflow-wrap: anywhere; }
+    .p-meta { color: var(--text-muted); font-size: 0.9rem; margin-top: 6px; }
+    .chip { display: inline-block; border-radius: 20px; padding: 3px 12px; font-size: 0.85rem; font-weight: 600; margin-top: 8px; }
+    .chip.expired { background: var(--negative); color: #fff; }
+    .chip.soon    { background: var(--accent-pink); color: var(--mauve-deep); }
+    .chip.ok      { background: #e3efe0; color: #2f4d2a; }
+    .chip.sealed  { background: var(--nude-light); color: var(--ink-soft); border: 1px solid var(--nude); }
+    .p-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+    .link-btn { background: none; border: 1px solid var(--border-strong); border-radius: 18px; padding: 6px 12px; font: 500 0.85rem var(--font); color: var(--mauve-dark); cursor: pointer; min-height: 36px; }
+    .link-btn:hover { background: var(--almond-light); }
+    @media (max-width: 600px) { .p-card { flex-direction: column; } .p-actions { flex-direction: row; align-items: center; } }
+  </style>
+</head>
+<body>
+<div id="mainApp" class="active fade-open">
+
+  <div class="spine"><div class="spine-text">my diary</div></div>
+
+  <nav class="bookmarks">
+    <div id="sidebarBow" style="width:50px;height:42px;flex-shrink:0;margin-bottom:2px"></div>
+    <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
+    <a class="bm" data-page="tracker.html"><span class="bm-icon">✧</span>makeup</a>
+    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>mood</a>
+    <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
+    <div style="flex:1"></div>
+    <div class="mini-avatar" id="miniAvatar" title="back to cover"></div>
+  </nav>
+
+  <main class="page">
+    <div class="page-header">
+      <div class="page-title">makeup &amp; skincare tracker</div>
+      <div class="page-date js-today"></div>
+    </div>
+    <div class="page-body">
+
+      <div id="alertBox" role="status" aria-live="polite"></div>
+
+      <!-- add a product -->
+      <form class="panel" id="addForm" autocomplete="off">
+        <div class="sec-label">add a product</div>
+
+        <div class="voice-line">
+          <input class="r-input" id="phraseInput" aria-label="say or type a product"
+                 placeholder='say or type: "add Cetaphil moisturiser, opened today"' />
+          <button class="mic-btn" id="micBtn" type="button" aria-pressed="false" aria-label="speak a product"><span class="mic-icon" aria-hidden="true">🎙</span><span class="mic-label">speak</span></button>
+          <button class="btn-small" id="fillBtn" type="button">fill form</button>
+        </div>
+        <div class="mic-status" id="micStatus" role="status" aria-live="polite"></div>
+
+        <div class="field-grid">
+          <div class="field"><label for="fName">product</label><input class="r-input" id="fName" required placeholder="e.g. moisturiser" /></div>
+          <div class="field"><label for="fBrand">brand</label><input class="r-input" id="fBrand" placeholder="e.g. Cetaphil" /></div>
+          <div class="field"><label for="fShade">shade (optional)</label><input class="r-input" id="fShade" placeholder="e.g. 02 rosy" /></div>
+          <div class="field"><label for="fCat">category</label><select class="r-select" id="fCat"></select></div>
+          <div class="field"><label for="fOpened">date opened</label><input class="r-input" id="fOpened" type="date" /></div>
+          <div class="field"><label for="fPao">after opening</label><select class="r-select" id="fPao"></select></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-small" type="submit">+ add product</button>
+          <span class="hint">leave the date empty if it's still sealed. The expiry date is worked out for you. The open-jar symbol on the packaging (6M, 12M…) gives the real period; the defaults here are rough guides.</span>
+        </div>
+      </form>
+
+      <div class="sec-label">soonest to expire first</div>
+      <div id="productList"></div>
+
+    </div>
+  </main>
+</div>
+
+<script src="../data/diaryData.js"></script>
+<script src="../components/pixelChar.js"></script>
+<script src="../components/navbar.js"></script>
+<script src="../components/expiry.js"></script>
+<script src="../components/voice.js"></script>
+<script>
+  let state = initPage();
+  state.products = state.products || [];
+  state.nextIds.product = state.nextIds.product || 1;
+
+  const $ = (id) => document.getElementById(id);
+  const fmtDate = (iso) => fromISO(iso).toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+
+  /* ── form setup ── */
+  CATEGORIES.forEach(c => $('fCat').add(new Option(c.key, c.key)));
+  PAO_OPTIONS.forEach(m => $('fPao').add(new Option(`${m} months`, m)));
+  $('fPao').value = 12;
+  $('fCat').addEventListener('change', () => { $('fPao').value = categoryDefaultPao($('fCat').value); });
+  $('fOpened').max = todayISO();
+
+  /* ── render ── */
+  function render() {
+    const today = todayISO();
+    const list = $('productList');
+    list.innerHTML = '';
+    const sorted = sortProducts(state.products, today);
+
+    const expired = sorted.filter(p => productStatus(p, today).kind === 'expired').length;
+    const soon = sorted.filter(p => productStatus(p, today).kind === 'soon').length;
+    const box = $('alertBox');
+    if (!state.products.length) box.innerHTML = '';
+    else if (expired || soon) {
+      const parts = [];
+      if (soon) parts.push(`${soon} product${soon > 1 ? 's' : ''} expiring in the next ${SOON_DAYS} days`);
+      if (expired) parts.push(`${expired} already expired`);
+      box.innerHTML = `<div class="alert warn">⚠ ${parts.join(' · ')}<span class="alert-sub">use them up or replace them. They are at the top of the list.</span></div>`;
+    } else box.innerHTML = '<div class="alert fine">✦ nothing expires in the next 30 days</div>';
+
+    if (!sorted.length) {
+      list.innerHTML = '<div class="empty-state">nothing here yet. Add your first product above, or tap speak and say it.</div>';
+      return;
+    }
+    sorted.forEach(p => list.appendChild(makeCard(p, today)));
+    saveState(state);
+  }
+
+  function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+  function makeCard(p, today) {
+    const s = productStatus(p, today);
+    const card = el('div', `p-card ${s.kind}`);
+    const main = el('div', 'p-main');
+    main.appendChild(el('div', 'p-name', p.name));
+    const sub = [p.brand, p.shade].filter(Boolean).join(' · ');
+    if (sub) main.appendChild(el('div', 'p-sub', sub));
+    const meta = el('div', 'p-meta');
+    meta.textContent = s.kind === 'sealed'
+      ? `${p.category} · sealed · ${p.pao}M after opening`
+      : `${p.category} · opened ${fmtDate(p.opened)} · ${p.pao}M → expires ${fmtDate(s.exp)}`;
+    main.appendChild(meta);
+    main.appendChild(el('span', `chip ${s.kind}`, describeStatus(s)));
+
+    const actions = el('div', 'p-actions');
+    if (s.kind === 'sealed') {
+      const open = el('button', 'link-btn', 'opened today');
+      open.type = 'button';
+      open.addEventListener('click', () => { p.opened = todayISO(); render(); });
+      actions.appendChild(open);
+    }
+    const del = el('button', 'link-btn', 'delete');
+    del.type = 'button';
+    del.setAttribute('aria-label', `delete ${p.name}`);
+    del.addEventListener('click', () => { state.products = state.products.filter(x => x.id !== p.id); render(); });
+    actions.appendChild(del);
+    card.append(main, actions);
+    return card;
+  }
+
+  /* ── add ── */
+  $('addForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = $('fName').value.trim();
+    if (!name) { $('fName').focus(); return; }
+    state.products.push({
+      id: state.nextIds.product++,
+      name,
+      brand: $('fBrand').value.trim(),
+      shade: $('fShade').value.trim(),
+      category: $('fCat').value,
+      opened: $('fOpened').value,            /* '' = sealed */
+      pao: Number($('fPao').value),
+    });
+    ['fName', 'fBrand', 'fShade', 'fOpened', 'phraseInput'].forEach(id => { $(id).value = ''; });
+    $('micStatus').textContent = '';
+    render();
+    $('fName').focus();
+  });
+
+  /* ── say it / type it → pre-fill the form (you confirm before saving) ── */
+  function fillFromPhrase() {
+    const r = parseProductPhrase($('phraseInput').value, todayISO());
+    if (!r || !r.name) { $('micStatus').textContent = 'type or say something like "add Cetaphil moisturiser, opened today"'; return; }
+    $('fName').value = r.name;
+    $('fBrand').value = r.brand;
+    $('fCat').value = r.category;
+    $('fPao').value = r.pao || categoryDefaultPao(r.category);
+    if (r.opened !== undefined) $('fOpened').value = r.opened;
+    $('micStatus').textContent = 'filled in below. Check it, then tap “add product”.';
+    $('fName').focus();
+  }
+  $('fillBtn').addEventListener('click', fillFromPhrase);
+  $('phraseInput').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); fillFromPhrase(); } });
+
+  attachVoice({
+    button: $('micBtn'), status: $('micStatus'), target: $('phraseInput'),
+    append: false, onText: fillFromPhrase,
+  });
+
+  render();
+</script>
+</body>
+</html>
