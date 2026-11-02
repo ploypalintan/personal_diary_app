@@ -601,3 +601,8 @@ html { background-color: var(--desk); }
 html { background: var(--desk) url("assets/ballet-bg.jpg") center top / cover no-repeat fixed; }
 body { background: transparent; }
 @media (max-width: 820px), (hover: none) { html { background-attachment: scroll; } }
+
+
+/* tulle photo, faded into the notebook paper (a veil keeps text and designs crisp) */
+:root { --tulle: linear-gradient(rgba(245,227,229,.80), rgba(245,227,229,.80)), url("assets/tulle-bg.jpg") center / cover no-repeat; }
+#mainApp, .cover { background: var(--grain), var(--mist), var(--tulle), var(--paper); }
