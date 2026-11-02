@@ -744,3 +744,8 @@ body::before { background: none !important; border: 34px solid #f0c3d0; border-i
 .sticker { position: absolute; z-index: 6; pointer-events: none; user-select: none; height: auto; filter: drop-shadow(0 3px 4px rgba(110,50,70,.35)); }
 @media (max-width: 820px) { .st-seal { display: none; } .st-clip { width: 52px !important; right: 18% !important; top: 2px !important; } }
 @media (max-width: 820px) { .st-deco { transform: none; } .st-deco:nth-of-type(n+6) { display: none; } }
+.st-fly { transform-origin: 50% 60%; animation: flutter2 5s ease-in-out infinite; z-index: 7; }
+.st-fly-b { animation-delay: -2.4s; }
+@keyframes flutter2 { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 7deg)) scale(.93, 1.03); } }
+@media (prefers-reduced-motion: reduce) { .st-fly { animation: none; transform: rotate(var(--r)); } }
+@media (max-width: 820px) { .st-fly-b { display: none; } .st-fly-a { width: 40px !important; left: -4px !important; } }

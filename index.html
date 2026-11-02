@@ -49,6 +49,11 @@
     @media (prefers-reduced-motion: reduce) { .hang-shoes { animation: none; } }
     .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 17cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.35)); z-index: 2; pointer-events: none; }
     .cover-heart { position: absolute; left: 5cqw; bottom: 5.5cqw; width: 15cqw; height: auto; transform: rotate(-8deg); filter: drop-shadow(0 .6cqw 1cqw rgba(110,50,70,.3)); z-index: 2; pointer-events: none; }
+    .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(110,50,70,.3)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
+    .cover-fly.f1 { left: 2cqw; top: 54cqw; width: 14cqw; --r: -16deg; }
+    .cover-fly.f2 { right: 3cqw; top: 9cqw; width: 14cqw; --r: 14deg; animation-delay: -2s; }
+    @keyframes flutter { 0%,100% { transform: rotate(var(--r)) scale(1); } 50% { transform: rotate(calc(var(--r) + 6deg)) scale(.93, 1.03); } }
+    @media (prefers-reduced-motion: reduce) { .cover-fly { animation: none; transform: rotate(var(--r)); } }
     .shelf-line { margin-top: 3cqw; font-size: 3cqw; min-height: 1em; }
     .book-actions { margin-top: auto; margin-bottom: 4.5cqw; display: flex; flex-direction: column; align-items: center; gap: 2cqw; }
     .book .btn-primary { font-size: 3.6cqw; padding: 2.2cqw 6.5cqw; box-shadow: 0 .8cqw 1.8cqw rgba(110,50,70,.25); }
@@ -143,6 +148,8 @@
     <p class="t-body shelf-line" id="shelfLine" role="status"></p>
     <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
     <img class="sticker cover-heart" src="assets/stickers/heart-cupid.png" alt="" aria-hidden="true" width="355" height="360"/>
+    <img class="sticker cover-fly f1" src="assets/stickers/butterfly-3.png" alt="" aria-hidden="true" width="236" height="253"/>
+    <img class="sticker cover-fly f2" src="assets/stickers/butterfly-4.png" alt="" aria-hidden="true" width="279" height="284"/>
     <div class="book-actions">
       <button class="btn-primary" id="openBtn" type="button">open today's diary</button>
       <button class="edit-name-btn" id="editName" type="button">change my name</button>

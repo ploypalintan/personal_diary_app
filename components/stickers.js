@@ -15,6 +15,8 @@ const STICKER_SETS = {
     { file: 'heart-pink-2.png',  cls: 'st-deco',  style: 'top:16px; left:40%; width:30px; transform:rotate(14deg);' },
     { file: 'patch-rhode.png',   cls: 'st-deco',  style: 'bottom:8px; left:17%; width:96px; transform:rotate(3deg);' },
     { file: 'heart-cupid.png',   cls: 'st-deco',  style: 'bottom:8px; left:58%; width:64px; transform:rotate(7deg);' },
+    { file: 'butterfly-2.png',   cls: 'st-fly st-fly-a', style: 'top:44%; left:4px; width:50px; --r:-14deg;' },
+    { file: 'butterfly-1.png',   cls: 'st-fly st-fly-b', style: 'top:58%; right:6px; width:50px; --r:12deg;' },
     { file: 'wax-cupid.png',     cls: 'st-seal',  style: 'bottom:14px; right:52px; width:74px; transform:rotate(-9deg);' },
   ],
 };
