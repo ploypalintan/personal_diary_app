@@ -62,10 +62,12 @@ function attachVoice({ button, status, target, append = true, onText, keyterms, 
       const audio = await blobToBase64(blob);
       const res = await fetch('/.netlify/functions/transcribe', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: Object.assign({ 'Content-Type': 'application/json' }, (typeof Cloud !== 'undefined' && Cloud.getToken && Cloud.getToken()) ? { Authorization: 'Bearer ' + Cloud.getToken() } : {}),
         body: JSON.stringify({ audio, mimetype, keyterms: typeof keyterms === 'function' ? keyterms() : keyterms, language: typeof language === 'function' ? language() : language }),
       });
       const data = await res.json();
+      if (res.status === 401) { setStatus('sign in (account page) to use voice'); return; }
+      if (res.status === 429) { setStatus(data.error || 'daily voice limit reached, try again tomorrow'); return; }
       if (data.error) {
         setStatus('transcription failed, please try again');
         console.error('Transcription error:', data.error);

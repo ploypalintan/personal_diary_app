@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>account &amp; sync</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  body { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 28px 16px; background: #f6e7ea url('../assets/bedroom-bg.jpg') center/cover fixed; }
+  .acct { width: 100%; max-width: 520px; background: #fff8f9; border-radius: 18px; padding: 26px 24px; box-shadow: 0 10px 30px rgba(110,50,70,.22); color: #3d1230; }
+  .acct h1 { margin: 0 0 4px; font-size: 1.6rem; }
+  .acct h2 { margin: 22px 0 6px; font-size: 1.05rem; }
+  .acct p { line-height: 1.5; margin: 6px 0; }
+  .acct .note { font-size: .88rem; color: #6a4a5c; }
+  .acct input[type=email] { width: 100%; padding: 11px 12px; border: 1.5px solid #c9a0b0; border-radius: 10px; font: inherit; background: #fff; }
+  .acct button, .acct a.btn { display: inline-block; margin: 8px 8px 0 0; padding: 10px 16px; border-radius: 22px; border: 1.5px solid #8f4a64; background: #8f4a64; color: #fff; font: 600 .95rem var(--font, inherit); cursor: pointer; text-decoration: none; }
+  .acct button.ghost, .acct a.ghost { background: transparent; color: #7a3a54; }
+  .acct button.danger { background: #fff; color: #a02848; border-color: #a02848; }
+  .acct .state { padding: 10px 12px; border-radius: 10px; background: #f3e4e9; margin-top: 10px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main class="acct">
+  <h1>account &amp; sync</h1>
+  <p class="note" id="mode"></p>
+
+  <section id="off" hidden>
+    <div class="state">Sync is not switched on yet. Your diary lives on this device only, so clearing the browser's data would erase it. Use the backup below in the meantime.</div>
+  </section>
+
+  <section id="signedOut" hidden>
+    <h2>sign in</h2>
+    <p>Enter your email and we'll send you a link. There is no password to remember.</p>
+    <label for="email" class="sr-only">email</label>
+    <input id="email" type="email" autocomplete="email" placeholder="you@example.com">
+    <button id="sendLink" type="button">send me a sign-in link</button>
+    <p class="note" id="sendMsg" role="status"></p>
+  </section>
+
+  <section id="signedIn" hidden>
+    <div class="state" id="who"></div>
+    <button id="syncNow" type="button" class="ghost">sync now</button>
+    <button id="signOut" type="button" class="ghost">sign out</button>
+    <p class="note" id="syncMsg" role="status"></p>
+  </section>
+
+  <h2>your data</h2>
+  <p class="note">Download a copy of everything in your diary at any time.</p>
+  <button id="exportAll" type="button" class="ghost">download my data (.json)</button>
+
+  <h2>privacy</h2>
+  <p class="note">Your entries stay on this device unless you sign in. When signed in, they are stored privately under your account, and only you can read them. Voice notes are sent to Deepgram to be turned into text; the audio is not kept by this app. Product photos stay on the device they were added on.</p>
+
+  <section id="deleteBox" hidden>
+    <h2>delete my account</h2>
+    <p class="note">This permanently deletes your account and everything saved online. Data on this device is kept unless you clear it.</p>
+    <button id="delAsk" type="button" class="danger">delete my account</button>
+    <span id="delSure" hidden>
+      <p><strong>Are you sure? This cannot be undone.</strong></p>
+      <button id="delYes" type="button" class="danger">yes, delete it</button>
+      <button id="delNo" type="button" class="ghost">no, keep it</button>
+    </span>
+    <p class="note" id="delMsg" role="status"></p>
+  </section>
+
+  <p style="margin-top:22px"><a class="btn ghost" href="../index.html">‹ back to the cover</a></p>
+</main>
+
+<script src="../data/store.js"></script>
+<script src="../data/diaryData.js"></script>
+<script src="../data/links.js"></script>
+<script src="../data/config.js"></script>
+<script src="../data/cloud.js"></script>
+<script>
+  const $ = (id) => document.getElementById(id);
+  function paint(st) {
+    $('off').hidden = st.enabled;
+    $('signedOut').hidden = !st.enabled || st.signedIn;
+    $('signedIn').hidden = !st.enabled || !st.signedIn;
+    $('deleteBox').hidden = !st.enabled || !st.signedIn;
+    $('who').textContent = st.signedIn ? 'signed in as ' + st.email : '';
+    $('syncMsg').textContent = st.syncing ? 'syncing…' : st.lastError ? 'sync problem: ' + st.lastError : st.lastSyncedAt ? 'synced just now ✓' : '';
+  }
+  paint(Cloud.status()); Cloud.onChange(paint);
+  $('sendLink').addEventListener('click', async () => {
+    const email = $('email').value.trim();
+    if (!/^\S+@\S+\.\S+$/.test(email)) { $('sendMsg').textContent = 'please enter a valid email'; return; }
+    $('sendMsg').textContent = 'sending…';
+    try { await Cloud.signInWithEmail(email); $('sendMsg').textContent = 'check your email for the link ✓'; }
+    catch (e) { $('sendMsg').textContent = 'could not send: ' + e.message; }
+  });
+  $('syncNow').addEventListener('click', () => Cloud.sync());
+  $('signOut').addEventListener('click', () => Cloud.signOut());
+  $('exportAll').addEventListener('click', () => {
+    const blob = new Blob([JSON.stringify(Store.exportAll(loadState()), null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-diary-data.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $('delAsk').addEventListener('click', () => { $('delAsk').hidden = true; $('delSure').hidden = false; });
+  $('delNo').addEventListener('click', () => { $('delAsk').hidden = false; $('delSure').hidden = true; });
+  $('delYes').addEventListener('click', async () => {
+    $('delMsg').textContent = 'deleting…';
+    try { await Cloud.deleteAccount(); $('delMsg').textContent = 'your account and online data are deleted ✓'; $('delSure').hidden = true; }
+    catch (e) { $('delMsg').textContent = 'could not delete: ' + e.message; }
+  });
+</script>
+</body>
+</html>

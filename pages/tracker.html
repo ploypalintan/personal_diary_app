@@ -265,6 +265,8 @@
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/config.js"></script>
+<script src="../data/cloud.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
 <script src="../components/pager.js"></script>
@@ -496,7 +498,7 @@
       const p = state.products.find(x => x.id === ui.editing);
       if (p) Object.assign(p, d, { photo: ui.photo });
     } else {
-      state.products.push({ id: state.nextIds.product++, ...d, photo: ui.photo, notes: [], finished: false, love: false, added: Date.now() });
+      state.products.push({ id: Store.newId(), ...d, photo: ui.photo, notes: [], finished: false, love: false, added: Date.now() });
     }
     resetForm(); setForm(false); refreshBrands(); persist(); render();
   });
@@ -691,7 +693,7 @@
       arr.forEach(raw => {
         const p = normaliseProduct(raw || {});
         if (!p.name || state.products.some(x => key(x) === key(p))) return;
-        p.id = state.nextIds.product++; state.products.push(p); added++;
+        p.id = Store.newId(); state.products.push(p); added++;
       });
       refreshBrands(); persist(); render(); setBackupMsg(`imported ${added} new product${added === 1 ? '' : 's'} ✓ (duplicates skipped)`);
     } catch (e) { setBackupMsg('that file is not a valid shelf backup', true); }

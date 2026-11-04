@@ -133,6 +133,7 @@
     @keyframes shoeSway { 0%,100% { transform: rotate(-2.2deg); } 50% { transform: rotate(2.2deg); } }
     @media (prefers-reduced-motion: reduce) { .shoes-btn { animation: none; } }
     .book .edit-name-btn { position: absolute; right: 4cqw; top: 3cqw; background: rgba(255,240,246,.7); border-radius: 3cqw; padding: .6cqw 2.4cqw; color: #4a2740; font-size: 2.6cqw; min-height: 0; }
+    .book .acct-link { right: auto; left: 4cqw; text-decoration: none; }
     .cover-seal { position: absolute; right: 5cqw; bottom: 5cqw; width: 14cqw; height: auto; transform: rotate(-10deg); filter: drop-shadow(0 .6cqw 1cqw rgba(70,25,55,.45)); z-index: 2; pointer-events: none; }
     .cover-fly { position: absolute; height: auto; z-index: 2; pointer-events: none; filter: drop-shadow(0 .5cqw .8cqw rgba(70,25,55,.35)); transform-origin: 50% 60%; animation: flutter 4.8s ease-in-out infinite; }
     .cover-fly.f2 { right: 7cqw; top: 40cqw; width: 12cqw; --r: 14deg; }
@@ -182,6 +183,7 @@
     </button>
     <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
     <button class="edit-name-btn" id="editName" type="button">change my name</button>
+    <a class="edit-name-btn acct-link" href="pages/account.html">account &amp; sync</a>
   </main>
 
   <!-- opening scene: curtains part onto a window; decorative, tap to skip -->
@@ -266,6 +268,8 @@
 <script src="data/store.js"></script>
 <script src="data/diaryData.js"></script>
 <script src="data/links.js"></script>
+<script src="data/config.js"></script>
+<script src="data/cloud.js"></script>
 <script src="components/expiry.js"></script>
 <script>
   let state = loadState();

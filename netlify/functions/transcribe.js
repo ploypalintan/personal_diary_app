@@ -11,6 +11,40 @@ exports.handler = async (event) => {
     };
   }
 
+  /* ── who is asking, and have they used up today's voice minutes? ──
+     Only active when the Supabase settings below are set in Netlify. Without them the function
+     behaves as before (open to anyone with the URL), so set them before charging anyone. */
+  const SB_URL = (process.env.SUPABASE_URL || '').replace(/\/$/, '');
+  const SB_SERVICE = process.env.SUPABASE_SERVICE_ROLE_KEY;          // secret: Netlify only, never in the app
+  const SB_ANON = process.env.SUPABASE_ANON_KEY || SB_SERVICE;
+  const FREE_SECONDS = Number(process.env.VOICE_FREE_SECONDS) || 120;      // per day
+  const PREMIUM_SECONDS = Number(process.env.VOICE_PREMIUM_SECONDS) || 1800;
+  const guarded = !!(SB_URL && SB_SERVICE);
+  const sb = (path, init = {}) => fetch(`${SB_URL}${path}`, { ...init, headers: { apikey: SB_SERVICE, Authorization: `Bearer ${SB_SERVICE}`, 'Content-Type': 'application/json', ...(init.headers || {}) } });
+  let userId = null;
+  if (guarded) {
+    try {
+      const token = String((event.headers && (event.headers.authorization || event.headers.Authorization)) || '').replace(/^Bearer\s+/i, '');
+      if (!token) return { statusCode: 401, body: JSON.stringify({ error: 'Sign in to use voice.' }) };
+      const who = await fetch(`${SB_URL}/auth/v1/user`, { headers: { apikey: SB_ANON, Authorization: `Bearer ${token}` } });
+      if (!who.ok) return { statusCode: 401, body: JSON.stringify({ error: 'Sign in to use voice.' }) };
+      userId = (await who.json()).id;
+      const day = new Date().toISOString().slice(0, 10);
+      const [planRes, useRes] = await Promise.all([
+        sb(`/rest/v1/entitlements?user_id=eq.${userId}&select=plan`),
+        sb(`/rest/v1/voice_usage?user_id=eq.${userId}&day=eq.${day}&select=seconds`),
+      ]);
+      const plan = ((await planRes.json())[0] || {}).plan || 'free';
+      const used = ((await useRes.json())[0] || {}).seconds || 0;
+      const limit = plan === 'premium' ? PREMIUM_SECONDS : FREE_SECONDS;
+      if (used >= limit) {
+        return { statusCode: 429, body: JSON.stringify({ error: `Daily voice limit reached (${Math.round(limit / 60)} min). Try again tomorrow.` }) };
+      }
+    } catch (err) {
+      return { statusCode: 503, body: JSON.stringify({ error: 'Could not check your account, please try again.' }) };
+    }
+  }
+
   try {
     const { audio, mimetype, keyterms, language } = JSON.parse(event.body);
     /* a language the person picked in the app; anything else means auto-detect */
@@ -73,6 +107,11 @@ exports.handler = async (event) => {
     }
 
     const data = await dgResponse.json();
+    /* count the seconds against today's allowance (a failure here never blocks the transcript) */
+    if (guarded && userId) {
+      const secs = Math.ceil(Number(data?.metadata?.duration) || audioBuffer.length / 16000);
+      await sb('/rest/v1/rpc/add_voice_seconds', { method: 'POST', body: JSON.stringify({ p_user: userId, p_seconds: secs }) }).catch(() => {});
+    }
     const alt = data?.results?.channels?.[0]?.alternatives?.[0] || {};
     const transcript = alt.transcript || '';
     const confidence = typeof alt.confidence === 'number' ? alt.confidence : null;

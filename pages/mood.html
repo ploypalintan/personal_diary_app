@@ -189,6 +189,8 @@
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/config.js"></script>
+<script src="../data/cloud.js"></script>
 <script src="../components/expiry.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
@@ -202,7 +204,7 @@
     const box = document.getElementById('journalBox'), note = box.value.trim();
     const flash = document.getElementById('savedFlash');
     if (!note) { flash.textContent = 'say something first, or type it 🌸'; flash.style.display = 'block'; setTimeout(() => { flash.style.display = 'none'; }, 2400); return; }
-    state.moods.unshift({ id: state.nextIds.mood++, date: getTodayString(), key: 'talk', label: 'talk', sub: '', note });
+    state.moods.unshift({ id: Store.newId(), date: getTodayString(), key: 'talk', label: 'talk', sub: '', note });
     saveState(state);
     box.value = '';
     renderHistory();

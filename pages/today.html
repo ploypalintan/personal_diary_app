@@ -101,6 +101,8 @@
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/config.js"></script>
+<script src="../data/cloud.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/stickers.js"></script>
 <script src="../components/navbar.js"></script>
@@ -198,7 +200,7 @@
   function addTask() {
     const v = $('taskInput').value.trim();
     if (!v) return;
-    state.todos.unshift({ id: state.nextIds.todo++, name: v, cat: $('taskCat').value, prio: $('taskPrio').value, done: false, date: viewDate });
+    state.todos.unshift({ id: Store.newId(), name: v, cat: $('taskCat').value, prio: $('taskPrio').value, done: false, date: viewDate });
     $('taskInput').value = '';
     render();
   }

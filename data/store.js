@@ -108,6 +108,28 @@ const Store = (() => {
     if (s.deleted.length > MAX_TOMBSTONES) s.deleted = s.deleted.slice(-MAX_TOMBSTONES);
   }
 
+  /* ── ids that stay unique across devices ──
+     Old records use small counting ids (1, 2, 3 …), which two devices would both hand out.
+     New records use a time-based id, so a phone and a laptop can never create the same one. */
+  let lastId = 0;
+  function newId() {
+    const id = Date.now() * 1000 + Math.floor(Math.random() * 1000);
+    lastId = id > lastId ? id : lastId + 1;
+    return lastId;
+  }
+  const LEGACY_LIMIT = 1e12;   // anything below this is an old counting id
+
+  /* give old counting ids a unique one (and repoint links). Run once before first sync. */
+  function upgradeIds(state) {
+    const map = { products: new Map(), expenses: new Map() };
+    COLLECTIONS.forEach(c => (state[c] || []).forEach(r => {
+      if (Number(r.id) < LEGACY_LIMIT) { const old = r.id; r.id = newId(); r.updatedAt = nowISO(); if (map[c]) map[c].set(old, r.id); }
+    }));
+    (state.products || []).forEach(p => { if (p.expenseId != null && map.expenses.has(p.expenseId)) p.expenseId = map.expenses.get(p.expenseId); });
+    (state.expenses || []).forEach(e => { if (e.productId != null && map.products.has(e.productId)) e.productId = map.products.get(e.productId); });
+    return state;
+  }
+
   /* ── public API ── */
   function load() {
     const s = migrate(adapter.read());
@@ -115,11 +137,13 @@ const Store = (() => {
     return s;
   }
 
-  function save(state) {
+  /* opts.noStamp: keep the timestamps already on the records (used when sync brings data down)
+     opts.quiet:   don't trigger another background sync */
+  function save(state, opts = {}) {
     if (typeof Links !== 'undefined') Links.clean(state);   // drop links to deleted records
-    stamp(state);
+    if (!opts.noStamp) stamp(state);
     const ok = adapter.write(state);
-    if (ok) remember(state);
+    if (ok) { remember(state); if (!opts.quiet && typeof Cloud !== 'undefined' && Cloud.schedulePush) Cloud.schedulePush(); }
     return ok;
   }
 
@@ -131,7 +155,7 @@ const Store = (() => {
   /* swap where data lives (e.g. a cloud adapter with read() and write(state)) */
   function useAdapter(next) { adapter = next || localAdapter; }
 
-  return { load, save, exportAll, useAdapter, emptyState, migrate, SCHEMA, COLLECTIONS };
+  return { load, save, exportAll, useAdapter, emptyState, migrate, newId, upgradeIds, SCHEMA, COLLECTIONS };
 })();
 
 if (typeof module !== 'undefined') module.exports = Store;

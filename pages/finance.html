@@ -213,6 +213,8 @@
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/config.js"></script>
+<script src="../data/cloud.js"></script>
 <script src="../components/expiry.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/stickers.js"></script>
@@ -340,7 +342,7 @@
     const amt  = parseFloat(document.getElementById('incomeAmt').value);
     if (!name || isNaN(amt) || amt <= 0) return;
     state.incomes.unshift({
-      id:   state.nextIds.income++,
+      id:   Store.newId(),
       name,
       amt,
       type: document.getElementById('incomeType').value,
@@ -359,7 +361,7 @@
     const amt  = parseFloat(document.getElementById('expAmt').value);
     if (!name || isNaN(amt) || amt <= 0) return;
     state.expenses.unshift({
-      id:   state.nextIds.expense++,
+      id:   Store.newId(),
       name,
       amt,
       cat:  document.getElementById('expCat').value,
