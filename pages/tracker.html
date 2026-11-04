@@ -261,10 +261,12 @@
   </main>
 </div>
 
+<script src="../data/money.js"></script>
 <script src="../data/store.js"></script>
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/photos.js"></script>
 <script src="../data/config.js"></script>
 <script src="../data/cloud.js"></script>
 <script src="../components/stickers.js"></script>
@@ -292,6 +294,7 @@
       opened: /^\d{4}-\d{2}-\d{2}$/.test(p.opened || '') ? p.opened : '',
       pao: PAO_OPTIONS.includes(Number(p.pao)) ? Number(p.pao) : categoryDefaultPao(CATEGORIES.some(c => c.key === p.category) ? p.category : (LEGACY_CATEGORIES[p.category] || 'other')),
       printedExpiry: /^\d{4}-\d{2}-\d{2}$/.test(p.printedExpiry || '') ? p.printedExpiry : '',
+      photoId: Photos.validId(p.photoId) ? p.photoId : '',
       photo: typeof p.photo === 'string' && /^data:image\/(jpeg|png|webp);base64,[a-z0-9+/=]+$/i.test(p.photo) ? p.photo : '',
       notes: Array.isArray(p.notes) ? p.notes.filter(n => n && typeof n.text === 'string').map(n => ({ date: /^\d{4}-\d{2}-\d{2}$/.test(n.date || '') ? n.date : todayISO(), text: n.text.slice(0, 500) })) : [],
       finished: !!p.finished, love: !!p.love,
@@ -306,7 +309,7 @@
   let maxId = state.products.reduce((m, p) => Math.max(m, p.id), 0);
   state.nextIds.product = Math.max(state.nextIds.product, maxId + 1);
 
-  const ui = { status: 'all', cat: 'all', sort: 'expiry', query: '', editing: null, photo: '', openNotes: new Set(), confirmDelete: null, dupOk: false };
+  const ui = { status: 'all', cat: 'all', sort: 'expiry', query: '', editing: null, photo: null, openNotes: new Set(), confirmDelete: null, dupOk: false };
 
   function persist() {
     if (!saveState(state)) setBackupMsg('could not save: browser storage is full. Remove some photos or export a backup.', true);
@@ -417,7 +420,8 @@
   ['fName', 'fBrand', 'fShade'].forEach(id => $(id).addEventListener('input', updateDup));
   $('fPao').addEventListener('change', updatePreview);
 
-  /* ── photo (resized so localStorage doesn't fill up) ── */
+  /* ── photo: resized, then kept as a real file in IndexedDB (see data/photos.js) ──
+     ui.photo is null, or { id } (already saved), { legacy } (old inline photo) or { blob, url } (just chosen) */
   function resizePhoto(file) {
     return new Promise((resolve, reject) => {
       const url = URL.createObjectURL(file); const img = new Image();
@@ -425,7 +429,7 @@
         const max = 480, scale = Math.min(1, max / Math.max(img.width, img.height));
         const c = document.createElement('canvas'); c.width = Math.round(img.width * scale); c.height = Math.round(img.height * scale);
         c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(url); resolve(c.toDataURL('image/jpeg', 0.72));
+        URL.revokeObjectURL(url); c.toBlob(b => b ? resolve(b) : reject(new Error('bad image')), 'image/jpeg', 0.72);
       };
       img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('bad image')); };
       img.src = url;
@@ -433,15 +437,18 @@
   }
   function showPhoto() {
     $('photoThumb').hidden = !ui.photo; $('photoClear').hidden = !ui.photo;
-    if (ui.photo) $('photoThumb').src = ui.photo;
+    const ph = ui.photo; if (!ph) return;
+    if (ph.url) $('photoThumb').src = ph.url;
+    else if (ph.legacy) $('photoThumb').src = ph.legacy;
+    else if (ph.id) Photos.url(ph.id).then(u => { if (ui.photo === ph) $('photoThumb').src = u; });
   }
   $('fPhoto').addEventListener('change', async () => {
     const f = $('fPhoto').files[0]; if (!f) return;
-    try { ui.photo = await resizePhoto(f); $('photoHelp').textContent = ''; }
-    catch (e) { ui.photo = ''; $('photoHelp').textContent = 'could not read that image, try another'; }
+    try { const blob = await resizePhoto(f); ui.photo = { blob, url: URL.createObjectURL(blob) }; $('photoHelp').textContent = ''; }
+    catch (e) { ui.photo = null; $('photoHelp').textContent = 'could not read that image, try another'; }
     showPhoto();
   });
-  $('photoClear').addEventListener('click', () => { ui.photo = ''; $('fPhoto').value = ''; showPhoto(); });
+  $('photoClear').addEventListener('click', () => { ui.photo = null; $('fPhoto').value = ''; showPhoto(); });
 
   /* ── right page shows either the shelf or the add/edit form ── */
   function setForm(open) {
@@ -457,7 +464,7 @@
   function resetForm() {
     ['fName', 'fBrand', 'fShade', 'fOpened', 'fPrinted', 'phraseInput'].forEach(id => { $(id).value = ''; });
     catSelect.set('foundation'); $('fPao').value = categoryDefaultPao('foundation');
-    ui.photo = ''; ui.editing = null; $('fPhoto').value = ''; showPhoto();
+    ui.photo = null; ui.editing = null; $('fPhoto').value = ''; showPhoto();
     $('addForm').classList.remove('editing'); $('formTitle').textContent = 'add a product';
     $('saveBtn').textContent = '+ add to shelf'; $('cancelEdit').hidden = true;
     $('micStatus').textContent = ''; $('dupBox').replaceChildren(); validateDates(); updatePreview();
@@ -469,14 +476,14 @@
     $('fName').value = p.name; $('fBrand').value = p.brand; $('fShade').value = p.shade;
     catSelect.set(p.category); $('fPao').value = p.pao;
     $('fOpened').value = p.opened ? formatDMY(p.opened) : ''; $('fPrinted').value = p.printedExpiry ? formatDMY(p.printedExpiry) : '';
-    ui.photo = p.photo; showPhoto();
+    ui.photo = p.photoId ? { id: p.photoId } : (p.photo ? { legacy: p.photo } : null); showPhoto();
     $('addForm').classList.add('editing'); $('formTitle').textContent = `editing: ${p.name}`; $('rightTitle').textContent = 'edit product';
     $('saveBtn').textContent = 'save changes'; $('cancelEdit').hidden = false;
     validateDates(); updatePreview(); updateDup();
     setForm(true); $('fName').focus();
   }
 
-  $('addForm').addEventListener('submit', (e) => {
+  $('addForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const d = currentDraft();
     if (!d.name) { $('fName').focus(); return; }
@@ -494,12 +501,19 @@
         w.append(yes, no); box.appendChild(w); yes.focus(); return;
       }
     }
-    if (ui.editing) {
-      const p = state.products.find(x => x.id === ui.editing);
-      if (p) Object.assign(p, d, { photo: ui.photo });
-    } else {
-      state.products.push({ id: Store.newId(), ...d, photo: ui.photo, notes: [], finished: false, love: false, added: Date.now() });
+    /* work out how the photo is kept: as a file if possible, else the old inline way */
+    const editing = ui.editing ? state.products.find(x => x.id === ui.editing) : null;
+    let photoFields = { photoId: '', photo: '' };
+    const ph = ui.photo;
+    if (ph && ph.id) photoFields = { photoId: ph.id, photo: '' };
+    else if (ph && ph.legacy) photoFields = { photoId: '', photo: ph.legacy };
+    else if (ph && ph.blob) {
+      try { photoFields = { photoId: await Photos.put(ph.blob), photo: '' }; }
+      catch (err) { photoFields = { photoId: '', photo: await Photos.blobToDataUrl(ph.blob) }; }
     }
+    if (editing && editing.photoId && editing.photoId !== photoFields.photoId) Photos.remove(editing.photoId).catch(() => {});
+    if (editing) Object.assign(editing, d, photoFields);
+    else state.products.push({ id: Store.newId(), ...d, ...photoFields, notes: [], finished: false, love: false, added: Date.now() });
     resetForm(); setForm(false); refreshBrands(); persist(); render();
   });
 
@@ -620,9 +634,10 @@
     const card = el('article', `p-card ${s.kind}${p.finished ? ' finished' : ''}`);
 
     const vis = el('div', 'p-visual');
-    if (p.photo) {
+    if (p.photo || p.photoId) {
       const f = el('div', 'film'); f.appendChild(el('div', 'ribbon')); const sh = el('div', 'shot');
-      const img = document.createElement('img'); img.src = p.photo; img.alt = `photo of ${p.name}`; sh.appendChild(img); f.appendChild(sh); vis.appendChild(f);
+      const img = document.createElement('img'); img.alt = `photo of ${p.name}`;
+      if (p.photoId) Photos.url(p.photoId).then(u => { if (u) img.src = u; }); else img.src = p.photo; sh.appendChild(img); f.appendChild(sh); vis.appendChild(f);
     } else { const ic = el('div', 'p-icon'); ic.setAttribute('aria-hidden', 'true'); ic.innerHTML = categoryIcon(p.category); vis.appendChild(ic); }
 
     const main = el('div', 'p-main');
@@ -645,7 +660,7 @@
     act.appendChild(actionBtn('edit', () => startEdit(p)));
     act.appendChild(actionBtn(p.finished ? 'back on shelf' : 'finished', () => { p.finished = !p.finished; persist(); render(); }));
     if (ui.confirmDelete === p.id) {
-      act.appendChild(actionBtn('yes, delete', () => { state.products = state.products.filter(x => x.id !== p.id); ui.confirmDelete = null; refreshBrands(); persist(); updateSearchMsg(); render(); }, 'danger'));
+      act.appendChild(actionBtn('yes, delete', () => { if (p.photoId) Photos.remove(p.photoId).catch(() => {}); state.products = state.products.filter(x => x.id !== p.id); ui.confirmDelete = null; refreshBrands(); persist(); updateSearchMsg(); render(); }, 'danger'));
       act.appendChild(actionBtn('keep it', () => { ui.confirmDelete = null; render(); }));
     } else {
       const d = actionBtn('delete', () => { ui.confirmDelete = p.id; render(); }, 'danger'); d.setAttribute('aria-label', `delete ${p.name}`); act.appendChild(d);
@@ -677,8 +692,13 @@
   }
 
   /* ── backup ── */
-  $('exportBtn').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify({ app: 'my-diary-makeup', version: 1, products: state.products }, null, 2)], { type: 'application/json' });
+  $('exportBtn').addEventListener('click', async () => {
+    const full = [];
+    for (const p of state.products) {
+      const { photoId, ...rest } = p;
+      full.push(photoId ? { ...rest, photo: await Photos.dataUrl(photoId).catch(() => '') } : rest);
+    }
+    const blob = new Blob([JSON.stringify({ app: 'my-diary-makeup', version: 1, products: full }, null, 2)], { type: 'application/json' });
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `makeup-shelf-${todayISO()}.json`;
     document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
     setBackupMsg('backup downloaded ✓');
@@ -695,12 +715,15 @@
         if (!p.name || state.products.some(x => key(x) === key(p))) return;
         p.id = Store.newId(); state.products.push(p); added++;
       });
+      await Photos.migrate(state);
       refreshBrands(); persist(); render(); setBackupMsg(`imported ${added} new product${added === 1 ? '' : 's'} ✓ (duplicates skipped)`);
     } catch (e) { setBackupMsg('that file is not a valid shelf backup', true); }
     $('importFile').value = '';
   });
 
   refreshBrands(); validateDates(); updatePreview(); render();
+  /* one-time: move old inline photos out of localStorage into IndexedDB */
+  Photos.migrate(state).then(n => { if (n) { persist(); render(); } }).catch(() => {});
 </script>
 </body>
 </html>

@@ -209,6 +209,7 @@
   </main>
 </div>
 
+<script src="../data/money.js"></script>
 <script src="../data/store.js"></script>
 <script src="../data/diaryData.js"></script>
 <script src="../data/features.js"></script>
@@ -228,6 +229,9 @@
   currSel.value = state.currency || 'SGD';
   window._currSym = CURRENCIES[currSel.value] || 'S$';
 
+  /* The currency picked here is the one new entries are saved in, and the one shown. Each entry
+     keeps the currency it was spent in, so changing this never relabels old amounts. Entries in
+     other currencies are not added into these totals (there is no exchange-rate conversion yet). */
   function onCurrencyChange() {
     state.currency = currSel.value;
     window._currSym = CURRENCIES[state.currency] || '$';
@@ -235,9 +239,10 @@
     render();
   }
 
-  function fmt(v) {
-    return window._currSym + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
+  /* amounts are whole minor units (cents); fmt turns them into text */
+  function fmt(v) { return Money.format(v, state.currency); }
+  const curOf = (it) => it.cur || 'SGD';
+  const inCur = (it) => curOf(it) === (state.currency || 'SGD');
 
   /* ── month navigation: which month are we looking at? ('all' = everything) ── */
   const MONTH_LC = ['january','february','march','april','may','june','july','august','september','october','november','december'];
@@ -254,11 +259,12 @@
   /* ── render ── */
   function render() {
     const all = viewMonth === 'all', cur = viewMonth === thisMonthKey();
-    const incomes  = (state.incomes  || []).filter(inView);
-    const expenses = (state.expenses || []).filter(inView);
+    const incomes  = (state.incomes  || []).filter(inView).filter(inCur);
+    const expenses = (state.expenses || []).filter(inView).filter(inCur);
+    const otherCur = (state.incomes || []).concat(state.expenses || []).filter(inView).filter(x => !inCur(x));
 
-    const totalInc = incomes.reduce((s, i) => s + i.amt, 0);
-    const totalExp = expenses.reduce((s, e) => s + e.amt, 0);
+    const totalInc = Money.sum(incomes);
+    const totalExp = Money.sum(expenses);
     const bal      = totalInc - totalExp;
 
     /* month header + MTD labels */
@@ -281,8 +287,8 @@
     balEl.textContent = (bal < 0 ? '-' : '') + fmt(bal);
     balEl.className   = 'hero-val' + (bal >= 0 ? '' : ' neg');
     const dayN = all ? new Set(expenses.map(e => e.date)).size : (cur ? new Date().getDate() : new Date(+viewMonth.slice(0,4), +viewMonth.slice(5), 0).getDate());
-    const avg = expenses.length ? ' · avg ' + fmt(totalExp / Math.max(1, dayN)) + '/day' : '';
-    document.getElementById('heroSub').textContent = (totalInc ? (bal >= 0 ? 'kept ' + Math.round(bal / totalInc * 100) + '% of income' : 'spending is ahead of income') : 'add income to see your balance') + avg;
+    const avg = expenses.length ? ' · avg ' + fmt(Math.round(totalExp / Math.max(1, dayN))) + '/day' : '';
+    document.getElementById('heroSub').textContent = (totalInc ? (bal >= 0 ? 'kept ' + Math.round(bal / totalInc * 100) + '% of income' : 'spending is ahead of income') : 'add income to see your balance') + avg + (otherCur.length ? ' · ' + otherCur.length + ' in other currencies not counted' : '');
 
     const emptyMsg = all ? '' : ' in ' + nm;
     /* income list */
@@ -305,7 +311,7 @@
 
     /* where the money went: spending by category */
     const bd = document.getElementById('catBreakdown'); bd.replaceChildren();
-    const byCat = {}; expenses.forEach(e => { byCat[e.cat || 'other'] = (byCat[e.cat || 'other'] || 0) + e.amt; });
+    const byCat = {}; expenses.forEach(e => { byCat[e.cat || 'other'] = (byCat[e.cat || 'other'] || 0) + Money.of(e); });
     const rows = Object.entries(byCat).sort((a, b) => b[1] - a[1]);
     if (!rows.length) { const d = document.createElement('div'); d.className = 'empty-state'; d.textContent = 'log an expense and it will show up here.'; bd.appendChild(d); }
     rows.forEach(([cat, amt]) => {
@@ -339,12 +345,13 @@
   /* ── add income ── */
   function addIncome() {
     const name = document.getElementById('incomeDesc').value.trim();
-    const amt  = parseFloat(document.getElementById('incomeAmt').value);
-    if (!name || isNaN(amt) || amt <= 0) return;
+    const cents = Money.parse(document.getElementById('incomeAmt').value, state.currency);
+    if (!name || !cents) return;
     state.incomes.unshift({
       id:   Store.newId(),
       name,
-      amt,
+      cents,
+      cur:  state.currency || 'SGD',
       type: document.getElementById('incomeType').value,
       date: document.getElementById('incomeDate').value || todayISO(),
     });
@@ -358,12 +365,13 @@
   /* ── add expense ── */
   function addExpense() {
     const name = document.getElementById('expDesc').value.trim();
-    const amt  = parseFloat(document.getElementById('expAmt').value);
-    if (!name || isNaN(amt) || amt <= 0) return;
+    const cents = Money.parse(document.getElementById('expAmt').value, state.currency);
+    if (!name || !cents) return;
     state.expenses.unshift({
       id:   Store.newId(),
       name,
-      amt,
+      cents,
+      cur:  state.currency || 'SGD',
       cat:  document.getElementById('expCat').value,
       date: document.getElementById('expDate').value || todayISO(),
     });

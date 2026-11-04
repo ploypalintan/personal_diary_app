@@ -87,7 +87,7 @@ function makeFinanceRow(item, colorMap, isIncome, onDelete) {
   const amt = document.createElement('span');
   amt.className = 'fin-amt';
   amt.style.color = isIncome ? 'var(--positive)' : 'var(--mauve-dark)';
-  amt.textContent = (isIncome ? '+' : '') + window._currSym + item.amt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  amt.textContent = (isIncome ? '+' : '') + Money.format(Money.of(item), item.cur || 'SGD');
   el.appendChild(amt);
 
   const del = document.createElement('button');

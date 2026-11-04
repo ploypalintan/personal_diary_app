@@ -1,0 +1,9 @@
+{
+  "name": "my-diary",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/*.test.js",
+    "deploy:test": "netlify deploy",
+    "deploy:live": "netlify deploy --prod"
+  }
+}

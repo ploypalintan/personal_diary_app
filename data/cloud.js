@@ -13,7 +13,7 @@ const Cloud = (() => {
   const META_KEY = 'myDiarySyncMeta';
   const LIB = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js';
   const COLLECTIONS = ['todos', 'products', 'moods', 'incomes', 'expenses'];
-  const LOCAL_ONLY = ['photo'];     // product photos are too large to sync for now; they stay on the device
+  const LOCAL_ONLY = ['photo'];     // old inline photos (base64) stay on the device; new photos sync as files (photoId)
   const PAGE = 1000, BATCH = 200;
 
   /* ───────── pure functions (no network): unit-tested in Node ───────── */
@@ -105,6 +105,12 @@ const Cloud = (() => {
   /* App Store rule: people must be able to delete their account and its data from inside the app */
   async function deleteAccount() {
     if (!client || !session) throw new Error('not signed in');
+    /* remove this person's photo files first (deleting the login alone would leave them behind) */
+    try {
+      const folder = client.storage.from('photos');
+      const { data: files } = await folder.list(session.user.id, { limit: 1000 });
+      if (files && files.length) await folder.remove(files.map(f => `${session.user.id}/${f.name}`));
+    } catch (err) { console.warn('could not clear photos', err); }
     const { error } = await client.rpc('delete_my_account');
     if (error) throw error;
     await signOut(); writeMeta({});
@@ -159,14 +165,39 @@ const Cloud = (() => {
         const { error } = await client.from('user_settings').upsert({ user_id: userId, user_name: state.userName || '', currency: state.currency || 'SGD', updated_at: startedAt });
         if (error) throw error; meta.settingsPushed = true;
       }
+      /* photos: upload ones this device has, download ones it is missing */
+      const photosChanged = await syncPhotos(state, userId, meta);
       meta.pullCursor = cursor; meta.lastPushed = startedAt; writeMeta(meta);
       lastSyncedAt = startedAt;
 
       /* pages hold their data in memory, so reload once to show what came down */
-      if (changed && !sessionStorage.getItem('cloudReloaded')) { sessionStorage.setItem('cloudReloaded', '1'); location.reload(); return; }
+      if ((changed || photosChanged) && !sessionStorage.getItem('cloudReloaded')) { sessionStorage.setItem('cloudReloaded', '1'); location.reload(); return; }
       sessionStorage.removeItem('cloudReloaded');
     } catch (err) { lastError = (err && err.message) || 'sync failed'; console.error('Sync error:', err); }
     finally { syncing = false; emit(); }
+  }
+
+  /* returns true if a photo was downloaded (so the page should redraw) */
+  async function syncPhotos(state, userId, meta) {
+    if (typeof Photos === 'undefined') return false;
+    const bucket = client.storage.from('photos'); meta.photosUp = meta.photosUp || {};
+    let downloaded = false;
+    for (const p of (state.products || [])) {
+      if (!p.photoId) continue;
+      const path = `${userId}/${p.photoId}`;
+      try {
+        if (await Photos.has(p.photoId)) {
+          if (!meta.photosUp[p.photoId]) {
+            const { error } = await bucket.upload(path, await Photos.get(p.photoId), { upsert: true, contentType: 'image/jpeg' });
+            if (!error) meta.photosUp[p.photoId] = 1;
+          }
+        } else {
+          const { data, error } = await bucket.download(path);
+          if (!error && data) { await Photos.put(data, p.photoId); meta.photosUp[p.photoId] = 1; downloaded = true; }
+        }
+      } catch (err) { console.warn('photo sync skipped', p.photoId, err); }
+    }
+    return downloaded;
   }
 
   function schedulePush() {

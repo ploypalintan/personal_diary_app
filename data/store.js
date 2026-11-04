@@ -11,7 +11,7 @@
 ═══════════════════════════════════════ */
 const Store = (() => {
   const KEY = 'myDiaryState';
-  const SCHEMA = 2;
+  const SCHEMA = 3;
   const COLLECTIONS = ['todos', 'products', 'moods', 'incomes', 'expenses'];
   const MAX_TOMBSTONES = 500;
 
@@ -61,6 +61,19 @@ const Store = (() => {
       if (!('userId' in s)) s.userId = null;
       if (!s.plan) s.plan = 'free';
       if (!Array.isArray(s.deleted)) s.deleted = [];
+      return s;
+    },
+    /* v3: money becomes whole minor units (`cents`) plus the currency it was spent in (`cur`);
+           the old decimal `amt` is removed so there is only one source of truth */
+    3(s) {
+      ['incomes', 'expenses'].forEach(c => (s[c] || []).forEach(r => {
+        if (!Number.isInteger(r.cents)) {
+          const cur = r.cur || s.currency || 'SGD';
+          r.cents = (typeof Money !== 'undefined') ? Money.fromDecimal(r.amt, cur) : Math.round((Number(r.amt) || 0) * 100);
+          r.cur = cur;
+        }
+        delete r.amt;
+      }));
       return s;
     },
   };
@@ -152,10 +165,30 @@ const Store = (() => {
     return { app: 'my-diary', schema: SCHEMA, exportedAt: nowISO(), data: JSON.parse(JSON.stringify(state)) };
   }
 
+  /* restore from a file made by exportAll. Checks everything first; on any problem nothing is changed.
+     Returns { ok:true } or { ok:false, error } */
+  function importAll(file) {
+    try {
+      if (!file || typeof file !== 'object' || file.app !== 'my-diary') return { ok: false, error: 'that is not a diary backup file' };
+      if (!Number.isInteger(file.schema) || file.schema > SCHEMA) return { ok: false, error: 'this backup is from a newer version of the app' };
+      const data = file.data;
+      if (!data || typeof data !== 'object') return { ok: false, error: 'the backup has no data' };
+      for (const c of COLLECTIONS) { if (data[c] !== undefined && !Array.isArray(data[c])) return { ok: false, error: 'the backup is damaged (' + c + ')' }; }
+      const state = migrate(JSON.parse(JSON.stringify(data)));       // older backups are upgraded on the way in
+      const now = nowISO();
+      COLLECTIONS.forEach(c => state[c].forEach(r => { r.updatedAt = now; }));   // restored records count as fresh edits, so they sync
+      state.deleted = [];
+      seen = {};
+      if (!adapter.write(state)) return { ok: false, error: 'could not save: browser storage is full' };
+      remember(state);
+      return { ok: true };
+    } catch (err) { return { ok: false, error: 'could not read the backup' }; }
+  }
+
   /* swap where data lives (e.g. a cloud adapter with read() and write(state)) */
   function useAdapter(next) { adapter = next || localAdapter; }
 
-  return { load, save, exportAll, useAdapter, emptyState, migrate, newId, upgradeIds, SCHEMA, COLLECTIONS };
+  return { load, save, exportAll, importAll, useAdapter, emptyState, migrate, newId, upgradeIds, SCHEMA, COLLECTIONS };
 })();
 
 if (typeof module !== 'undefined') module.exports = Store;

@@ -52,11 +52,11 @@ const Links = (() => {
   /* ── money x shelf ── */
   const monthOf = (iso) => (iso || '').slice(0, 7);
 
-  /* total spent in one month ('YYYY-MM'), and how much of it was beauty */
+  /* total spent in one month ('YYYY-MM'), and how much of it was beauty. All money here is in minor units (cents). */
   function monthSpend(state, month) {
     const list = (state.expenses || []).filter(e => monthOf(e.date) === month);
-    const total = list.reduce((s, e) => s + (Number(e.amt) || 0), 0);
-    const beauty = list.filter(e => e.cat === 'beauty').reduce((s, e) => s + (Number(e.amt) || 0), 0);
+    const total = list.reduce((s, e) => s + Money.of(e), 0);
+    const beauty = list.filter(e => e.cat === 'beauty').reduce((s, e) => s + Money.of(e), 0);
     return { total, beauty, count: list.length };
   }
 
@@ -64,7 +64,7 @@ const Links = (() => {
   function beautyOnShelf(state, month) {
     const out = { unopened: 0, inUse: 0, finished: 0, unlinked: 0 };
     (state.expenses || []).filter(e => e.cat === 'beauty' && monthOf(e.date) === month).forEach(e => {
-      const p = productForExpense(state, e.id), amt = Number(e.amt) || 0;
+      const p = productForExpense(state, e.id), amt = Money.of(e);
       if (!p) out.unlinked += amt;
       else if (p.finished) out.finished += amt;
       else if (p.opened) out.inUse += amt;
@@ -80,8 +80,8 @@ const Links = (() => {
     return {
       date: iso,
       moods,
-      spend: spent.reduce((s, e) => s + (Number(e.amt) || 0), 0),
-      beautySpend: spent.filter(e => e.cat === 'beauty').reduce((s, e) => s + (Number(e.amt) || 0), 0),
+      spend: spent.reduce((s, e) => s + Money.of(e), 0),
+      beautySpend: spent.filter(e => e.cat === 'beauty').reduce((s, e) => s + Money.of(e), 0),
       opened: (state.products || []).filter(p => p.opened === iso),
     };
   }

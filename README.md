@@ -58,7 +58,7 @@ Vanilla JavaScript · HTML/CSS · Netlify Serverless Functions · Deepgram Nova-
 Everything below is off until you do it; the app works as before without it.
 
 1. Create a free project at supabase.com. Region: Singapore.
-2. In the project's **SQL editor**, paste and run `supabase/migrations/0001_init.sql`. (Later changes go in new numbered files, never edit this one.)
+2. In the project's **SQL editor**, paste and run `supabase/migrations/0001_init.sql`, then `0002_photos.sql`. (Later changes go in new numbered files, never edit this one.)
 3. **Authentication > URL configuration:** set Site URL to your Netlify address and add `https://YOUR-SITE/pages/account.html` to the redirect URLs.
 4. **Project settings > API:** copy the Project URL and the `anon public` key into `data/config.js`. (Never put the `service_role` key in the app.)
 5. In **Netlify > Site settings > Environment variables** add: `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (secret, Netlify only). Optional: `VOICE_FREE_SECONDS` (default 120 per day), `VOICE_PREMIUM_SECONDS` (default 1800).
@@ -66,4 +66,4 @@ Everything below is off until you do it; the app works as before without it.
 
 Once the Supabase variables are set in Netlify, the voice function refuses requests that are not from a signed-in user and enforces the daily limit. Until then it is open to anyone with the URL.
 
-Not synced yet: product photos (they stay on the device they were added on).
+Photos sync as private files (run `0002_photos.sql` too).
