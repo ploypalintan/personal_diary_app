@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 584 720" preserveAspectRatio="none">
+<defs>
+<filter id="weave" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".85 .55" numOctaves="3" seed="7" result="n"/><feColorMatrix in="n" type="matrix" values="0 0 0 0 .35  0 0 0 0 .12  0 0 0 0 .25  0 0 0 .55 -.12"/></filter>
+<pattern id="threads" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 .5 H4" stroke="#ffffff" stroke-opacity=".10" stroke-width="1"/><path d="M.5 0 V4" stroke="#5a2340" stroke-opacity=".08" stroke-width="1"/></pattern>
+<linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#dba8bc"/><stop offset=".55" stop-color="#d49bb2"/><stop offset="1" stop-color="#c98aa3"/></linearGradient>
+<linearGradient id="spine" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#8e4a6b" stop-opacity=".55"/><stop offset=".03" stop-color="#8e4a6b" stop-opacity=".25"/><stop offset=".05" stop-color="#fff" stop-opacity=".28"/><stop offset=".075" stop-color="#7a3358" stop-opacity=".22"/><stop offset=".12" stop-color="#fff" stop-opacity="0"/></linearGradient>
+<radialGradient id="vig" cx=".5" cy=".45" r=".75"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#4a1735" stop-opacity=".28"/></radialGradient>
+</defs>
+<rect width="584" height="720" fill="url(#base)"/>
+<rect width="584" height="720" fill="url(#threads)"/>
+<rect width="584" height="720" filter="url(#weave)" opacity=".7"/>
+<rect width="584" height="720" fill="url(#vig)"/>
+<rect width="584" height="720" fill="url(#spine)"/>
+<!-- pressed border and stitched frame -->
+<rect x="34" y="30" width="520" height="660" rx="10" fill="none" stroke="#7a3358" stroke-opacity=".28" stroke-width="2"/>
+<rect x="42" y="38" width="504" height="644" rx="7" fill="none" stroke="#fff" stroke-opacity=".38" stroke-width="1.6" stroke-dasharray="7 6"/>
+</svg>

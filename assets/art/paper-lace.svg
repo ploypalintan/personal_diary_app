@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="140" height="140" viewBox="0 0 140 140">
+<rect width="140" height="140" fill="#fbe9ec"/>
+<g fill="#f3ccd6" opacity=".7"><g transform="translate(35 35)"><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(0)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(72)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(144)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(216)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(288)"/><circle r="2.4" fill="#e9a9bb"/></g>
+<g transform="translate(105 105)"><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(0)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(72)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(144)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(216)"/><ellipse cx="0" cy="-6" rx="3" ry="6.5" transform="rotate(288)"/><circle r="2.4" fill="#e9a9bb"/></g></g>
+<g fill="#eebfcc" opacity=".8"><circle cx="105" cy="35" r="1.8"/><circle cx="35" cy="105" r="1.8"/><circle cx="70" cy="70" r="1.4"/><circle cx="0" cy="70" r="1.4"/><circle cx="140" cy="70" r="1.4"/><circle cx="70" cy="0" r="1.4"/><circle cx="70" cy="140" r="1.4"/></g>
+<path d="M70 0 Q80 35 105 35 Q80 35 70 70 Q60 35 35 35 Q60 35 70 0z" fill="none" stroke="#f0c2cf" stroke-width="1.2" opacity=".8"/>
+<path d="M70 140 Q80 105 105 105 Q80 105 70 70 Q60 105 35 105 Q60 105 70 140z" fill="none" stroke="#f0c2cf" stroke-width="1.2" opacity=".8"/>
+</svg>

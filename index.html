@@ -30,7 +30,7 @@
     /* ── the cover: dusty-pink linen hardback, lettering pressed into the cloth ── */
     .book { display: none; position: relative; container-type: inline-size; width: min(540px, calc(100% - 24px)); aspect-ratio: 584 / 720; margin: 24px auto; overflow: visible;
       border-radius: 1cqw 2.4cqw 2.4cqw 1cqw;
-      background: url('assets/cloth-cover.jpg') center / 100% 100% no-repeat, #d9a9c1;
+      background: url('assets/art/cover-cloth.svg') center / 100% 100% no-repeat, #d9a9c1;
       box-shadow: 0 2.4cqw 3cqw rgba(60,25,45,.38), 0 .4cqw .8cqw rgba(60,25,45,.3), 1.4cqw 2.4cqw 4cqw rgba(60,25,45,.18); }
     .book::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; background: linear-gradient(100deg, rgba(255,255,255,.0) 0 7%, rgba(255,255,255,.10) 8%, rgba(0,0,0,.05) 11%, transparent 18%), linear-gradient(180deg, rgba(255,255,255,.12), transparent 25%, transparent 80%, rgba(60,20,40,.10)); }
     .book.active { display: flex; flex-direction: column; align-items: center; }
@@ -175,13 +175,13 @@
       <h1 class="cover-title" id="splashTitle"></h1>
       <p class="book-line" id="quoteText"></p>
     </div>
-    <img class="sticker cover-fly f2" src="assets/stickers/butterfly-4.png" alt="" aria-hidden="true" width="279" height="284"/>
+    <img class="sticker cover-fly f2" src="assets/stickers/butterfly-4.svg" alt="" aria-hidden="true" width="100" height="100"/>
     <p class="t-body shelf-line" id="shelfLine" role="status"></p>
     <button class="shoes-btn" id="openBtn" type="button">
-      <img class="shoes-img" src="assets/ballet-shoes-hang.png" alt="" width="172" height="420"/>
+      <img class="shoes-img" src="assets/stickers/shoes-hang.svg" alt="" width="132" height="270"/>
       <span class="shoes-label">click to open</span>
     </button>
-    <img class="sticker cover-seal" src="assets/stickers/wax-cupid.png" alt="" aria-hidden="true" width="360" height="360"/>
+    <img class="sticker cover-seal" src="assets/stickers/wax-seal.svg" alt="" aria-hidden="true" width="100" height="100"/>
     <button class="edit-name-btn" id="editName" type="button">change my name</button>
     <a class="edit-name-btn acct-link" href="pages/account.html">account &amp; sync</a>
   </main>
@@ -265,6 +265,7 @@
     </div><div class="skip">tap to skip</div>
   </div>
 
+<script src="data/money.js"></script>
 <script src="data/store.js"></script>
 <script src="data/diaryData.js"></script>
 <script src="data/links.js"></script>
@@ -281,7 +282,7 @@
   }
   function paintCover() {
     $('splashTitle').textContent = state.userName.toLowerCase() + "'s diary";
-    $('quoteText').textContent = 'she is pure poetry, walking & breathing';
+    $('quoteText').textContent = 'a quiet place for your days';
 
     /* a live line about the makeup shelf, linking to the tracker */
     const line = $('shelfLine');

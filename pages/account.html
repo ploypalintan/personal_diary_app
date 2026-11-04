@@ -6,7 +6,7 @@
 <title>account &amp; sync</title>
 <link rel="stylesheet" href="../style.css">
 <style>
-  body { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 28px 16px; background: #f6e7ea url('../assets/bedroom-bg.jpg') center/cover fixed; }
+  body { min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 28px 16px; background: #f6e7ea url('../assets/art/room.svg') center/cover fixed; }
   .acct { width: 100%; max-width: 520px; background: #fff8f9; border-radius: 18px; padding: 26px 24px; box-shadow: 0 10px 30px rgba(110,50,70,.22); color: #3d1230; }
   .acct h1 { margin: 0 0 4px; font-size: 1.6rem; }
   .acct h2 { margin: 22px 0 6px; font-size: 1.05rem; }
@@ -46,11 +46,13 @@
   </section>
 
   <h2>your data</h2>
-  <p class="note">Download a copy of everything in your diary at any time.</p>
+  <p class="note">Download a copy of everything in your diary (photos included) at any time, and restore it here if you ever need to. Restoring replaces what is in this browser with the backup.</p>
   <button id="exportAll" type="button" class="ghost">download my data (.json)</button>
+  <label class="btn ghost" style="display:inline-block;margin:8px 8px 0 0;cursor:pointer">restore from a backup…<input id="restoreFile" type="file" accept="application/json,.json" hidden></label>
+  <p class="note" id="restoreMsg" role="status"></p>
 
   <h2>privacy</h2>
-  <p class="note">Your entries stay on this device unless you sign in. When signed in, they are stored privately under your account, and only you can read them. Voice notes are sent to Deepgram to be turned into text; the audio is not kept by this app. Product photos stay on the device they were added on.</p>
+  <p class="note">Your entries stay on this device unless you sign in. When signed in, they are stored privately under your account, and only you can read them. Voice notes are sent to Deepgram to be turned into text; the audio is not kept by this app. When signed in, product photos are stored as private files under your account too.</p>
 
   <section id="deleteBox" hidden>
     <h2>delete my account</h2>
@@ -67,9 +69,11 @@
   <p style="margin-top:22px"><a class="btn ghost" href="../index.html">‹ back to the cover</a></p>
 </main>
 
+<script src="../data/money.js"></script>
 <script src="../data/store.js"></script>
 <script src="../data/diaryData.js"></script>
 <script src="../data/links.js"></script>
+<script src="../data/photos.js"></script>
 <script src="../data/config.js"></script>
 <script src="../data/cloud.js"></script>
 <script>
@@ -92,9 +96,24 @@
   });
   $('syncNow').addEventListener('click', () => Cloud.sync());
   $('signOut').addEventListener('click', () => Cloud.signOut());
-  $('exportAll').addEventListener('click', () => {
-    const blob = new Blob([JSON.stringify(Store.exportAll(loadState()), null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-diary-data.json'; a.click(); URL.revokeObjectURL(a.href);
+  $('exportAll').addEventListener('click', async () => {
+    const file = Store.exportAll(loadState());
+    /* photos live in their own storage: put them inside the backup so it is complete */
+    for (const p of file.data.products || []) {
+      if (p.photoId) { try { p.photo = await Photos.dataUrl(p.photoId); } catch { p.photo = ''; } delete p.photoId; }
+    }
+    const blob = new Blob([JSON.stringify(file, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'my-diary-backup-' + todayISO() + '.json'; a.click(); URL.revokeObjectURL(a.href);
+  });
+  $('restoreFile').addEventListener('change', async () => {
+    const f = $('restoreFile').files[0]; if (!f) return;
+    try {
+      const res = Store.importAll(JSON.parse(await f.text()));
+      if (!res.ok) { $('restoreMsg').textContent = 'could not restore: ' + res.error; return; }
+      const s = loadState(); await Photos.migrate(s); saveState(s);
+      $('restoreMsg').textContent = 'restored ✓ (' + (s.products || []).length + ' products, ' + (s.expenses || []).length + ' expenses, ' + (s.todos || []).length + ' to-dos)';
+    } catch (e) { $('restoreMsg').textContent = 'could not restore: that file is not a readable backup'; }
+    $('restoreFile').value = '';
   });
   $('delAsk').addEventListener('click', () => { $('delAsk').hidden = true; $('delSure').hidden = false; });
   $('delNo').addEventListener('click', () => { $('delAsk').hidden = false; $('delSure').hidden = true; });
