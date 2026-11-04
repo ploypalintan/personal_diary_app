@@ -4,6 +4,9 @@ function initPage() {
   const state = loadState();
   if (!state.userName) { window.location.href = '../index.html'; return null; }
 
+  /* tabs come from the feature list (data/features.js) */
+  if (typeof Features !== 'undefined') Features.renderTabs(state);
+
   /* active tab + navigation */
   const current = window.location.pathname.split('/').pop();
   document.querySelectorAll('.bm[data-page]').forEach(bm => {

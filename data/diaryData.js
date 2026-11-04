@@ -77,30 +77,9 @@ function getDailyQuote() {
 }
 
 /* ── APP STATE (persisted to localStorage) ── */
-const STATE_KEY = 'myDiaryState';
-
-function loadState() {
-  try {
-    const raw = localStorage.getItem(STATE_KEY);
-    return raw ? JSON.parse(raw) : defaultState();
-  } catch { return defaultState(); }
-}
-
+/* All reads and writes now go through Store (data/store.js): schema versioning,
+   createdAt/updatedAt stamps and deletion records live there. */
+function loadState()      { return Store.load(); }
 /* returns false (instead of throwing) if the browser storage is full, e.g. too many photos */
-function saveState(state) {
-  try { localStorage.setItem(STATE_KEY, JSON.stringify(state)); return true; }
-  catch (err) { console.error('Could not save:', err); return false; }
-}
-
-function defaultState() {
-  return {
-    userName:  '',
-    currency:  'SGD',
-    todos:     [],
-    products:  [],   // { id, name, brand, shade, category, opened:'YYYY-MM-DD'|'', pao:months }
-    moods:     [],   // { date, key, label, note }
-    incomes:   [],
-    expenses:  [],
-    nextIds:   { todo: 1, product: 1, mood: 1, income: 1, expense: 1 },
-  };
-}
+function saveState(state) { return Store.save(state); }
+function defaultState()   { return Store.emptyState(); }

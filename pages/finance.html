@@ -130,13 +130,7 @@
 
   <div class="spine"><div class="spine-text">my diary</div></div>
 
-  <nav class="bookmarks">
-    <a class="bm" data-page="today.html"><span class="bm-icon">✦</span>today</a>
-    <a class="bm" data-page="tracker.html"><span class="bm-icon">✧</span>makeup</a>
-    <a class="bm" data-page="mood.html"><span class="bm-icon">◌</span>friend</a>
-    <a class="bm" data-page="finance.html"><span class="bm-icon">◇</span>finance</a>
-    <a class="bm" data-page="../index.html"><span class="bm-icon">❀</span>cover</a>
-  </nav>
+  <nav class="bookmarks" aria-label="diary pages"></nav>
 
   <main class="page">
     <section class="pg pg-left" aria-label="left page">
@@ -215,7 +209,10 @@
   </main>
 </div>
 
+<script src="../data/store.js"></script>
 <script src="../data/diaryData.js"></script>
+<script src="../data/features.js"></script>
+<script src="../data/links.js"></script>
 <script src="../components/expiry.js"></script>
 <script src="../components/diaryCard.js"></script>
 <script src="../components/stickers.js"></script>

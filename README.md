@@ -46,3 +46,9 @@ Vanilla JavaScript · HTML/CSS · Netlify Serverless Functions · Deepgram Nova-
 ## Live App
 
 [my-diary-test.netlify.app](https://my-diary-test.netlify.app)
+
+## Under the hood (data layer)
+
+- `data/store.js`: the single place data is read and written. Schema version with numbered migrations, `createdAt`/`updatedAt` stamped on every record, a list of deleted ids (for future sync), and a swappable storage adapter (browser storage today).
+- `data/links.js`: records point to each other by id (shelf item <-> purchase) and are joined by day (mood, spend, shelf). Plumbing for the money x beauty x mood features; no page uses it yet.
+- `data/features.js`: the list of features. Side tabs are built from it, and each feature is marked free or premium. Add one entry to add a feature.
